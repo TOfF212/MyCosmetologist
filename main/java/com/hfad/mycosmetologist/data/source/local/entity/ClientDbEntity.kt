@@ -19,8 +19,8 @@ import androidx.room.PrimaryKey
     ]
 )
 data class ClientDbEntity(
-    @PrimaryKey val id: Long,
-    @ColumnInfo(name = "worker_id") val workerId: Long,
+    @PrimaryKey val id: String,
+    @ColumnInfo(name = "worker_id") val workerId: String,
     @ColumnInfo(name = "name") val name: String,
     @ColumnInfo(name = "phone")val phone: String,
     @ColumnInfo(name = "about") val about: String

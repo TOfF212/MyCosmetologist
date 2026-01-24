@@ -25,7 +25,7 @@ interface AppointmentServiceDao {
         WHERE appointment_id = :appointmentId
     """)
     suspend fun deleteByAppointmentId(
-        appointmentId: Long
+        appointmentId: String
     )
 
     @Query("""
@@ -33,6 +33,6 @@ interface AppointmentServiceDao {
         WHERE appointment_id = :appointmentId
     """)
     suspend fun getByAppointmentId(
-        appointmentId: Long
+        appointmentId: String
     ): List<AppointmentServiceDbEntity>
 }

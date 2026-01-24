@@ -7,7 +7,7 @@ class GetAppointment(
     private val repository: AppointmentRepository
 ) {
 
-    suspend operator fun invoke(workerId: Long,appointmentId: Long): Appointment? {
+    suspend operator fun invoke(workerId: String,appointmentId: String): Appointment? {
         return repository.getAppointmentById(workerId,appointmentId)
     }
 }

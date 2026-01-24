@@ -11,11 +11,11 @@ interface AppointmentRepository {
 
     suspend fun updateAppointment(appointment: Appointment)
 
-    suspend fun getAppointmentById(workerId: Long, id: Long): Appointment?
+    suspend fun getAppointmentById(workerId: String, id: String): Appointment?
 
-    suspend fun getAppointmentsByDate(workerId: Long, date: LocalDateTime): List<Appointment>
+    suspend fun getAppointmentsByDate(workerId: String, date: LocalDateTime): List<Appointment>
 
-    suspend fun getPastAppointments(workerId: Long, date: LocalDateTime): List<Appointment>
+    suspend fun getPastAppointments(workerId: String, date: LocalDateTime): List<Appointment>
 
     suspend fun isTimeBusy(appointment: Appointment): Boolean
 }

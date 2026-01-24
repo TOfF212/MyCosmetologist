@@ -4,9 +4,9 @@ import com.hfad.mycosmetologist.domain.entity.Service
 
 interface ServiceRepository {
 
-    suspend fun createService( service: Service)
+    suspend fun createService(service: Service)
 
-    suspend fun getPriceList(workerId: Long): List<Service>
+    suspend fun getPriceList(workerId: String): List<Service>
 
     suspend fun updateService(service: Service)
 

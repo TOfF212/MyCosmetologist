@@ -8,6 +8,7 @@ import androidx.room.Query
 import androidx.room.Update
 import com.hfad.mycosmetologist.data.source.local.entity.AppointmentDbEntity
 import com.hfad.mycosmetologist.data.source.local.entity.ServiceDbEntity
+import com.hfad.mycosmetologist.domain.entity.Client
 
 @Dao
 interface ServiceDao {
@@ -26,7 +27,7 @@ interface ServiceDao {
         WHERE worker_id = :workerId
     """)
     suspend fun getListByWorkerId(
-        workerId: Long
+        workerId: String
     ): List<ServiceDbEntity>
 
     @Query("""
@@ -36,8 +37,17 @@ interface ServiceDao {
         
     """)
     suspend fun getById(
-        workerId: Long,
-        serviceId: Long
+        workerId: String,
+        serviceId: String
+    ): ServiceDbEntity?
+
+    @Query("""
+        SELECT * FROM services
+        WHERE name = :name
+        AND worker_id = :workerId
+    """) suspend fun getByName(
+        name: String,
+        workerId: String,
     ): ServiceDbEntity?
 
 

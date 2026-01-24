@@ -10,9 +10,9 @@ interface ClientRepository {
 
     suspend fun deleteClient(client: Client)
 
-    suspend fun getClient(workerId: Long, clientId: Long): Client
+    suspend fun getClient(workerId: String, clientId: String): Client?
 
-    suspend fun getClientList(workerId: Long): List<Client>
+    suspend fun getClientList(workerId: String): List<Client>
 
     suspend fun clientIsExists(client: Client): Boolean
 }

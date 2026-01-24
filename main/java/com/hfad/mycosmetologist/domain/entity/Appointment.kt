@@ -4,10 +4,10 @@ import java.time.LocalDate
 import java.time.LocalDateTime
 
 data class Appointment(
-    val id: Long,
-    val workerId: Long,
-    val clientId: Long,
-    val servicesIds: MutableList<Long>,
+    val id: String,
+    val workerId: String,
+    val clientId: String,
+    val servicesIds: MutableList<String>,
     val status: AppointmentStatus,
     val description: String,
     val startTime: LocalDateTime,

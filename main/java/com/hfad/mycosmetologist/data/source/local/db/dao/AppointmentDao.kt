@@ -27,8 +27,8 @@ interface AppointmentDao {
         AND id = :appointmentId
     """)
     suspend fun getById(
-        workerId: Long,
-        appointmentId: Long
+        workerId: String,
+        appointmentId: String
     ): AppointmentDbEntity?
 
     @Query("""
@@ -38,7 +38,7 @@ interface AppointmentDao {
         ORDER BY start_time ASC
     """)
     suspend fun getByDate(
-        workerId: Long,
+        workerId: String,
         start: Long,
         end: Long
     ): List<AppointmentDbEntity>
@@ -50,7 +50,19 @@ interface AppointmentDao {
         ORDER BY start_time DESC
     """)
     suspend fun getPast(
-        workerId: Long,
+        workerId: String,
+        now: Long
+    ): List<AppointmentDbEntity>
+
+    @Query("""
+        SELECT * FROM appointments
+        WHERE worker_id = :workerId
+        AND end_time < :now
+        ORDER BY start_time DESC
+        LIMIT 20
+    """)
+    suspend fun get20Last(
+        workerId: String,
         now: Long
     ): List<AppointmentDbEntity>
 
@@ -62,7 +74,7 @@ interface AppointmentDao {
         LIMIT 1
     """)
     suspend fun getPrevious(
-        workerId: Long,
+        workerId: String,
         now: Long
     ): AppointmentDbEntity?
 
@@ -75,7 +87,7 @@ interface AppointmentDao {
         LIMIT 1
     """)
     suspend fun getNext(
-        workerId: Long,
+        workerId: String,
         now: Long
     ): AppointmentDbEntity?
 }

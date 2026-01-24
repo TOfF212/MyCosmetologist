@@ -7,7 +7,7 @@ import java.time.LocalDateTime
 
 class GetAppointmentsByDate(private val repository: AppointmentRepository) {
 
-    suspend operator fun invoke(workerId: Long,date: LocalDateTime): List<Appointment>{
+    suspend operator fun invoke(workerId: String,date: LocalDateTime): List<Appointment>{
         return repository.getAppointmentsByDate(workerId, date)
     }
 }

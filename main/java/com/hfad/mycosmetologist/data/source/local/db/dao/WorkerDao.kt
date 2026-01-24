@@ -24,6 +24,6 @@ interface WorkerDao {
         SELECT * FROM workers
         WHERE id = :workerId
     """) suspend fun getById(
-        workerId: Long
+        workerId: String
     ): WorkerDbEntity?
 }

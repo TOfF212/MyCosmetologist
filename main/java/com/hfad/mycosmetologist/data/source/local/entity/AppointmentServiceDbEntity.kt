@@ -26,6 +26,6 @@ import androidx.room.PrimaryKey
     ]
 )
 data class AppointmentServiceDbEntity (
-    @ColumnInfo(name = "appointment_id") val appointmentId: Long,
-    @ColumnInfo(name = "service_id") val serviceId: Long,
+    @ColumnInfo(name = "appointment_id") val appointmentId: String,
+    @ColumnInfo(name = "service_id") val serviceId: String,
 ){}

@@ -8,7 +8,7 @@ import androidx.room.PrimaryKey
     tableName = "workers"
 )
 data class WorkerDbEntity(
-    @PrimaryKey val id: Long,
+    @PrimaryKey val id: String,
     @ColumnInfo(name = "name") val name: String,
     @ColumnInfo(name = "phone") val phone: String,
     @ColumnInfo(name = "about") val about: String

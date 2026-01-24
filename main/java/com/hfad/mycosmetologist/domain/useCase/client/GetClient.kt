@@ -5,7 +5,7 @@ import com.hfad.mycosmetologist.domain.repository.ClientRepository
 
 class GetClient(private val repository: ClientRepository) {
 
-    suspend operator fun invoke(workerId: Long, clientId: Long): Client? {
+    suspend operator fun invoke(workerId: String, clientId: String): Client? {
         return repository.getClient(workerId,clientId)
     }
 

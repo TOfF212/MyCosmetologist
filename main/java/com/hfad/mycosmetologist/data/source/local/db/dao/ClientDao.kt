@@ -7,6 +7,7 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
 import com.hfad.mycosmetologist.data.source.local.entity.ClientDbEntity
+import com.hfad.mycosmetologist.domain.entity.Client
 
 @Dao
 interface ClientDao {
@@ -25,8 +26,8 @@ interface ClientDao {
         AND worker_id = :workerId        
     """)
     suspend fun getById(
-        clientId: Long,
-        workerId: Long
+        clientId: String,
+        workerId: String
     ): ClientDbEntity?
 
     @Query("""
@@ -34,8 +35,18 @@ interface ClientDao {
         WHERE worker_id = :workerId        
     """)
     suspend fun getListByWorkerId(
-        workerId: Long
+        workerId: String
     ): List<ClientDbEntity>
 
+    @Query("""
+        SELECT * FROM clients
+        WHERE name = :name
+        AND phone = :phone
+        AND worker_id = :workerId
+    """) suspend fun getByParams(
+        name: String,
+        phone: String,
+        workerId: String
+    ): ClientDbEntity?
 
 }

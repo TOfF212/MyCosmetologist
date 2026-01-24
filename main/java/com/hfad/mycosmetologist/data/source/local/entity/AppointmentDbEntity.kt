@@ -32,9 +32,9 @@ import java.time.LocalDateTime
     ]
 )
 data class AppointmentDbEntity(
-    @PrimaryKey val id: Long,
-    @ColumnInfo(name = "worker_id") val workerId: Long,
-    @ColumnInfo(name = "client_id") val clientId: Long,
+    @PrimaryKey val id: String,
+    @ColumnInfo(name = "worker_id") val workerId: String,
+    @ColumnInfo(name = "client_id") val clientId: String,
     @ColumnInfo(name = "status") val status: AppointmentStatus,
     @ColumnInfo(name = "description") val description: String,
     @ColumnInfo(name = "start_time") val startTime: LocalDateTime,

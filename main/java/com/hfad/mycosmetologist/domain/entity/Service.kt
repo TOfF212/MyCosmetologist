@@ -1,8 +1,8 @@
 package com.hfad.mycosmetologist.domain.entity
 
 data class Service(
-    val id: Long,
-    val workerId: Long,
+    val id: String,
+    val workerId: String,
     val name: String,
     val price: Int,
     val durationMinutes: Int,
