@@ -1,0 +1,81 @@
+package com.hfad.mycosmetologist.data.source.local.db.dao
+import androidx.room.Dao
+import androidx.room.Delete
+import androidx.room.Insert
+import androidx.room.OnConflictStrategy
+import androidx.room.Query
+import androidx.room.Update
+import com.hfad.mycosmetologist.data.source.local.entity.AppointmentDbEntity
+import com.hfad.mycosmetologist.domain.entity.Appointment
+import java.time.LocalDateTime
+
+@Dao
+interface AppointmentDao {
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insert(appointment: AppointmentDbEntity)
+
+    @Update
+    suspend fun update(appointment: AppointmentDbEntity)
+
+    @Delete
+    suspend fun delete(appointment: AppointmentDbEntity)
+
+    @Query("""
+        SELECT * FROM appointments 
+        WHERE worker_id = :workerId 
+        AND id = :appointmentId
+    """)
+    suspend fun getById(
+        workerId: Long,
+        appointmentId: Long
+    ): AppointmentDbEntity?
+
+    @Query("""
+        SELECT * FROM appointments
+        WHERE worker_id = :workerId
+        AND start_time BETWEEN :start AND :end
+        ORDER BY start_time ASC
+    """)
+    suspend fun getByDate(
+        workerId: Long,
+        start: Long,
+        end: Long
+    ): List<AppointmentDbEntity>
+
+    @Query("""
+        SELECT * FROM appointments
+        WHERE worker_id = :workerId
+        AND end_time < :now
+        ORDER BY start_time DESC
+    """)
+    suspend fun getPast(
+        workerId: Long,
+        now: Long
+    ): List<AppointmentDbEntity>
+
+    @Query("""
+        SELECT * FROM appointments
+        WHERE worker_id = :workerId
+        AND start_time < :now
+        ORDER BY start_time DESC
+        LIMIT 1
+    """)
+    suspend fun getPrevious(
+        workerId: Long,
+        now: Long
+    ): AppointmentDbEntity?
+
+
+    @Query("""
+        SELECT * FROM appointments
+        WHERE worker_id = :workerId
+        AND start_time > :now
+        ORDER BY start_time ASC
+        LIMIT 1
+    """)
+    suspend fun getNext(
+        workerId: Long,
+        now: Long
+    ): AppointmentDbEntity?
+}
