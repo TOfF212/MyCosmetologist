@@ -8,11 +8,12 @@ import com.hfad.mycosmetologist.data.source.local.db.dao.AppointmentServiceDao
 import com.hfad.mycosmetologist.data.source.local.entity.AppointmentServiceDbEntity
 import com.hfad.mycosmetologist.domain.entity.Appointment
 import com.hfad.mycosmetologist.domain.repository.AppointmentRepository
+import jakarta.inject.Inject
 import java.time.LocalDateTime
 import java.time.ZoneOffset
 
 
-class AppointmentRepositoryImpl(
+class AppointmentRepositoryImpl @Inject constructor(
     private val appointmentDao: AppointmentDao,
     private val appointmentServiceDao: AppointmentServiceDao
 ): AppointmentRepository {

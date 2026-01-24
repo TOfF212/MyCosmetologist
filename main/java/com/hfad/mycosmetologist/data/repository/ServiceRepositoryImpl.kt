@@ -6,8 +6,9 @@ import com.hfad.mycosmetologist.data.source.local.db.dao.ServiceDao
 import com.hfad.mycosmetologist.domain.entity.Client
 import com.hfad.mycosmetologist.domain.entity.Service
 import com.hfad.mycosmetologist.domain.repository.ServiceRepository
+import jakarta.inject.Inject
 
-class ServiceRepositoryImpl(private val serviceDao: ServiceDao): ServiceRepository {
+class ServiceRepositoryImpl @Inject constructor(private val serviceDao: ServiceDao): ServiceRepository {
     override suspend fun createService( service: Service){
         serviceDao.insert(service.toDbModel())
     }

@@ -5,8 +5,9 @@ import com.hfad.mycosmetologist.data.mapper.toDomainModel
 import com.hfad.mycosmetologist.data.source.local.db.dao.ClientDao
 import com.hfad.mycosmetologist.domain.entity.Client
 import com.hfad.mycosmetologist.domain.repository.ClientRepository
+import jakarta.inject.Inject
 
-class ClientRepositoryImpl(private val clientDao: ClientDao): ClientRepository {
+class ClientRepositoryImpl @Inject constructor(private val clientDao: ClientDao): ClientRepository {
     override suspend fun createClient(client: Client){
         clientDao.insert(client.toDbModel())
     }
