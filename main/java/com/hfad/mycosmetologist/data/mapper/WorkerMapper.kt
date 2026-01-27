@@ -10,7 +10,8 @@ fun Worker.toDbModel(): WorkerDbEntity{
         id = id,
         name = name,
         phone = phone,
-        about = about)
+        about = about,
+        password = password)
 }
 
 fun WorkerDbEntity.toDomainModel(): Worker {
@@ -18,5 +19,6 @@ fun WorkerDbEntity.toDomainModel(): Worker {
         id = id,
         name = name,
         phone = phone,
-        about = about)
+        about = about,
+        password = password)
 }

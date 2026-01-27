@@ -4,7 +4,8 @@ data class Worker(
     val id: String,
     val name: String,
     val phone: String,
-    val about: String
+    val about: String,
+    val password: String
 ){
 
 }

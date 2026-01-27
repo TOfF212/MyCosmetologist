@@ -1,13 +1,46 @@
 package com.hfad.mycosmetologist.domain.useCase.appointment
 
 import com.hfad.mycosmetologist.domain.entity.Appointment
+import com.hfad.mycosmetologist.domain.exceptions.InvalidAppointmentTimeException
 import com.hfad.mycosmetologist.domain.repository.AppointmentRepository
+import com.hfad.mycosmetologist.domain.util.Result
+import jakarta.inject.Inject
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.flowOf
 
-class GetAppointment(
+class GetAppointment @Inject constructor(
     private val repository: AppointmentRepository
 ) {
 
-    suspend operator fun invoke(workerId: String,appointmentId: String): Appointment? {
-        return repository.getAppointmentById(workerId,appointmentId)
+    operator suspend fun invoke(
+        appointment: Appointment
+    ): Flow<Result<Unit>> {
+
+        return repository.isTimeBusy(appointment)
+            .flatMapLatest { result ->
+                when (result) {
+
+                    is Result.Loading -> {
+                        flowOf(Result.Loading)
+                    }
+
+                    is Result.Success -> {
+                        if (result.data) {
+                            flowOf(
+                                Result.Error(
+                                    InvalidAppointmentTimeException("InvalidTime")
+                                )
+                            )
+                        } else {
+                            repository.createAppointment(appointment)
+                        }
+                    }
+
+                    is Result.Error -> {
+                        flowOf(Result.Error(result.exception))
+                    }
+                }
+            }
     }
 }

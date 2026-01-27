@@ -1,17 +1,43 @@
 package com.hfad.mycosmetologist.domain.useCase.client
 
 import com.hfad.mycosmetologist.domain.entity.Client
+import com.hfad.mycosmetologist.domain.exceptions.ObjectIsAlreadyExistException
 import com.hfad.mycosmetologist.domain.repository.ClientRepository
-import com.hfad.mycosmetologist.domain.usecases.client.UpdateClientResult
+import com.hfad.mycosmetologist.domain.util.Result
+import jakarta.inject.Inject
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.flowOf
 
-class UpdateClient(private val repository: ClientRepository) {
+class UpdateClient @Inject constructor(private val repository: ClientRepository) {
 
-    suspend operator fun invoke(client: Client): UpdateClientResult {
+    suspend operator fun invoke(client: Client): Flow<Result<Unit>> {
+        return repository.clientIsExists(client)
+            .flatMapLatest { result ->
+                when (result) {
+                    is Result.Loading -> {
+                        flowOf(Result.Loading)
 
-        if(repository.clientIsExists(client)){
-            return UpdateClientResult.ClientAlreadyExists
-        }
-        repository.updateClient(client)
-        return UpdateClientResult.Success
+                    }
+
+                    is Result.Success -> {
+                        if (result.data) {
+                            flowOf(
+                                Result.Error(
+                                    ObjectIsAlreadyExistException(
+                                        "Client is already exist"
+                                    )
+                                )
+                            )
+                        } else {
+                            repository.updateClient(client)
+                        }
+                    }
+
+                    is Result.Error -> {
+                        flowOf(Result.Error(result.exception))
+                    }
+                }
+            }
     }
 }
