@@ -13,7 +13,7 @@ import kotlinx.coroutines.flow.flow
 
 class WorkerRepositoryImpl @Inject constructor(private val workerDao: WorkerDao): WorkerRepository {
 
-    override suspend fun getWorkerById(id: String): Flow<Result<Worker>> = flow {
+    override  fun getWorkerById(id: String): Flow<Result<Worker>> = flow {
         emit(Result.Loading)
 
         try{
@@ -27,7 +27,7 @@ class WorkerRepositoryImpl @Inject constructor(private val workerDao: WorkerDao)
         emit(Result.Error(e))
     }
 
-    override suspend fun createWorker(worker: Worker): Flow<Result<Unit>> = flow{
+    override  fun createWorker(worker: Worker): Flow<Result<Unit>> = flow{
         emit(Result.Loading)
         try{
             workerDao.insert(worker.toDbModel())
@@ -40,7 +40,7 @@ class WorkerRepositoryImpl @Inject constructor(private val workerDao: WorkerDao)
         emit(Result.Error(e))
     }
 
-    override suspend fun updateWorker(worker: Worker): Flow<Result<Unit>> = flow{
+    override  fun updateWorker(worker: Worker): Flow<Result<Unit>> = flow{
         emit(Result.Loading)
         try{
             workerDao.update(worker.toDbModel())
@@ -54,7 +54,7 @@ class WorkerRepositoryImpl @Inject constructor(private val workerDao: WorkerDao)
     }
 
 
-    override suspend fun deleteWorker(worker: Worker) : Flow<Result<Unit>> = flow{
+    override  fun deleteWorker(worker: Worker) : Flow<Result<Unit>> = flow{
         emit(Result.Loading)
         try{
             workerDao.delete(worker.toDbModel())
@@ -68,7 +68,7 @@ class WorkerRepositoryImpl @Inject constructor(private val workerDao: WorkerDao)
     }
 
 
-    override suspend fun workerIsExist(): Flow<Result<Boolean>> = flow {
+    override fun workerIsExist(): Flow<Result<Boolean>> = flow {
         emit(Result.Loading)
         try{
             emit(Result.Success(workerDao.hasAnyWorker()))
@@ -76,6 +76,17 @@ class WorkerRepositoryImpl @Inject constructor(private val workerDao: WorkerDao)
             emit(Result.Error(e))
         }
 
+    }.catch{ e->
+        emit(Result.Error(e))
+    }
+
+    override fun getActualWorker(): Flow<Result<Worker>> = flow {
+        emit(Result.Loading)
+        try {
+            emit(Result.Success(workerDao.getActualWorker()!!.toDomainModel()))
+        } catch (e: Exception){
+            emit(Result.Error(e))
+        }
     }.catch{ e->
         emit(Result.Error(e))
     }

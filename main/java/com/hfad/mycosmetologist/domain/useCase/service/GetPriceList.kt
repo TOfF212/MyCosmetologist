@@ -6,6 +6,6 @@ import jakarta.inject.Inject
 
 class GetPriceList @Inject constructor(private val repository: ServiceRepository){
 
-    suspend operator fun invoke(workerId: String)= repository.getPriceList(workerId)
+     operator fun invoke(workerId: String) = repository.getPriceList(workerId)
 
 }

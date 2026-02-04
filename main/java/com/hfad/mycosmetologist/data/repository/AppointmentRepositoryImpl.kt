@@ -2,193 +2,189 @@ package com.hfad.mycosmetologist.data.repository
 
 import com.hfad.mycosmetologist.data.mapper.toDbModel
 import com.hfad.mycosmetologist.data.mapper.toDomainModel
-import com.hfad.mycosmetologist.data.source.local.db.AppDatabase
 import com.hfad.mycosmetologist.data.source.local.db.dao.AppointmentDao
 import com.hfad.mycosmetologist.data.source.local.db.dao.AppointmentServiceDao
 import com.hfad.mycosmetologist.data.source.local.entity.AppointmentServiceDbEntity
 import com.hfad.mycosmetologist.domain.entity.Appointment
 import com.hfad.mycosmetologist.domain.repository.AppointmentRepository
+import com.hfad.mycosmetologist.domain.util.Result
 import jakarta.inject.Inject
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flow
-import java.time.LocalDateTime
-import java.time.ZoneOffset
-import com.hfad.mycosmetologist.domain.util.Result
 import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.flow
+import java.time.Instant
+import java.time.LocalDate
+import java.time.ZoneOffset
+import java.time.temporal.ChronoUnit
 
 class AppointmentRepositoryImpl @Inject constructor(
     private val appointmentDao: AppointmentDao,
     private val appointmentServiceDao: AppointmentServiceDao
-): AppointmentRepository {
+) : AppointmentRepository {
 
-    override suspend fun createAppointment(appointment: Appointment): Flow<Result<Unit>> = flow{
+    override fun createAppointment(
+        appointment: Appointment
+    ): Flow<Result<Unit>> = flow {
         emit(Result.Loading)
 
-        try{
+        try {
             appointmentServiceDao.deleteByAppointmentId(appointment.workerId)
 
             appointmentDao.insert(appointment.toDbModel())
 
-            appointment.servicesIds.forEach {
+            appointment.servicesIds.forEach { serviceId ->
                 appointmentServiceDao.insert(
                     AppointmentServiceDbEntity(
                         appointment.id,
-                        it
+                        serviceId
                     )
                 )
             }
+
             emit(Result.Success(Unit))
-        } catch (e: Exception){
+        } catch (e: Exception) {
             emit(Result.Error(e))
         }
+    }.catch { emit(Result.Error(it)) }
 
-    }.catch{ e->
-        emit(Result.Error(e))
-    }
-
-    override suspend fun updateAppointment(appointment: Appointment): Flow<Result<Unit>> = flow{
+    override fun updateAppointment(
+        appointment: Appointment
+    ): Flow<Result<Unit>> = flow {
         emit(Result.Loading)
 
-        try{
+        try {
             appointmentServiceDao.deleteByAppointmentId(appointment.workerId)
 
             appointmentDao.update(appointment.toDbModel())
 
-            appointment.servicesIds.forEach {
+            appointment.servicesIds.forEach { serviceId ->
                 appointmentServiceDao.insert(
                     AppointmentServiceDbEntity(
                         appointment.id,
-                        it
+                        serviceId
                     )
                 )
             }
 
             emit(Result.Success(Unit))
-
-        } catch (e: Exception){
+        } catch (e: Exception) {
             emit(Result.Error(e))
         }
+    }.catch { emit(Result.Error(it)) }
 
-    }.catch{ e->
-        emit(Result.Error(e))
-    }
-
-
-    override suspend fun getAppointmentById(workerId: String, id: String): Flow<Result<Appointment>> = flow{
+    override fun getAppointmentById(
+        workerId: String,
+        id: String
+    ): Flow<Result<Appointment>> = flow {
         emit(Result.Loading)
-         try{
-             val base = appointmentDao.getById(workerId, id)?.toDomainModel()
-             val servicesIds = mutableListOf<String>()
 
-             appointmentServiceDao.getByAppointmentId(id).forEach {
-                 servicesIds.add(it.serviceId)
-             }
-
-             val result = base?.copy(
-                 servicesIds =  servicesIds
-             )
-             emit(Result.Success(result!!))
-         } catch (e: Exception){
-             emit(Result.Error(e))
-         }
-
-    }.catch{ e->
-        emit(Result.Error(e))
-    }
-
-    override suspend fun getAppointmentsByDate(workerId: String, date: LocalDateTime): Flow<Result<List<Appointment>>> = flow{
-
-        emit(Result.Loading)
         try {
-            val result = mutableListOf<Appointment>()
-            val daysFromEpoch = date.atZone(ZoneOffset.UTC)
-                .toInstant()
-                .toEpochMilli() / 86400000
-            appointmentDao.getByDate(
-                workerId,
-                daysFromEpoch * 86400000,
-                (daysFromEpoch + 1) * 86400000
+            val base = appointmentDao
+                .getById(workerId, id)
+                ?.toDomainModel()
+                ?: throw IllegalStateException("Appointment not found: $id")
+
+            val servicesIds = appointmentServiceDao
+                .getByAppointmentId(id)
+                .map { it.serviceId }
+
+            emit(
+                Result.Success(
+                    base.copy(servicesIds = servicesIds.toMutableList())
+                )
             )
-                .forEach {
-                    val servicesIds = mutableListOf<String>()
-
-                    appointmentServiceDao.getByAppointmentId(it.id).forEach {
-                        servicesIds.add(it.serviceId)
-                    }
-
-                    result.add(
-                        it.toDomainModel().copy(
-                            servicesIds = servicesIds // N+1
-                        )
-                    )
-                }
-            emit(Result.Success(result.toList()))
-        } catch (e: Exception){
+        } catch (e: Exception) {
             emit(Result.Error(e))
         }
+    }.catch { emit(Result.Error(it)) }
 
-    }.catch{ e->
-        emit(Result.Error(e))
-    }
 
-    override suspend fun getPastAppointments(workerId: String, date: LocalDateTime): Flow<Result<List<Appointment>>> = flow{
+    override fun getAppointmentsByDate(
+        workerId: String,
+        startOfDay: Instant
+    ): Flow<Result<List<Appointment>>> = flow {
         emit(Result.Loading)
-        try{
-            val result = mutableListOf<Appointment>()
-            val milliFromEpoch = date.atZone(ZoneOffset.UTC)
-                .toInstant()
-                .toEpochMilli()
-            appointmentDao.get20Last(
-                workerId,
-                milliFromEpoch)
-                .forEach {
-                    val servicesIds = mutableListOf<String>()
-                    appointmentServiceDao.getByAppointmentId(it.id).forEach {
-                        servicesIds.add(it.serviceId)
-                    }
 
-                    result.add(
-                        it.toDomainModel().copy(
-                            servicesIds = servicesIds
-                        ))
+        try {
+
+            val endOfDay: Instant =
+                startOfDay.plus(1, ChronoUnit.DAYS)
+
+            val result = appointmentDao
+                .getByDate(
+                    workerId,
+                    startOfDay.toEpochMilli(),
+                    endOfDay.toEpochMilli()
+                )
+                .map { entity ->
+                    val servicesIds = appointmentServiceDao
+                        .getByAppointmentId(entity.id)
+                        .map { it.serviceId }
+
+                    entity
+                        .toDomainModel()
+                        .copy(servicesIds = servicesIds.toMutableList())
                 }
-            emit(Result.Success(result.toList()))
-        } catch (e: Exception){
+
+            emit(Result.Success(result))
+        } catch (e: Exception) {
             emit(Result.Error(e))
         }
+    }.catch { emit(Result.Error(it)) }
 
-    }.catch{ e->
-        emit(Result.Error(e))
-    }
-
-    override suspend fun isTimeBusy(appointment: Appointment): Flow<Result<Boolean>> = flow{
-
+    override fun getPastAppointments(
+        workerId: String,
+        before: Instant
+    ): Flow<Result<List<Appointment>>> = flow {
         emit(Result.Loading)
 
-        try{
-            val startTimeMilli = appointment.startTime
-                .atZone(ZoneOffset.UTC)
-                .toInstant()
-                .toEpochMilli()
+        try {
+            val result = appointmentDao
+                .get20Last(
+                    workerId,
+                    before.toEpochMilli()
+                )
+                .map { entity ->
+                    val servicesIds = appointmentServiceDao
+                        .getByAppointmentId(entity.id)
+                        .map { it.serviceId }
+
+                    entity
+                        .toDomainModel()
+                        .copy(servicesIds = servicesIds.toMutableList())
+                }
+
+            emit(Result.Success(result))
+        } catch (e: Exception) {
+            emit(Result.Error(e))
+        }
+    }.catch { emit(Result.Error(it)) }
+
+    override fun isTimeBusy(
+        appointment: Appointment
+    ): Flow<Result<Boolean>> = flow {
+        emit(Result.Loading)
+
+        try {
+            val startMillis = appointment.startTime.toEpochMilli()
 
             val previous = appointmentDao.getPrevious(
                 appointment.workerId,
-                startTimeMilli
+                startMillis
             )
 
             val next = appointmentDao.getNext(
                 appointment.workerId,
-                startTimeMilli
+                startMillis
             )
 
-            emit(Result.Success( (previous?.endTime?.isAfter(appointment.startTime) == true) ||
-                    (next?.startTime?.isBefore(appointment.endTime) == true) ))
-        }catch (e: Exception){
+            val busy =
+                (previous?.endTime?.isAfter(appointment.startTime) == true) ||
+                        (next?.startTime?.isBefore(appointment.endTime) == true)
+
+            emit(Result.Success(busy))
+        } catch (e: Exception) {
             emit(Result.Error(e))
         }
-
-    }.catch{ e->
-        emit(Result.Error(e))
-    }
-
+    }.catch { emit(Result.Error(it)) }
 }

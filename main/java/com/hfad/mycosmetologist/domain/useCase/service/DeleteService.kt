@@ -5,6 +5,6 @@ import com.hfad.mycosmetologist.domain.repository.ServiceRepository
 import jakarta.inject.Inject
 
 class DeleteService @Inject constructor(private val repository: ServiceRepository) {
-    suspend operator fun invoke(service: Service)= repository.deleteService(service)
+     operator fun invoke(service: Service)= repository.deleteService(service)
 
 }

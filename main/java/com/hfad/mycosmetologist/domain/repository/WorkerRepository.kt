@@ -6,13 +6,15 @@ import com.hfad.mycosmetologist.domain.util.Result
 
 interface WorkerRepository {
 
-    suspend fun getWorkerById(id: String): Flow<Result<Worker>>
+     fun getWorkerById(id: String): Flow<Result<Worker>>
 
-    suspend fun createWorker(worker: Worker): Flow<Result<Unit>>
+     fun getActualWorker():  Flow<Result<Worker>>
 
-    suspend fun updateWorker(worker: Worker): Flow<Result<Unit>>
+     fun createWorker(worker: Worker): Flow<Result<Unit>>
 
-    suspend fun deleteWorker(worker: Worker): Flow<Result<Unit>>
+     fun updateWorker(worker: Worker): Flow<Result<Unit>>
 
-    suspend fun workerIsExist(): Flow<Result<Boolean>>
+     fun deleteWorker(worker: Worker): Flow<Result<Unit>>
+
+     fun workerIsExist(): Flow<Result<Boolean>>
 }

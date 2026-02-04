@@ -1,4 +1,6 @@
 package com.hfad.mycosmetologist.presentation.main.auth
 
-class AuthEvent {
+sealed interface AuthEvent {
+    object NavigateHome : AuthEvent
+    object ShowError : AuthEvent
 }

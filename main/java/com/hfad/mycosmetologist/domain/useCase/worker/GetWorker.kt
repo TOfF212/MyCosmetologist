@@ -6,7 +6,7 @@ import jakarta.inject.Inject
 
 class GetWorker @Inject constructor(private val repository: WorkerRepository){
 
-    suspend operator fun invoke(id: String) = repository.getWorkerById(id)
+     operator fun invoke(id: String) = repository.getWorkerById(id)
 
 
 }

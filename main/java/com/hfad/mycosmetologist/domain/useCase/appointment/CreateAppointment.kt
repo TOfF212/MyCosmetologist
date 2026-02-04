@@ -9,10 +9,10 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOf
-
+@OptIn(kotlinx.coroutines.ExperimentalCoroutinesApi::class)
 class CreateAppointment @Inject constructor (private val repository: AppointmentRepository) {
 
-    suspend operator fun invoke(appointment: Appointment): Flow<Result<Unit>> {
+     operator fun invoke(appointment: Appointment): Flow<Result<Unit>> {
 
             return repository.isTimeBusy(appointment)
                 .flatMapLatest { result ->

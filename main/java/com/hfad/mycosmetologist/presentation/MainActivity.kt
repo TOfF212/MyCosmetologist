@@ -4,9 +4,17 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.viewModels
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.ui.NavDisplay
-import com.hfad.mycosmetologist.presentation.navigation.EntryProviderInstaller
+import com.hfad.mycosmetologist.presentation.main.auth.AuthScreen
+import com.hfad.mycosmetologist.presentation.main.home.HomeScreen
+import com.hfad.mycosmetologist.presentation.main.splash.SplashScreen
+import com.hfad.mycosmetologist.presentation.main.splash.SplashViewModel
+import com.hfad.mycosmetologist.presentation.navigation.AppScreen
 import com.hfad.mycosmetologist.presentation.navigation.Navigator
 import com.hfad.mycosmetologist.ui.theme.AppTheme
 import dagger.hilt.android.AndroidEntryPoint
@@ -17,20 +25,30 @@ class MainActivity : ComponentActivity() {
     @Inject
     lateinit var navigator: Navigator
 
-    @Inject
-    lateinit var entryProviderScopes: Set<@JvmSuppressWildcards EntryProviderInstaller>
-
+    private val splashViewModel: SplashViewModel by viewModels()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         setContent {
             AppTheme {
-                NavDisplay(
-                    backStack = navigator.backStack,
-                    onBack = { navigator.goBack() },
-                    entryProvider = entryProvider {
-                        entryProviderScopes.forEach { builder -> this.builder() }
-                    }
-                )
+                val startScreen by splashViewModel.startScreen.collectAsState()
+                if (startScreen == null) {
+                    SplashScreen()
+                } else {
+                    navigator.setRoot(startScreen!!)
+                    NavDisplay(
+                        backStack = navigator.backStack,
+                        onBack = { navigator.goBack() },
+                        entryProvider = entryProvider {
+                            entry<AppScreen.Auth> {
+                                AuthScreen(navigator=navigator)
+                            }
+                            entry<AppScreen.Home> {
+                                HomeScreen(navigator=navigator)
+                            }
+                        }
+                    )
+                }
             }
         }
     }

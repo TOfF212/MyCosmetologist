@@ -5,10 +5,10 @@ import com.hfad.mycosmetologist.domain.entity.Worker
 import com.hfad.mycosmetologist.domain.repository.ServiceRepository
 import com.hfad.mycosmetologist.domain.repository.WorkerRepository
 import jakarta.inject.Inject
-
+@OptIn(kotlinx.coroutines.ExperimentalCoroutinesApi::class)
 class CreateWorker @Inject constructor(private val repository: WorkerRepository){
 
-        suspend operator fun invoke(worker: Worker) = repository.createWorker(worker)
+        operator fun invoke(worker: Worker) = repository.createWorker(worker)
 
 
 }

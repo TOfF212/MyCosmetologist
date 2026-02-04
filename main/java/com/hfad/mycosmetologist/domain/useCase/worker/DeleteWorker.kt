@@ -6,7 +6,7 @@ import jakarta.inject.Inject
 
 class DeleteWorker @Inject constructor(private val repository: WorkerRepository){
 
-        suspend operator fun invoke(worker: Worker) =repository.deleteWorker(worker)
+        operator fun invoke(worker: Worker) = repository.deleteWorker(worker)
 
 
 

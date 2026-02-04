@@ -13,7 +13,7 @@ class GetAppointment @Inject constructor(
     private val repository: AppointmentRepository
 ) {
 
-    operator suspend fun invoke(
+     suspend fun invoke(
         appointment: Appointment
     ): Flow<Result<Unit>> {
 

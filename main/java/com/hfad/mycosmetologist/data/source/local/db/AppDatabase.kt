@@ -8,8 +8,8 @@ import com.hfad.mycosmetologist.data.source.local.entity.AppointmentServiceDbEnt
 import com.hfad.mycosmetologist.data.source.local.entity.ClientDbEntity
 import com.hfad.mycosmetologist.data.source.local.entity.ServiceDbEntity
 import com.hfad.mycosmetologist.data.source.local.entity.WorkerDbEntity
-import com.hfad.mycosmetologist.data.source.local.converter.LocalDateTimeConverter
 import com.hfad.mycosmetologist.data.source.local.converter.AppointmentStatusConverter
+import com.hfad.mycosmetologist.data.source.local.converter.InstantConverter
 import com.hfad.mycosmetologist.data.source.local.db.dao.AppointmentDao
 import com.hfad.mycosmetologist.data.source.local.db.dao.AppointmentServiceDao
 import com.hfad.mycosmetologist.data.source.local.db.dao.ClientDao
@@ -25,10 +25,10 @@ import com.hfad.mycosmetologist.data.source.local.db.dao.WorkerDao
         WorkerDbEntity::class
     ],
     version = 1,
-    exportSchema = true
+    exportSchema = false
 )
 @TypeConverters(
-    LocalDateTimeConverter::class,
+    InstantConverter::class,
     AppointmentStatusConverter::class
 )
 abstract class AppDatabase: RoomDatabase() {

@@ -5,5 +5,5 @@ import com.hfad.mycosmetologist.domain.repository.ClientRepository
 import jakarta.inject.Inject
 
 class GetClientList @Inject constructor(private val repository: ClientRepository) {
-    suspend operator fun invoke(workerId: String) = repository.getClientList(workerId)
+     operator fun invoke(workerId: String) = repository.getClientList(workerId)
 }

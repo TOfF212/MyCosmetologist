@@ -1,8 +1,15 @@
 package com.hfad.mycosmetologist.presentation.navigation
 
-sealed interface AppScreen {
-    data object Splash : AppScreen
-    data object Auth: AppScreen
-    data object Home: AppScreen
+import androidx.navigation3.runtime.NavKey
+import kotlinx.serialization.Serializable
 
+
+@Serializable
+sealed interface AppScreen : NavKey {
+
+    @Serializable
+    data object Auth : AppScreen
+
+    @Serializable
+    data object Home : AppScreen
 }

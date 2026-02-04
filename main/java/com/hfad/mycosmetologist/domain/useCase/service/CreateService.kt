@@ -8,10 +8,10 @@ import jakarta.inject.Inject
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
-
+@OptIn(kotlinx.coroutines.ExperimentalCoroutinesApi::class)
 class CreateService @Inject constructor(private val repository: ServiceRepository){
 
-    suspend operator fun invoke(service: Service): Flow<Result<Unit>> {
+     operator fun invoke(service: Service): Flow<Result<Unit>> {
         return repository.serviceIsExist(service)
             .flatMapLatest { result ->
                 when (result) {

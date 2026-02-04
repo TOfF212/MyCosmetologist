@@ -7,13 +7,15 @@ import com.hfad.mycosmetologist.domain.util.Result
 
 interface ServiceRepository {
 
-    suspend fun createService(service: Service): Flow<Result<Unit>>
+     fun createService(service: Service): Flow<Result<Unit>>
 
-    suspend fun getPriceList(workerId: String): Flow<Result<List<Service>>>
+     fun getPriceList(workerId: String): Flow<Result<List<Service>>>
 
-    suspend fun updateService(service: Service): Flow<Result<Unit>>
+     fun updateService(service: Service): Flow<Result<Unit>>
 
-    suspend fun deleteService(service: Service): Flow<Result<Unit>>
+     fun deleteService(service: Service): Flow<Result<Unit>>
 
-    suspend fun serviceIsExist(service: Service): Flow<Result<Boolean>>
+     fun serviceIsExist(service: Service): Flow<Result<Boolean>>
+
+     fun getService(workerId: String, serviceId: String): Flow<Result<Service>>
 }

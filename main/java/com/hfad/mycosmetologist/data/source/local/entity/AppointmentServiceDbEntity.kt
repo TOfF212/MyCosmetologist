@@ -9,7 +9,11 @@ import androidx.room.PrimaryKey
 @Entity(
     tableName = "appointment_service",
     primaryKeys = ["appointment_id", "service_id"],
-    indices = [Index("appointment_id")],
+    indices = [
+        Index("appointment_id"),
+        Index("service_id"),
+        Index(value = ["appointment_id", "service_id"])
+    ],
     foreignKeys = [
         ForeignKey(
             entity = AppointmentDbEntity::class,

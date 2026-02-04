@@ -14,7 +14,18 @@ import kotlinx.coroutines.flow.flow
 
 class ServiceRepositoryImpl @Inject constructor(private val serviceDao: ServiceDao): ServiceRepository {
 
-    override suspend fun createService( service: Service): Flow<Result<Unit>> = flow{
+    override fun getService(workerId: String,serviceId: String): Flow<Result<Service>> = flow{
+        emit(Result.Loading)
+        try{
+            emit(Result.Success(serviceDao.getById(workerId, serviceId)!!.toDomainModel()))
+        } catch (e: Exception){
+            emit(Result.Error(e))
+        }
+    }.catch{ e->
+        emit(Result.Error(e))
+    }
+
+    override  fun createService( service: Service): Flow<Result<Unit>> = flow{
         emit(Result.Loading)
         try{
             serviceDao.insert(service.toDbModel())
@@ -29,7 +40,7 @@ class ServiceRepositoryImpl @Inject constructor(private val serviceDao: ServiceD
 
 
 
-    override suspend fun updateService(service: Service): Flow<Result<Unit>> = flow{
+    override  fun updateService(service: Service): Flow<Result<Unit>> = flow{
         emit(Result.Loading)
         try{
             serviceDao.update(service.toDbModel())
@@ -42,7 +53,7 @@ class ServiceRepositoryImpl @Inject constructor(private val serviceDao: ServiceD
         emit(Result.Error(e))
     }
 
-    override suspend fun deleteService(service: Service): Flow<Result<Unit>> = flow{
+    override  fun deleteService(service: Service): Flow<Result<Unit>> = flow{
         emit(Result.Loading)
         try{
             serviceDao.delete(service.toDbModel())
@@ -55,7 +66,7 @@ class ServiceRepositoryImpl @Inject constructor(private val serviceDao: ServiceD
         emit(Result.Error(e))
     }
 
-    override suspend fun getPriceList(workerId: String): Flow<Result<List<Service>>> = flow{
+    override  fun getPriceList(workerId: String): Flow<Result<List<Service>>> = flow{
         emit(Result.Loading)
 
         try{
@@ -70,7 +81,7 @@ class ServiceRepositoryImpl @Inject constructor(private val serviceDao: ServiceD
         emit(Result.Error(e))
     }
 
-    override suspend fun serviceIsExist(service: Service): Flow<Result<Boolean>> = flow{
+    override  fun serviceIsExist(service: Service): Flow<Result<Boolean>> = flow{
         emit(Result.Loading)
 
         try {
@@ -87,5 +98,6 @@ class ServiceRepositoryImpl @Inject constructor(private val serviceDao: ServiceD
     }.catch{ e->
         emit(Result.Error(e))
     }
+
 
 }

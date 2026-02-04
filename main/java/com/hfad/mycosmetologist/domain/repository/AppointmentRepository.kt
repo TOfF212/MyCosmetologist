@@ -5,19 +5,20 @@ import com.hfad.mycosmetologist.domain.entity.Appointment
 import kotlinx.coroutines.flow.Flow
 import java.time.LocalDate
 import java.time.LocalDateTime
+import java.time.Instant
 
 interface AppointmentRepository {
 
-    suspend fun createAppointment(appointment: Appointment): Flow<Result<Unit>>
+     fun createAppointment(appointment: Appointment): Flow<Result<Unit>>
 
 
-    suspend fun updateAppointment(appointment: Appointment): Flow<Result<Unit>>
+     fun updateAppointment(appointment: Appointment): Flow<Result<Unit>>
 
-    suspend fun getAppointmentById(workerId: String, id: String): Flow<Result<Appointment>>
+     fun getAppointmentById(workerId: String, id: String): Flow<Result<Appointment>>
 
-    suspend fun getAppointmentsByDate(workerId: String, date: LocalDateTime): Flow<Result<List<Appointment>>>
+     fun getAppointmentsByDate(workerId: String, startOfDay: Instant): Flow<Result<List<Appointment>>>
 
-    suspend fun getPastAppointments(workerId: String, date: LocalDateTime): Flow<Result<List<Appointment>>>
+     fun getPastAppointments(workerId: String, before: Instant): Flow<Result<List<Appointment>>>
 
-    suspend fun isTimeBusy(appointment: Appointment): Flow<Result<Boolean>>
+     fun isTimeBusy(appointment: Appointment): Flow<Result<Boolean>>
 }

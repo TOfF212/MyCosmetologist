@@ -11,7 +11,8 @@ fun Worker.toDbModel(): WorkerDbEntity{
         name = name,
         phone = phone,
         about = about,
-        password = password)
+        password = password,
+        isActual = true)
 }
 
 fun WorkerDbEntity.toDomainModel(): Worker {

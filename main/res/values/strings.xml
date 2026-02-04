@@ -1,3 +1,13 @@
 <resources>
-    <string name="app_name">My Cosmetologist</string>
+    <string name="app_name" translatable="false">My Cosmetologist</string>
+    <string name="auth_phone">Номер</string>
+    <string name="auth_name">Имя</string>
+    <string name="auth_password">Пароль</string>
+    <string name="auth_register">Регистрация</string>
+    <string name="auth_error">Ошибка при регистрации. Попробуйте еще раз</string>
+    <string name="selected_day">Выбранный день:</string>
+    <string name="revenue">Выручка</string>
+    <string name="clients">Клиенты</string>
+    <string name="appointments">Записи</string>
+
 </resources>

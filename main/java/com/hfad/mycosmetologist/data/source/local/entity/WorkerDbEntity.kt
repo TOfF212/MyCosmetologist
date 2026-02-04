@@ -12,7 +12,8 @@ data class WorkerDbEntity(
     @ColumnInfo(name = "name") val name: String,
     @ColumnInfo(name = "phone") val phone: String,
     @ColumnInfo(name = "about") val about: String,
-    @ColumnInfo(name = "password") val password: String
+    @ColumnInfo(name = "password") val password: String,
+    @ColumnInfo(name = "is_actual") val isActual: Boolean
 ){
 
 }

@@ -13,7 +13,7 @@ import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
 
 class ClientRepositoryImpl @Inject constructor(private val clientDao: ClientDao): ClientRepository {
-    override suspend fun createClient(client: Client): Flow<Result<Unit>> = flow{
+    override  fun createClient(client: Client): Flow<Result<Unit>> = flow{
         emit(Result.Loading)
         try{
             clientDao.insert(client.toDbModel())
@@ -26,7 +26,7 @@ class ClientRepositoryImpl @Inject constructor(private val clientDao: ClientDao)
         emit(Result.Error(e))
     }
 
-    override suspend fun updateClient(client: Client): Flow<Result<Unit>> = flow{
+    override  fun updateClient(client: Client): Flow<Result<Unit>> = flow{
         emit(Result.Loading)
         try {
             clientDao.update(client.toDbModel())
@@ -38,7 +38,7 @@ class ClientRepositoryImpl @Inject constructor(private val clientDao: ClientDao)
         emit(Result.Error(e))
     }
 
-    override suspend fun deleteClient(client: Client): Flow<Result<Unit>> = flow{
+    override  fun deleteClient(client: Client): Flow<Result<Unit>> = flow{
         emit(Result.Loading)
         try {
             clientDao.delete(client.toDbModel())
@@ -50,7 +50,7 @@ class ClientRepositoryImpl @Inject constructor(private val clientDao: ClientDao)
         emit(Result.Error(e))
     }
 
-    override suspend fun getClient(workerId: String, clientId: String): Flow<Result<Client>> = flow{
+    override  fun getClient(workerId: String, clientId: String): Flow<Result<Client>> = flow{
 
         emit(Result.Loading)
         try{
@@ -64,7 +64,7 @@ class ClientRepositoryImpl @Inject constructor(private val clientDao: ClientDao)
         emit(Result.Error(e))
     }
 
-    override suspend fun getClientList(workerId: String): Flow<Result<List<Client>>> = flow{
+    override  fun getClientList(workerId: String): Flow<Result<List<Client>>> = flow{
         emit(Result.Loading)
         try{
             val result = mutableListOf<Client>()
@@ -78,7 +78,7 @@ class ClientRepositoryImpl @Inject constructor(private val clientDao: ClientDao)
         emit(Result.Error(e))
     }
 
-    override suspend fun clientIsExists(client: Client): Flow<Result<Boolean>> = flow{
+    override  fun clientIsExists(client: Client): Flow<Result<Boolean>> = flow{
         emit(Result.Loading)
 
         try{

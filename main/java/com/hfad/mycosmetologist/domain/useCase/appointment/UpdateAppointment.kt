@@ -9,10 +9,10 @@ import kotlinx.coroutines.flow.map
 import com.hfad.mycosmetologist.domain.util.Result
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
-
+@OptIn(kotlinx.coroutines.ExperimentalCoroutinesApi::class)
 class UpdateAppointment @Inject constructor(private val repository: AppointmentRepository) {
 
-        operator suspend fun invoke(
+        operator  fun invoke(
             appointment: Appointment
         ): Flow<Result<Unit>> {
 

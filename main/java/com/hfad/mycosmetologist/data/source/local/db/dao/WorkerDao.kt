@@ -29,4 +29,10 @@ interface WorkerDao {
 
     @Query("SELECT EXISTS(SELECT 1 FROM workers)")
     suspend fun hasAnyWorker(): Boolean
+
+    @Query("""
+        SELECT * FROM workers
+        WHERE is_actual = true
+    """)
+    suspend fun getActualWorker(): WorkerDbEntity?
 }
