@@ -8,36 +8,39 @@ import jakarta.inject.Inject
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
+
 @OptIn(kotlinx.coroutines.ExperimentalCoroutinesApi::class)
-class CreateService @Inject constructor(private val repository: ServiceRepository){
+class CreateService
+    @Inject
+    constructor(
+        private val repository: ServiceRepository,
+    ) {
+        operator fun invoke(service: Service): Flow<Result<Unit>> =
+            repository
+                .serviceIsExist(service)
+                .flatMapLatest { result ->
+                    when (result) {
+                        is Result.Loading -> {
+                            flowOf(Result.Loading)
+                        }
 
-     operator fun invoke(service: Service): Flow<Result<Unit>> {
-        return repository.serviceIsExist(service)
-            .flatMapLatest { result ->
-                when (result) {
-                    is Result.Loading -> {
-                        flowOf(Result.Loading)
-
-                    }
-
-                    is Result.Success -> {
-                        if (result.data) {
-                            flowOf(
-                                Result.Error(
-                                    ObjectIsAlreadyExistException(
-                                        "Client is already exist"
-                                    )
+                        is Result.Success -> {
+                            if (result.data) {
+                                flowOf(
+                                    Result.Error(
+                                        ObjectIsAlreadyExistException(
+                                            "Client is already exist",
+                                        ),
+                                    ),
                                 )
-                            )
-                        } else {
-                            repository.createService(service)
+                            } else {
+                                repository.createService(service)
+                            }
+                        }
+
+                        is Result.Error -> {
+                            flowOf(Result.Error(result.exception))
                         }
                     }
-
-                    is Result.Error -> {
-                        flowOf(Result.Error(result.exception))
-                    }
                 }
-            }
     }
-}

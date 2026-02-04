@@ -9,38 +9,35 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
 
-class GetAppointment @Inject constructor(
-    private val repository: AppointmentRepository
-) {
+class GetAppointment
+    @Inject
+    constructor(
+        private val repository: AppointmentRepository,
+    ) {
+        suspend fun invoke(appointment: Appointment): Flow<Result<Unit>> =
+            repository
+                .isTimeBusy(appointment)
+                .flatMapLatest { result ->
+                    when (result) {
+                        is Result.Loading -> {
+                            flowOf(Result.Loading)
+                        }
 
-     suspend fun invoke(
-        appointment: Appointment
-    ): Flow<Result<Unit>> {
-
-        return repository.isTimeBusy(appointment)
-            .flatMapLatest { result ->
-                when (result) {
-
-                    is Result.Loading -> {
-                        flowOf(Result.Loading)
-                    }
-
-                    is Result.Success -> {
-                        if (result.data) {
-                            flowOf(
-                                Result.Error(
-                                    InvalidAppointmentTimeException("InvalidTime")
+                        is Result.Success -> {
+                            if (result.data) {
+                                flowOf(
+                                    Result.Error(
+                                        InvalidAppointmentTimeException("InvalidTime"),
+                                    ),
                                 )
-                            )
-                        } else {
-                            repository.createAppointment(appointment)
+                            } else {
+                                repository.createAppointment(appointment)
+                            }
+                        }
+
+                        is Result.Error -> {
+                            flowOf(Result.Error(result.exception))
                         }
                     }
-
-                    is Result.Error -> {
-                        flowOf(Result.Error(result.exception))
-                    }
                 }
-            }
     }
-}

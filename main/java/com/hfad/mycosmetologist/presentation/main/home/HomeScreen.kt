@@ -1,18 +1,13 @@
 package com.hfad.mycosmetologist.presentation.main.home
 
-import android.app.DatePickerDialog
-import android.content.res.Resources
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.DatePickerDialog
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -24,82 +19,115 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
-import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.LinkAnnotation
-import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.withLink
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.hfad.mycosmetologist.R
-import com.hfad.mycosmetologist.presentation.main.home.components.AppointmentListElement
 import com.hfad.mycosmetologist.presentation.main.home.components.DateCard
 import com.hfad.mycosmetologist.presentation.main.home.components.HomeDatePicker
 import com.hfad.mycosmetologist.presentation.main.home.entity.HomeEvent
+import com.hfad.mycosmetologist.presentation.main.home.entity.HomeUiState
+import com.hfad.mycosmetologist.presentation.navigation.AppScreen
 import com.hfad.mycosmetologist.presentation.navigation.Navigator
-import com.hfad.mycosmetologist.ui.theme.AppTheme
-import com.hfad.mycosmetologist.ui.theme.ColorFamily
+import com.hfad.mycosmetologist.presentation.util.AppointmentListElement
+import com.hfad.mycosmetologist.presentation.util.toMonthNameRes
+import com.hfad.mycosmetologist.ui.theme.primaryLight
 
 @Composable
-fun HomeScreen(viewModel: HomeViewModel = hiltViewModel(), navigator: Navigator){
-
+fun HomeScreen(
+    viewModel: HomeViewModel = hiltViewModel(),
+    navigator: Navigator,
+) {
     val currentDay = viewModel.currentDay.collectAsState()
-    val datePickerState = remember{mutableStateOf(false)}
+    val datePickerState = remember { mutableStateOf(false) }
+    val state by viewModel.uiState.collectAsState()
     LaunchedEffect(Unit) {
         viewModel.event.collect { event ->
-            when (event){
+            when (event) {
                 is HomeEvent.Navigate -> {
                     navigator.goTo(event.appScreen)
                 }
+
                 is HomeEvent.SelectDate -> {
-                    datePickerState.value  = true
-
+                    datePickerState.value = true
                 }
-                is HomeEvent.ShowError -> {
 
+                is HomeEvent.ShowError -> {
                 }
             }
         }
     }
 
-    if(datePickerState.value){
+    if (datePickerState.value) {
         HomeDatePicker(
             { viewModel.changeCurrentDate(it) },
-            { datePickerState.value = false }
-            )
+            { datePickerState.value = false },
+        )
     }
 
     Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(7.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
+        modifier =
+            Modifier
+                .fillMaxSize()
+                .padding(7.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-
         DateCard(
             onClick = {
                 viewModel.triggerDatePicker()
             },
             clients = viewModel.getAppointmentsCountString(),
             revenue = viewModel.getRevenue(),
-            date = viewModel.getStringDate()
+            date = "${currentDay.value.dayOfMonth} ${
+                stringResource(currentDay.value.month.toMonthNameRes())
+            }",
         )
 
         Text(
-            modifier = Modifier.padding(7.dp).alpha(0.92f).fillMaxWidth(),
-            text = "Записи на сегодня",
+            modifier = Modifier
+                .padding(7.dp)
+                .alpha(0.9f)
+                .fillMaxWidth(),
+            text = "Записи на сегодня:",
             fontWeight = FontWeight.ExtraBold,
             fontSize = 19.sp,
+            color = MaterialTheme.colorScheme.onPrimaryContainer
         )
-        AppointmentListElement()
-        AppointmentListElement()
-        AppointmentListElement()
-        AppointmentListElement()
+        when (state) {
+            is HomeUiState.Success -> {
+                LazyColumn {
+                    items((state as HomeUiState.Success).currentAppointmentsList) { item ->
+                        AppointmentListElement(
+                            MaterialTheme.colorScheme.onSecondaryContainer,
+                            item,
+                            { viewModel.navigateTo(AppScreen.AppointmentInfo(item.id)) })
+                    }
+                }
+                Row {
+                    Text(
+                        modifier = Modifier
+                            .padding(7.dp)
+                            .alpha(0.9f)
+                            .fillMaxWidth(),
+                        text = "Последние записи:",
+                        fontWeight = FontWeight.ExtraBold,
+                        fontSize = 19.sp,
+                        color = MaterialTheme.colorScheme.onPrimaryContainer
+                    )
+                }
+                LazyColumn {
+                    items((state as HomeUiState.Success).pastAppointmentsList) { item ->
+                        AppointmentListElement(
+                            appointmentInfo = item,
+                            onClick = { viewModel.navigateTo(AppScreen.AppointmentInfo(item.id)) })
+                    }
+                }
+            }
 
+            else -> {
+                CircularProgressIndicator(color = primaryLight)
+            }
+        }
     }
 }

@@ -15,58 +15,33 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
 
-
 @Module
 @InstallIn(SingletonComponent::class)
 object DataBaseModule {
-
     @Provides
     @Singleton
     fun provideDatabase(
-        @ApplicationContext context: Context
-    ): AppDatabase{
-        return Room.databaseBuilder(
-            context,
-            AppDatabase::class.java,
-
-            "my_cosmetologist.db"
-        )
-            .build()
-    }
+        @ApplicationContext context: Context,
+    ): AppDatabase =
+        Room
+            .databaseBuilder(
+                context,
+                AppDatabase::class.java,
+                "my_cosmetologist.db",
+            ).build()
 
     @Provides
-    fun provideAppointmentDao(
-        database: AppDatabase
-    ): AppointmentDao{
-        return database.appointmentDao()
-    }
+    fun provideAppointmentDao(database: AppDatabase): AppointmentDao = database.appointmentDao()
 
     @Provides
-    fun provideAppointmentServiceDao(
-        database: AppDatabase
-    ): AppointmentServiceDao{
-        return database.appointmentServiceDao()
-    }
+    fun provideAppointmentServiceDao(database: AppDatabase): AppointmentServiceDao = database.appointmentServiceDao()
 
     @Provides
-    fun provideClientDao(
-        database: AppDatabase
-    ): ClientDao {
-        return database.clientDao()
-    }
+    fun provideClientDao(database: AppDatabase): ClientDao = database.clientDao()
 
     @Provides
-    fun provideServiceDao(
-        database: AppDatabase
-    ): ServiceDao{
-        return database.serviceDao()
-    }
+    fun provideServiceDao(database: AppDatabase): ServiceDao = database.serviceDao()
 
     @Provides
-    fun provideWorkerDao(
-        database: AppDatabase
-    ): WorkerDao{
-        return database.workerDao()
-    }
-
+    fun provideWorkerDao(database: AppDatabase): WorkerDao = database.workerDao()
 }

@@ -4,7 +4,10 @@ import com.hfad.mycosmetologist.domain.entity.Client
 import com.hfad.mycosmetologist.domain.repository.ClientRepository
 import jakarta.inject.Inject
 
-class DeleteClient @Inject constructor(private val repository: ClientRepository) {
-     operator fun invoke(client: Client) = repository.deleteClient(client)
-
-}
+class DeleteClient
+    @Inject
+    constructor(
+        private val repository: ClientRepository,
+    ) {
+        operator fun invoke(client: Client) = repository.deleteClient(client)
+    }

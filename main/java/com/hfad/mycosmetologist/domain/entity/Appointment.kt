@@ -1,8 +1,6 @@
 package com.hfad.mycosmetologist.domain.entity
 
 import java.time.Instant
-import java.time.LocalDate
-import java.time.LocalDateTime
 
 data class Appointment(
     val id: String,
@@ -12,7 +10,5 @@ data class Appointment(
     val status: AppointmentStatus,
     val description: String,
     val startTime: Instant,
-    val endTime: Instant
-
-) {
-}
+    val endTime: Instant,
+)

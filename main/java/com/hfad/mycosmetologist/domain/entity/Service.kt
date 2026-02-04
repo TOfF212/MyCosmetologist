@@ -6,7 +6,5 @@ data class Service(
     val name: String,
     val price: Int,
     val durationMinutes: Int,
-    val description: String
-){
-
-}
+    val description: String,
+)

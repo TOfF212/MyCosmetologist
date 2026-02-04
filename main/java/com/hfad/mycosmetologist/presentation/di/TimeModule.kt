@@ -1,7 +1,5 @@
 package com.hfad.mycosmetologist.presentation.di
 
-
-
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -12,9 +10,7 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 object TimeModule {
-
     @Provides
     @Singleton
-    fun provideClock(): Clock =
-        Clock.systemDefaultZone()
+    fun provideClock(): Clock = Clock.systemDefaultZone()
 }

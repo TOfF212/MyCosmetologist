@@ -4,13 +4,9 @@ import androidx.room.TypeConverter
 import java.time.Instant
 
 class InstantConverter {
+    @TypeConverter
+    fun fromTimestamp(value: Long?): Instant? = value?.let { Instant.ofEpochMilli(it) }
 
     @TypeConverter
-    fun fromTimestamp(value: Long?): Instant? =
-        value?.let { Instant.ofEpochMilli(it) }
-
-    @TypeConverter
-    fun toTimestamp(instant: Instant?): Long? =
-        instant?.toEpochMilli()
+    fun toTimestamp(instant: Instant?): Long? = instant?.toEpochMilli()
 }
-

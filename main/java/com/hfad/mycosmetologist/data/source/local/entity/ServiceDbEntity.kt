@@ -14,9 +14,9 @@ import androidx.room.PrimaryKey
             entity = WorkerDbEntity::class,
             parentColumns = ["id"],
             childColumns = ["worker_id"],
-            onDelete = ForeignKey.RESTRICT
-        )
-    ]
+            onDelete = ForeignKey.RESTRICT,
+        ),
+    ],
 )
 data class ServiceDbEntity(
     @PrimaryKey val id: String,
@@ -24,7 +24,5 @@ data class ServiceDbEntity(
     @ColumnInfo(name = "name") val name: String,
     @ColumnInfo(name = "price") val price: Int,
     @ColumnInfo(name = "duration_minutes") val durationMinutes: Int,
-    @ColumnInfo(name = "description") val description: String
-){
-
-}
+    @ColumnInfo(name = "description") val description: String,
+)

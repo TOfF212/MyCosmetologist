@@ -6,7 +6,6 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
-import com.hfad.mycosmetologist.data.source.local.entity.AppointmentDbEntity
 import com.hfad.mycosmetologist.data.source.local.entity.AppointmentServiceDbEntity
 
 @Dao
@@ -20,19 +19,19 @@ interface AppointmentServiceDao {
     @Delete
     suspend fun delete(entity: AppointmentServiceDbEntity)
 
-    @Query("""
+    @Query(
+        """
         DELETE FROM appointment_service
         WHERE appointment_id = :appointmentId
-    """)
-    suspend fun deleteByAppointmentId(
-        appointmentId: String
+    """,
     )
+    suspend fun deleteByAppointmentId(appointmentId: String)
 
-    @Query("""
+    @Query(
+        """
         SELECT * FROM appointment_service
         WHERE appointment_id = :appointmentId
-    """)
-    suspend fun getByAppointmentId(
-        appointmentId: String
-    ): List<AppointmentServiceDbEntity>
+    """,
+    )
+    suspend fun getByAppointmentId(appointmentId: String): List<AppointmentServiceDbEntity>
 }

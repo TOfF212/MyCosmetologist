@@ -14,15 +14,14 @@ import androidx.room.PrimaryKey
             entity = WorkerDbEntity::class,
             parentColumns = ["id"],
             childColumns = ["worker_id"],
-            onDelete = ForeignKey.RESTRICT
-        )
-    ]
+            onDelete = ForeignKey.RESTRICT,
+        ),
+    ],
 )
 data class ClientDbEntity(
     @PrimaryKey val id: String,
     @ColumnInfo(name = "worker_id") val workerId: String,
     @ColumnInfo(name = "name") val name: String,
     @ColumnInfo(name = "phone")val phone: String,
-    @ColumnInfo(name = "about") val about: String
-) {
-}
+    @ColumnInfo(name = "about") val about: String,
+)

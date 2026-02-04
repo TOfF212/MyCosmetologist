@@ -6,12 +6,9 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
 import com.hfad.mycosmetologist.data.source.local.entity.AppointmentDbEntity
-import com.hfad.mycosmetologist.domain.entity.Appointment
-import java.time.LocalDateTime
 
 @Dao
 interface AppointmentDao {
-
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(appointment: AppointmentDbEntity)
 
@@ -21,73 +18,84 @@ interface AppointmentDao {
     @Delete
     suspend fun delete(appointment: AppointmentDbEntity)
 
-    @Query("""
+    @Query(
+        """
         SELECT * FROM appointments 
         WHERE worker_id = :workerId 
         AND id = :appointmentId
-    """)
+    """,
+    )
     suspend fun getById(
         workerId: String,
-        appointmentId: String
+        appointmentId: String,
     ): AppointmentDbEntity?
 
-    @Query("""
+    @Query(
+        """
         SELECT * FROM appointments
         WHERE worker_id = :workerId
         AND start_time BETWEEN :start AND :end
         ORDER BY start_time ASC
-    """)
+    """,
+    )
     suspend fun getByDate(
         workerId: String,
         start: Long,
-        end: Long
+        end: Long,
     ): List<AppointmentDbEntity>
 
-    @Query("""
+    @Query(
+        """
         SELECT * FROM appointments
         WHERE worker_id = :workerId
         AND end_time < :now
         ORDER BY start_time DESC
-    """)
+    """,
+    )
     suspend fun getPast(
         workerId: String,
-        now: Long
+        now: Long,
     ): List<AppointmentDbEntity>
 
-    @Query("""
+    @Query(
+        """
         SELECT * FROM appointments
         WHERE worker_id = :workerId
         AND end_time < :now
         ORDER BY start_time DESC
         LIMIT 20
-    """)
+    """,
+    )
     suspend fun get20Last(
         workerId: String,
-        now: Long
+        now: Long,
     ): List<AppointmentDbEntity>
 
-    @Query("""
+    @Query(
+        """
         SELECT * FROM appointments
         WHERE worker_id = :workerId
         AND start_time < :now
         ORDER BY start_time DESC
         LIMIT 1
-    """)
+    """,
+    )
     suspend fun getPrevious(
         workerId: String,
-        now: Long
+        now: Long,
     ): AppointmentDbEntity?
 
-
-    @Query("""
+    @Query(
+        """
         SELECT * FROM appointments
         WHERE worker_id = :workerId
         AND start_time > :now
         ORDER BY start_time ASC
         LIMIT 1
-    """)
+    """,
+    )
     suspend fun getNext(
         workerId: String,
-        now: Long
+        now: Long,
     ): AppointmentDbEntity?
 }

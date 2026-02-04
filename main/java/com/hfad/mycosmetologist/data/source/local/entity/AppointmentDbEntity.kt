@@ -7,8 +7,6 @@ import androidx.room.Index
 import androidx.room.PrimaryKey
 import com.hfad.mycosmetologist.domain.entity.AppointmentStatus
 import java.time.Instant
-import java.time.LocalDate
-import java.time.LocalDateTime
 
 @Entity(
     tableName = "appointments",
@@ -16,21 +14,21 @@ import java.time.LocalDateTime
         Index("worker_id"),
         Index(value = ["worker_id", "start_time"]),
         Index("client_id"),
-              ],
+    ],
     foreignKeys = [
         ForeignKey(
             entity = WorkerDbEntity::class,
             parentColumns = ["id"],
             childColumns = ["worker_id"],
-            onDelete = ForeignKey.RESTRICT
+            onDelete = ForeignKey.RESTRICT,
         ),
         ForeignKey(
             entity = ClientDbEntity::class,
             parentColumns = ["id"],
             childColumns = ["client_id"],
-            onDelete = ForeignKey.RESTRICT
+            onDelete = ForeignKey.RESTRICT,
         ),
-    ]
+    ],
 )
 data class AppointmentDbEntity(
     @PrimaryKey val id: String,
@@ -39,6 +37,5 @@ data class AppointmentDbEntity(
     @ColumnInfo(name = "status") val status: AppointmentStatus,
     @ColumnInfo(name = "description") val description: String,
     @ColumnInfo(name = "start_time") val startTime: Instant,
-    @ColumnInfo(name = "end_time") val endTime: Instant
-) {
-}
+    @ColumnInfo(name = "end_time") val endTime: Instant,
+)

@@ -5,6 +5,5 @@ data class Client(
     val workerId: String,
     val name: String,
     val phone: String,
-    val about: String
-) {
-}
+    val about: String,
+)

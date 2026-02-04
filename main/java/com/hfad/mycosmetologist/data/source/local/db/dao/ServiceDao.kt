@@ -6,13 +6,10 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
-import com.hfad.mycosmetologist.data.source.local.entity.AppointmentDbEntity
 import com.hfad.mycosmetologist.data.source.local.entity.ServiceDbEntity
-import com.hfad.mycosmetologist.domain.entity.Client
 
 @Dao
 interface ServiceDao {
-
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(service: ServiceDbEntity)
 
@@ -22,33 +19,36 @@ interface ServiceDao {
     @Delete
     suspend fun delete(service: ServiceDbEntity)
 
-    @Query("""
+    @Query(
+        """
         SELECT * FROM services
         WHERE worker_id = :workerId
-    """)
-    suspend fun getListByWorkerId(
-        workerId: String
-    ): List<ServiceDbEntity>
+    """,
+    )
+    suspend fun getListByWorkerId(workerId: String): List<ServiceDbEntity>
 
-    @Query("""
+    @Query(
+        """
         SELECT * FROM services
         WHERE id = :serviceId
         AND worker_id = :workerId
         
-    """)
+    """,
+    )
     suspend fun getById(
         workerId: String,
-        serviceId: String
+        serviceId: String,
     ): ServiceDbEntity?
 
-    @Query("""
+    @Query(
+        """
         SELECT * FROM services
         WHERE name = :name
         AND worker_id = :workerId
-    """) suspend fun getByName(
+    """,
+    )
+    suspend fun getByName(
         name: String,
         workerId: String,
     ): ServiceDbEntity?
-
-
 }

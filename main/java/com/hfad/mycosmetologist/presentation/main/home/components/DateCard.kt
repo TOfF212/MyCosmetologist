@@ -12,7 +12,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.Divider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.VerticalDivider
@@ -24,68 +23,78 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.hfad.mycosmetologist.R
 
 @Composable
 fun DateCard(
-    onClick: ()-> Unit,
+    onClick: () -> Unit,
     clients: String,
     date: String,
-    revenue: String
-){
+    revenue: String,
+) {
     Card(
-        modifier = Modifier
-            .fillMaxWidth()
-            .alpha(0.7f)
-            .padding(top = 25.dp, bottom = 15.dp, start = 7.dp, end = 7.dp),
+        modifier =
+            Modifier
+                .fillMaxWidth()
+                .alpha(0.7f)
+                .padding(top = 25.dp, bottom = 15.dp, start = 7.dp, end = 7.dp),
         shape = RoundedCornerShape(40.dp),
         elevation = CardDefaults.cardElevation(5.dp),
-        onClick = onClick
-    ){
+        onClick = onClick,
+    ) {
         Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .background(
-                    Brush.horizontalGradient(
-                        listOf(
-                            MaterialTheme.colorScheme.primaryContainer,
-                            MaterialTheme.colorScheme.secondaryContainer
-                        )
-                    )
-                )){
-            Column(modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 17.dp, vertical = 5.dp)) {
-                Text(
-                    modifier = Modifier
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .background(
+                        Brush.horizontalGradient(
+                            listOf(
+                                MaterialTheme.colorScheme.primaryContainer,
+                                MaterialTheme.colorScheme.secondaryContainer,
+                            ),
+                        ),
+                    ),
+        ) {
+            Column(
+                modifier =
+                    Modifier
                         .fillMaxWidth()
-                        .alpha(0.88f),
+                        .padding(horizontal = 17.dp, vertical = 5.dp),
+            ) {
+                Text(
+                    modifier =
+                        Modifier
+                            .fillMaxWidth()
+                            .alpha(0.88f),
                     text = date,
                     style = MaterialTheme.typography.headlineLarge,
                     color = MaterialTheme.colorScheme.onPrimaryContainer,
                     fontSize = 30.sp,
                     textAlign = TextAlign.Center,
-                    fontWeight = FontWeight.Bold
+                    fontWeight = FontWeight.Bold,
                 )
-                Row(modifier = Modifier
-                    .fillMaxWidth()
-                    .background(
-                        color = MaterialTheme.colorScheme.surface.copy(alpha = 0.4f),
-                        shape = RoundedCornerShape(20.dp)
-                    )
-                    .padding(30.dp, 10.dp),
-                    horizontalArrangement = Arrangement.SpaceBetween) {
-                    Column(modifier = Modifier.padding(horizontal = 15.dp),
-                        horizontalAlignment = Alignment.CenterHorizontally) {
+                Row(
+                    modifier =
+                        Modifier
+                            .fillMaxWidth()
+                            .background(
+                                color = MaterialTheme.colorScheme.surface.copy(alpha = 0.4f),
+                                shape = RoundedCornerShape(20.dp),
+                            ).padding(30.dp, 10.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                ) {
+                    Column(
+                        modifier = Modifier.padding(horizontal = 15.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                    ) {
                         Text(
-                        text = clients,
-                        style = MaterialTheme.typography.headlineMedium,
-                        color = MaterialTheme.colorScheme.onPrimaryContainer,
-                        fontSize = 40.sp,
-                    )
+                            text = clients,
+                            style = MaterialTheme.typography.headlineMedium,
+                            color = MaterialTheme.colorScheme.onPrimaryContainer,
+                            fontSize = 40.sp,
+                        )
                         Text(
                             text = stringResource(R.string.appointments),
                             style = MaterialTheme.typography.headlineMedium,
@@ -94,28 +103,30 @@ fun DateCard(
                         )
                     }
                     VerticalDivider(
-                        modifier = Modifier
-                            .height(90.dp)
-                            .width(1.dp),
-                        color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.12f)
+                        modifier =
+                            Modifier
+                                .height(90.dp)
+                                .width(1.dp),
+                        color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.12f),
                     )
-                    Column(modifier = Modifier.padding(horizontal = 10.dp),
-                        horizontalAlignment = Alignment.CenterHorizontally) {
+                    Column(
+                        modifier = Modifier.padding(horizontal = 10.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                    ) {
                         Text(
-                        text = revenue,
-                        style = MaterialTheme.typography.headlineMedium,
-                        color = MaterialTheme.colorScheme.onPrimaryContainer,
-                        fontSize = 40.sp,
-                    )
+                            text = revenue,
+                            style = MaterialTheme.typography.headlineMedium,
+                            color = MaterialTheme.colorScheme.onPrimaryContainer,
+                            fontSize = 40.sp,
+                        )
                         Text(
                             text = stringResource(R.string.revenue),
                             style = MaterialTheme.typography.headlineMedium,
                             color = MaterialTheme.colorScheme.onPrimaryContainer,
                             fontSize = 17.sp,
-                        )  }
+                        )
+                    }
                 }
-
-
             }
         }
     }

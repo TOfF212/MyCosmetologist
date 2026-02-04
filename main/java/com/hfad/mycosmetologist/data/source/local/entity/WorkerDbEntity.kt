@@ -5,7 +5,7 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 
 @Entity(
-    tableName = "workers"
+    tableName = "workers",
 )
 data class WorkerDbEntity(
     @PrimaryKey val id: String,
@@ -13,7 +13,5 @@ data class WorkerDbEntity(
     @ColumnInfo(name = "phone") val phone: String,
     @ColumnInfo(name = "about") val about: String,
     @ColumnInfo(name = "password") val password: String,
-    @ColumnInfo(name = "is_actual") val isActual: Boolean
-){
-
-}
+    @ColumnInfo(name = "is_actual") val isActual: Boolean,
+)

@@ -7,17 +7,19 @@ import com.hfad.mycosmetologist.domain.util.Result
 import jakarta.inject.Inject
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flatMapLatest
-import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOf
+
 @OptIn(kotlinx.coroutines.ExperimentalCoroutinesApi::class)
-class CreateAppointment @Inject constructor (private val repository: AppointmentRepository) {
-
-     operator fun invoke(appointment: Appointment): Flow<Result<Unit>> {
-
-            return repository.isTimeBusy(appointment)
+class CreateAppointment
+    @Inject
+    constructor(
+        private val repository: AppointmentRepository,
+    ) {
+        operator fun invoke(appointment: Appointment): Flow<Result<Unit>> =
+            repository
+                .isTimeBusy(appointment)
                 .flatMapLatest { result ->
                     when (result) {
-
                         is Result.Loading -> {
                             flowOf(Result.Loading)
                         }
@@ -26,8 +28,8 @@ class CreateAppointment @Inject constructor (private val repository: Appointment
                             if (result.data) {
                                 flowOf(
                                     Result.Error(
-                                        InvalidAppointmentTimeException("InvalidTime")
-                                    )
+                                        InvalidAppointmentTimeException("InvalidTime"),
+                                    ),
                                 )
                             } else {
                                 repository.updateAppointment(appointment)
@@ -39,6 +41,4 @@ class CreateAppointment @Inject constructor (private val repository: Appointment
                         }
                     }
                 }
-        }
     }
-

@@ -3,19 +3,22 @@ package com.hfad.mycosmetologist.presentation
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
-import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Modifier
 import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.ui.NavDisplay
+import com.hfad.mycosmetologist.presentation.main.appointment.info.AppointmentInfoScreen
 import com.hfad.mycosmetologist.presentation.main.auth.AuthScreen
 import com.hfad.mycosmetologist.presentation.main.home.HomeScreen
 import com.hfad.mycosmetologist.presentation.main.splash.SplashScreen
 import com.hfad.mycosmetologist.presentation.main.splash.SplashViewModel
 import com.hfad.mycosmetologist.presentation.navigation.AppScreen
 import com.hfad.mycosmetologist.presentation.navigation.Navigator
+import com.hfad.mycosmetologist.presentation.navigation.ui.AppBottomNavigation
 import com.hfad.mycosmetologist.ui.theme.AppTheme
 import dagger.hilt.android.AndroidEntryPoint
 import jakarta.inject.Inject
@@ -26,6 +29,7 @@ class MainActivity : ComponentActivity() {
     lateinit var navigator: Navigator
 
     private val splashViewModel: SplashViewModel by viewModels()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -36,18 +40,32 @@ class MainActivity : ComponentActivity() {
                     SplashScreen()
                 } else {
                     navigator.setRoot(startScreen!!)
-                    NavDisplay(
-                        backStack = navigator.backStack,
-                        onBack = { navigator.goBack() },
-                        entryProvider = entryProvider {
-                            entry<AppScreen.Auth> {
-                                AuthScreen(navigator=navigator)
-                            }
-                            entry<AppScreen.Home> {
-                                HomeScreen(navigator=navigator)
+                    val currentScreen = navigator.backStack.lastOrNull()
+                    Scaffold(
+                        bottomBar = {
+                            if (currentScreen is AppScreen.Home || currentScreen is AppScreen.Profile || currentScreen is AppScreen.Clients) {
+                                AppBottomNavigation(navigator)
                             }
                         }
-                    )
+                    ) { paddingValues ->
+                        NavDisplay(
+                            modifier = Modifier.padding(paddingValues),
+                            backStack = navigator.backStack,
+                            onBack = { navigator.goBack() },
+                            entryProvider =
+                                entryProvider {
+                                    entry<AppScreen.Auth> {
+                                        AuthScreen(navigator = navigator)
+                                    }
+                                    entry<AppScreen.Home> {
+                                        HomeScreen(navigator = navigator)
+                                    }
+                                    entry<AppScreen.AppointmentInfo> {
+                                        AppointmentInfoScreen(it.id)
+                                    }
+                                },
+                        )
+                    }
                 }
             }
         }
