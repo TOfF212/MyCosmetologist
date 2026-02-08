@@ -11,9 +11,15 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.ui.NavDisplay
+import com.hfad.mycosmetologist.presentation.main.appointment.change.AppointmentChangeScreen
 import com.hfad.mycosmetologist.presentation.main.appointment.info.AppointmentInfoScreen
 import com.hfad.mycosmetologist.presentation.main.auth.AuthScreen
+import com.hfad.mycosmetologist.presentation.main.clients.clientChange.ClientChangeScreen
+import com.hfad.mycosmetologist.presentation.main.clients.clientInfo.ClientInfoScreen
+import com.hfad.mycosmetologist.presentation.main.clients.clientsList.ClientsList
 import com.hfad.mycosmetologist.presentation.main.home.HomeScreen
+import com.hfad.mycosmetologist.presentation.main.priceList.PriceListScreen
+import com.hfad.mycosmetologist.presentation.main.profile.ProfileScreen
 import com.hfad.mycosmetologist.presentation.main.splash.SplashScreen
 import com.hfad.mycosmetologist.presentation.main.splash.SplashViewModel
 import com.hfad.mycosmetologist.presentation.navigation.AppScreen
@@ -43,7 +49,7 @@ class MainActivity : ComponentActivity() {
                     val currentScreen = navigator.backStack.lastOrNull()
                     Scaffold(
                         bottomBar = {
-                            if (currentScreen is AppScreen.Home || currentScreen is AppScreen.Profile || currentScreen is AppScreen.Clients) {
+                            if (currentScreen is AppScreen.Home || currentScreen is AppScreen.Profile || currentScreen is AppScreen.ClientsList) {
                                 AppBottomNavigation(navigator)
                             }
                         }
@@ -57,11 +63,36 @@ class MainActivity : ComponentActivity() {
                                     entry<AppScreen.Auth> {
                                         AuthScreen(navigator = navigator)
                                     }
+
                                     entry<AppScreen.Home> {
                                         HomeScreen(navigator = navigator)
                                     }
+
                                     entry<AppScreen.AppointmentInfo> {
                                         AppointmentInfoScreen(it.id)
+                                    }
+
+                                    entry<AppScreen.AppointmentChange> {
+                                        AppointmentChangeScreen(it.id)
+                                    }
+
+                                    entry<AppScreen.ClientInfo> {
+                                        ClientInfoScreen(it.id)
+                                    }
+
+                                    entry<AppScreen.ClientChange> {
+                                        ClientChangeScreen(it.id)
+                                    }
+                                    entry<AppScreen.Profile> {
+                                        ProfileScreen()
+                                    }
+
+                                    entry<AppScreen.ClientsList> {
+                                        ClientsList()
+                                    }
+
+                                    entry<AppScreen.PriceList> {
+                                        PriceListScreen()
                                     }
                                 },
                         )

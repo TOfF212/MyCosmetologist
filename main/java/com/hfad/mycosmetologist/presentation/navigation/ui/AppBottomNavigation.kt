@@ -47,7 +47,7 @@ fun AppBottomNavigation(navigator: Navigator) {
                 colors = NavigationBarItemColors(
                     selectedIconColor = MaterialTheme.colorScheme.onSecondaryContainer.copy(alpha = 0.5f),
                     selectedTextColor = MaterialTheme.colorScheme.onSecondaryContainer.copy(alpha = 0.5f),
-                    selectedIndicatorColor = MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.5f),
+                    selectedIndicatorColor = MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.4f),
                     unselectedIconColor = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.5f),
                     unselectedTextColor = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.5f),
                     disabledIconColor = MaterialTheme.colorScheme.tertiaryContainer,
@@ -73,7 +73,7 @@ fun AppBottomNavigation(navigator: Navigator) {
                 colors = NavigationBarItemColors(
                     selectedIconColor = MaterialTheme.colorScheme.onSecondaryContainer.copy(alpha = 0.5f),
                     selectedTextColor = MaterialTheme.colorScheme.onSecondaryContainer.copy(alpha = 0.5f),
-                    selectedIndicatorColor = MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.5f),
+                    selectedIndicatorColor = MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.4f),
                     unselectedIconColor = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.5f),
                     unselectedTextColor = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.5f),
                     disabledIconColor = MaterialTheme.colorScheme.tertiaryContainer,
@@ -99,7 +99,7 @@ fun AppBottomNavigation(navigator: Navigator) {
                 colors = NavigationBarItemColors(
                     selectedIconColor = MaterialTheme.colorScheme.onSecondaryContainer.copy(alpha = 0.5f),
                     selectedTextColor = MaterialTheme.colorScheme.onSecondaryContainer.copy(alpha = 0.5f),
-                    selectedIndicatorColor = MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.5f),
+                    selectedIndicatorColor = MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.4f),
                     unselectedIconColor = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.5f),
                     unselectedTextColor = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.5f),
                     disabledIconColor = MaterialTheme.colorScheme.tertiaryContainer,
