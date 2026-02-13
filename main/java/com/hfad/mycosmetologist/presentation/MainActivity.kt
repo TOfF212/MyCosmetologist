@@ -15,6 +15,7 @@ import com.hfad.mycosmetologist.presentation.main.appointment.change.Appointment
 import com.hfad.mycosmetologist.presentation.main.appointment.info.AppointmentInfoScreen
 import com.hfad.mycosmetologist.presentation.main.auth.AuthScreen
 import com.hfad.mycosmetologist.presentation.main.clients.clientChange.ClientChangeScreen
+import com.hfad.mycosmetologist.presentation.main.clients.clientCreate.ClientCreateScreen
 import com.hfad.mycosmetologist.presentation.main.clients.clientInfo.ClientInfoScreen
 import com.hfad.mycosmetologist.presentation.main.clients.clientsList.ClientsList
 import com.hfad.mycosmetologist.presentation.main.home.HomeScreen
@@ -68,6 +69,10 @@ class MainActivity : ComponentActivity() {
                                         HomeScreen(navigator = navigator)
                                     }
 
+                                    entry<AppScreen.ClientsList> {
+                                        ClientsList(navigator = navigator)
+                                    }
+
                                     entry<AppScreen.AppointmentInfo> {
                                         AppointmentInfoScreen(it.id)
                                     }
@@ -83,13 +88,16 @@ class MainActivity : ComponentActivity() {
                                     entry<AppScreen.ClientChange> {
                                         ClientChangeScreen(it.id)
                                     }
+
+                                    entry<AppScreen.ClientCreate> {
+                                        ClientCreateScreen(navigator)
+                                    }
+
                                     entry<AppScreen.Profile> {
                                         ProfileScreen()
                                     }
 
-                                    entry<AppScreen.ClientsList> {
-                                        ClientsList()
-                                    }
+
 
                                     entry<AppScreen.PriceList> {
                                         PriceListScreen()

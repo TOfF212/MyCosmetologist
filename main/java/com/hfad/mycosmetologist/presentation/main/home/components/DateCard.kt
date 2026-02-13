@@ -38,7 +38,6 @@ fun DateCard(
         modifier =
             Modifier
                 .fillMaxWidth()
-                .alpha(0.7f)
                 .padding(top = 25.dp, bottom = 15.dp, start = 7.dp, end = 7.dp),
         shape = RoundedCornerShape(40.dp),
         elevation = CardDefaults.cardElevation(5.dp),
@@ -81,8 +80,9 @@ fun DateCard(
                             .fillMaxWidth()
                             .background(
                                 color = MaterialTheme.colorScheme.surface.copy(alpha = 0.4f),
-                                shape = RoundedCornerShape(20.dp),
-                            ).padding(30.dp, 10.dp),
+                                shape = RoundedCornerShape(14.dp),
+                            )
+                            .padding(30.dp, 10.dp),
                     horizontalArrangement = Arrangement.SpaceBetween,
                 ) {
                     Column(

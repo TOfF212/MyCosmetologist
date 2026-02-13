@@ -1,7 +1,6 @@
 package com.hfad.mycosmetologist.presentation.main.home
 
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -24,6 +23,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.hfad.mycosmetologist.R
 import com.hfad.mycosmetologist.presentation.main.home.components.DateCard
 import com.hfad.mycosmetologist.presentation.main.home.components.HomeDatePicker
 import com.hfad.mycosmetologist.presentation.main.home.entity.HomeEvent
@@ -84,40 +84,44 @@ fun HomeScreen(
             }",
         )
 
-        Text(
-            modifier = Modifier
-                .padding(7.dp)
-                .alpha(0.9f)
-                .fillMaxWidth(),
-            text = "Записи на сегодня:",
-            fontWeight = FontWeight.ExtraBold,
-            fontSize = 19.sp,
-            color = MaterialTheme.colorScheme.onPrimaryContainer
-        )
-        when (state) {
+
+        when (val ui = state) {
             is HomeUiState.Success -> {
                 LazyColumn {
-                    items((state as HomeUiState.Success).currentAppointmentsList) { item ->
+
+                    item {
+                        Text(
+                            modifier = Modifier
+                                .padding(7.dp)
+                                .alpha(0.9f)
+                                .fillMaxWidth(),
+                            text = stringResource(R.string.appointmentsToday),
+                            fontWeight = FontWeight.ExtraBold,
+                            fontSize = 19.sp,
+                            color = MaterialTheme.colorScheme.onSecondaryContainer
+                        )
+                    }
+
+                    items((ui as HomeUiState.Success).currentAppointmentsList) { item ->
                         AppointmentListElement(
-                            MaterialTheme.colorScheme.onSecondaryContainer,
+                            MaterialTheme.colorScheme.onPrimaryContainer,
                             item,
                             { viewModel.navigateTo(AppScreen.AppointmentInfo(item.id)) })
                     }
-                }
-                Row {
-                    Text(
-                        modifier = Modifier
-                            .padding(7.dp)
-                            .alpha(0.9f)
-                            .fillMaxWidth(),
-                        text = "Последние записи:",
-                        fontWeight = FontWeight.ExtraBold,
-                        fontSize = 19.sp,
-                        color = MaterialTheme.colorScheme.onPrimaryContainer
-                    )
-                }
-                LazyColumn {
-                    items((state as HomeUiState.Success).pastAppointmentsList) { item ->
+
+                    item {
+                        Text(
+                            modifier = Modifier
+                                .padding(7.dp)
+                                .alpha(0.9f)
+                                .fillMaxWidth(),
+                            text = stringResource(R.string.lastAppointments),
+                            fontWeight = FontWeight.ExtraBold,
+                            fontSize = 19.sp,
+                            color = MaterialTheme.colorScheme.onSecondaryContainer
+                        )
+                    }
+                    items((ui as HomeUiState.Success).pastAppointmentsList) { item ->
                         AppointmentListElement(
                             appointmentInfo = item,
                             onClick = { viewModel.navigateTo(AppScreen.AppointmentInfo(item.id)) })

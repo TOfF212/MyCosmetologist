@@ -27,6 +27,9 @@ sealed interface AppScreen : NavKey {
     data class ClientChange(val id: String) : AppScreen
 
     @Serializable
+    object ClientCreate : AppScreen
+
+    @Serializable
     data object Profile : AppScreen
 
     @Serializable

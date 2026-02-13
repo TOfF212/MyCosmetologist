@@ -12,6 +12,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.hfad.mycosmetologist.R
@@ -24,10 +25,11 @@ fun AppBottomNavigation(navigator: Navigator) {
     Surface(
         modifier = Modifier
             .padding(horizontal = 16.dp, vertical = 12.dp),
-        shape = RoundedCornerShape(28.dp),
+        shape = RoundedCornerShape(14.dp),
         tonalElevation = 8.dp
     ) {
-        NavigationBar {
+        NavigationBar(
+        ) {
             NavigationBarItem(
                 selected = (currentScreen is AppScreen.Home),
                 onClick = { navigator.goTo(AppScreen.Home) },
@@ -39,24 +41,24 @@ fun AppBottomNavigation(navigator: Navigator) {
                 },
                 label = {
                     Text(
-                        text = "Главная",
+                        text = stringResource(R.string.HomeScreen),
                         style = MaterialTheme.typography.bodyMedium,
                         fontWeight = FontWeight.Bold,
                     )
                 },
                 colors = NavigationBarItemColors(
-                    selectedIconColor = MaterialTheme.colorScheme.onSecondaryContainer.copy(alpha = 0.5f),
-                    selectedTextColor = MaterialTheme.colorScheme.onSecondaryContainer.copy(alpha = 0.5f),
-                    selectedIndicatorColor = MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.4f),
-                    unselectedIconColor = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.5f),
-                    unselectedTextColor = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.5f),
+                    selectedIconColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                    selectedTextColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                    selectedIndicatorColor = MaterialTheme.colorScheme.secondaryContainer,
+                    unselectedIconColor = MaterialTheme.colorScheme.onSecondaryContainer,
+                    unselectedTextColor = MaterialTheme.colorScheme.onSecondaryContainer,
                     disabledIconColor = MaterialTheme.colorScheme.tertiaryContainer,
                     disabledTextColor = MaterialTheme.colorScheme.onBackground
                 )
             )
             NavigationBarItem(
-                selected = (currentScreen is AppScreen.Clients),
-                onClick = { navigator.goTo(AppScreen.Clients) },
+                selected = (currentScreen is AppScreen.ClientsList),
+                onClick = { navigator.goTo(AppScreen.ClientsList) },
                 icon = {
                     Icon(
                         painter = painterResource(id = R.drawable.sharp_add_circle_24),
@@ -71,11 +73,11 @@ fun AppBottomNavigation(navigator: Navigator) {
                     )
                 },
                 colors = NavigationBarItemColors(
-                    selectedIconColor = MaterialTheme.colorScheme.onSecondaryContainer.copy(alpha = 0.5f),
-                    selectedTextColor = MaterialTheme.colorScheme.onSecondaryContainer.copy(alpha = 0.5f),
-                    selectedIndicatorColor = MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.4f),
-                    unselectedIconColor = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.5f),
-                    unselectedTextColor = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.5f),
+                    selectedIconColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                    selectedTextColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                    selectedIndicatorColor = MaterialTheme.colorScheme.secondaryContainer,
+                    unselectedIconColor = MaterialTheme.colorScheme.onSecondaryContainer,
+                    unselectedTextColor = MaterialTheme.colorScheme.onSecondaryContainer,
                     disabledIconColor = MaterialTheme.colorScheme.tertiaryContainer,
                     disabledTextColor = MaterialTheme.colorScheme.onBackground
                 )
@@ -97,11 +99,11 @@ fun AppBottomNavigation(navigator: Navigator) {
                     )
                 },
                 colors = NavigationBarItemColors(
-                    selectedIconColor = MaterialTheme.colorScheme.onSecondaryContainer.copy(alpha = 0.5f),
-                    selectedTextColor = MaterialTheme.colorScheme.onSecondaryContainer.copy(alpha = 0.5f),
-                    selectedIndicatorColor = MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.4f),
-                    unselectedIconColor = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.5f),
-                    unselectedTextColor = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.5f),
+                    selectedIconColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                    selectedTextColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                    selectedIndicatorColor = MaterialTheme.colorScheme.secondaryContainer,
+                    unselectedIconColor = MaterialTheme.colorScheme.onSecondaryContainer,
+                    unselectedTextColor = MaterialTheme.colorScheme.onSecondaryContainer,
                     disabledIconColor = MaterialTheme.colorScheme.tertiaryContainer,
                     disabledTextColor = MaterialTheme.colorScheme.onBackground
                 )

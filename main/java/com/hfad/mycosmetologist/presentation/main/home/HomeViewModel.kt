@@ -5,7 +5,6 @@ import androidx.lifecycle.viewModelScope
 import com.hfad.mycosmetologist.domain.entity.Appointment
 import com.hfad.mycosmetologist.domain.entity.Client
 import com.hfad.mycosmetologist.domain.entity.Service
-import com.hfad.mycosmetologist.domain.useCase.appointment.GetAppointment
 import com.hfad.mycosmetologist.domain.useCase.appointment.GetAppointmentsByDate
 import com.hfad.mycosmetologist.domain.useCase.appointment.GetPastAppointments
 import com.hfad.mycosmetologist.domain.useCase.client.GetClientList
@@ -37,7 +36,6 @@ import javax.inject.Inject
 class HomeViewModel
 @Inject
 constructor(
-    private val getAppointment: GetAppointment,
     private val getAppointmentsByDate: GetAppointmentsByDate,
     private val getPastAppointments: GetPastAppointments,
     private val getClientList: GetClientList,

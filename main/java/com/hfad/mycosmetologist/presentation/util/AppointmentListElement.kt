@@ -34,16 +34,15 @@ fun AppointmentListElement(
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .alpha(0.7f)
             .padding(top = 5.dp, bottom = 3.dp, start = 7.dp, end = 7.dp),
-        shape = RoundedCornerShape(28.dp),
+        shape = RoundedCornerShape(14.dp),
         onClick = onClick,
     ) {
         Box(
             modifier = Modifier
                 .fillMaxWidth()
                 .background(
-                    backgroundColor.copy(0.8f),
+                    backgroundColor,
                 )
                 .padding(5.dp),
         ) {
@@ -84,7 +83,7 @@ fun AppointmentListElement(
                         modifier = Modifier
                             .background(
                                 color = MaterialTheme.colorScheme.surface.copy(alpha = 0.2f),
-                                shape = RoundedCornerShape(20.dp),
+                                shape = RoundedCornerShape(14.dp),
                             )
                             .fillMaxWidth(),
                     ) {
@@ -96,7 +95,7 @@ fun AppointmentListElement(
                             Text(
                                 modifier = Modifier.alpha(0.92f),
                                 text = "${appointmentInfo.startTime}-${appointmentInfo.endTime}",
-                                fontWeight = FontWeight.ExtraBold,
+                                fontWeight = FontWeight.Bold,
                                 maxLines = 1,
                             )
                         }
@@ -105,7 +104,7 @@ fun AppointmentListElement(
                         modifier = Modifier
                             .background(
                                 color = MaterialTheme.colorScheme.surface.copy(alpha = 0.2f),
-                                shape = RoundedCornerShape(20.dp),
+                                shape = RoundedCornerShape(14.dp),
                             )
                             .fillMaxWidth(),
                     ) {
@@ -118,7 +117,7 @@ fun AppointmentListElement(
                                 modifier = Modifier.alpha(0.92f),
                                 text = appointmentInfo.profit,
                                 maxLines = 1,
-                                fontWeight = FontWeight.ExtraBold,
+                                fontWeight = FontWeight.Bold,
                             )
                         }
                     }
