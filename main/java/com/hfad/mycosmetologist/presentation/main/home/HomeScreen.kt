@@ -1,5 +1,6 @@
 package com.hfad.mycosmetologist.presentation.main.home
 
+import android.widget.Toast
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -18,6 +19,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -30,8 +32,8 @@ import com.hfad.mycosmetologist.presentation.main.home.entity.HomeEvent
 import com.hfad.mycosmetologist.presentation.main.home.entity.HomeUiState
 import com.hfad.mycosmetologist.presentation.navigation.AppScreen
 import com.hfad.mycosmetologist.presentation.navigation.Navigator
-import com.hfad.mycosmetologist.presentation.util.AppointmentListElement
 import com.hfad.mycosmetologist.presentation.util.toMonthNameRes
+import com.hfad.mycosmetologist.presentation.util.uiComponents.AppointmentListElement
 import com.hfad.mycosmetologist.ui.theme.primaryLight
 
 @Composable
@@ -42,6 +44,7 @@ fun HomeScreen(
     val currentDay = viewModel.currentDay.collectAsState()
     val datePickerState = remember { mutableStateOf(false) }
     val state by viewModel.uiState.collectAsState()
+    val context = LocalContext.current
     LaunchedEffect(Unit) {
         viewModel.event.collect { event ->
             when (event) {
@@ -54,6 +57,13 @@ fun HomeScreen(
                 }
 
                 is HomeEvent.ShowError -> {
+
+                    Toast
+                        .makeText(
+                            context,
+                            event.message,
+                            Toast.LENGTH_SHORT,
+                        ).show()
                 }
             }
         }
@@ -102,9 +112,9 @@ fun HomeScreen(
                         )
                     }
 
-                    items((ui as HomeUiState.Success).currentAppointmentsList) { item ->
+                    items(ui.currentAppointmentsList) { item ->
                         AppointmentListElement(
-                            MaterialTheme.colorScheme.onPrimaryContainer,
+                            if (item.cancelled) MaterialTheme.colorScheme.onBackground.copy(0.3f) else MaterialTheme.colorScheme.secondaryContainer,
                             item,
                             { viewModel.navigateTo(AppScreen.AppointmentInfo(item.id)) })
                     }
@@ -121,8 +131,9 @@ fun HomeScreen(
                             color = MaterialTheme.colorScheme.onSecondaryContainer
                         )
                     }
-                    items((ui as HomeUiState.Success).pastAppointmentsList) { item ->
+                    items(ui.pastAppointmentsList) { item ->
                         AppointmentListElement(
+                            if (item.cancelled) MaterialTheme.colorScheme.onBackground.copy(0.3f) else MaterialTheme.colorScheme.primaryContainer,
                             appointmentInfo = item,
                             onClick = { viewModel.navigateTo(AppScreen.AppointmentInfo(item.id)) })
                     }

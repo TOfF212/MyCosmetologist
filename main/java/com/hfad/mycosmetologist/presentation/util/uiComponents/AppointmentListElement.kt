@@ -1,4 +1,4 @@
-package com.hfad.mycosmetologist.presentation.util
+package com.hfad.mycosmetologist.presentation.util.uiComponents
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -23,13 +23,15 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.hfad.mycosmetologist.R
-import com.hfad.mycosmetologist.presentation.main.home.entity.HomeAppointment
+import com.hfad.mycosmetologist.presentation.util.entity.PresentationAppointment
 
 @Composable
 fun AppointmentListElement(
     backgroundColor: Color = MaterialTheme.colorScheme.primaryContainer,
-    appointmentInfo: HomeAppointment,
-    onClick: () -> Unit
+    appointmentInfo: PresentationAppointment,
+    onClick: () -> Unit,
+    text1: String = appointmentInfo.clientName,
+    text2: String = appointmentInfo.services,
 ) {
     Card(
         modifier = Modifier
@@ -56,7 +58,7 @@ fun AppointmentListElement(
                 Column(modifier = Modifier.weight(5f)) {
                     Text(
                         modifier = Modifier.alpha(0.95f),
-                        text = appointmentInfo.clientName,
+                        text = text1,
                         style = MaterialTheme.typography.bodyMedium,
                         fontSize = 20.sp,
                         fontWeight = FontWeight.ExtraBold,
@@ -65,7 +67,7 @@ fun AppointmentListElement(
                     )
                     Text(
                         modifier = Modifier.alpha(0.65f),
-                        text = appointmentInfo.services,
+                        text = text2,
                         fontSize = 14.sp,
                         fontWeight = FontWeight.Bold,
                         maxLines = 1,
@@ -95,7 +97,6 @@ fun AppointmentListElement(
                             Text(
                                 modifier = Modifier.alpha(0.92f),
                                 text = "${appointmentInfo.startTime}-${appointmentInfo.endTime}",
-                                fontWeight = FontWeight.Bold,
                                 maxLines = 1,
                             )
                         }
@@ -117,7 +118,6 @@ fun AppointmentListElement(
                                 modifier = Modifier.alpha(0.92f),
                                 text = appointmentInfo.profit,
                                 maxLines = 1,
-                                fontWeight = FontWeight.Bold,
                             )
                         }
                     }

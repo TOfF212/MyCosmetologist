@@ -1,4 +1,4 @@
-package com.hfad.mycosmetologist.presentation.main.clients.clientCreate.components
+package com.hfad.mycosmetologist.presentation.util.uiComponents
 
 
 import androidx.compose.foundation.background
@@ -13,17 +13,18 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
 @Composable
-fun ClientCreateTopAppBar() {
+fun TopAppBar(
+    headlineText: String,
+    content: @Composable (() -> Unit),
+) {
     Surface(
         modifier = Modifier
-            .fillMaxWidth()
-            .alpha(0.7f),
+            .fillMaxWidth(),
         shape = RoundedCornerShape(
             bottomStart = 28.dp,
             bottomEnd = 28.dp
@@ -50,11 +51,12 @@ fun ClientCreateTopAppBar() {
                 horizontalAlignment = Alignment.Start,
             ) {
                 Text(
-                    text = "Регистрация Клиента",
+                    text = headlineText,
                     style = MaterialTheme.typography.headlineLarge,
                     color = MaterialTheme.colorScheme.onPrimaryContainer,
                     fontSize = 40.sp,
                 )
+                content()
             }
         }
     }

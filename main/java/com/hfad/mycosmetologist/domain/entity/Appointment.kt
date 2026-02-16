@@ -7,8 +7,8 @@ data class Appointment(
     val workerId: String,
     val clientId: String,
     val servicesIds: MutableList<String>,
-    val status: AppointmentStatus,
     val description: String,
     val startTime: Instant,
     val endTime: Instant,
+    val cancelled: Boolean
 )

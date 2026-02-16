@@ -28,9 +28,9 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.hfad.mycosmetologist.R
 import com.hfad.mycosmetologist.domain.exceptions.ObjectIsAlreadyExistException
-import com.hfad.mycosmetologist.presentation.main.clients.clientCreate.components.ClientCreateTopAppBar
 import com.hfad.mycosmetologist.presentation.navigation.AppScreen
 import com.hfad.mycosmetologist.presentation.navigation.Navigator
+import com.hfad.mycosmetologist.presentation.util.uiComponents.TopAppBar
 
 @Composable
 fun ClientCreateScreen(
@@ -66,13 +66,13 @@ fun ClientCreateScreen(
 
 
                 CreateClientEvent.Navigate ->
-                    navigator.replaceRoot(AppScreen.ClientsList)
+                    navigator.goTo(AppScreen.ClientsList)
             }
         }
     }
     Scaffold(
         topBar = {
-            ClientCreateTopAppBar()
+            TopAppBar("Регистрация Клиента", {})
         }
     ) { paddingValues ->
         Column(
@@ -113,8 +113,9 @@ fun ClientCreateScreen(
                         focusedLabelColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.8f)
                     ),
                     singleLine = true,
-                    shape = RoundedCornerShape(12.dp)
-                )
+                    shape = RoundedCornerShape(12.dp),
+
+                    )
 
                 OutlinedTextField(
                     value = about,

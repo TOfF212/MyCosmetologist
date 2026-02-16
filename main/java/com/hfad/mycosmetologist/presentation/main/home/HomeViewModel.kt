@@ -2,19 +2,16 @@ package com.hfad.mycosmetologist.presentation.main.home
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.hfad.mycosmetologist.domain.entity.Appointment
-import com.hfad.mycosmetologist.domain.entity.Client
-import com.hfad.mycosmetologist.domain.entity.Service
 import com.hfad.mycosmetologist.domain.useCase.appointment.GetAppointmentsByDate
 import com.hfad.mycosmetologist.domain.useCase.appointment.GetPastAppointments
 import com.hfad.mycosmetologist.domain.useCase.client.GetClientList
 import com.hfad.mycosmetologist.domain.useCase.service.GetPriceList
 import com.hfad.mycosmetologist.domain.useCase.worker.GetActualWorker
 import com.hfad.mycosmetologist.domain.util.Result
-import com.hfad.mycosmetologist.presentation.main.home.entity.HomeAppointment
 import com.hfad.mycosmetologist.presentation.main.home.entity.HomeEvent
 import com.hfad.mycosmetologist.presentation.main.home.entity.HomeUiState
 import com.hfad.mycosmetologist.presentation.navigation.AppScreen
+import com.hfad.mycosmetologist.presentation.util.entity.PresentationAppointment
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -81,11 +78,19 @@ constructor(
                         HomeUiState.Success(
                             currentAppointmentsList =
                                 current.data.map {
-                                    toHomeAppointment(it, servicesMap, clientsMap)
+                                    PresentationAppointment.toPresentationAppointment(
+                                        it,
+                                        servicesMap,
+                                        clientsMap.get(it.clientId)!!.name
+                                    )
                                 },
                             pastAppointmentsList =
                                 past.data.map {
-                                    toHomeAppointment(it, servicesMap, clientsMap)
+                                    PresentationAppointment.toPresentationAppointment(
+                                        it,
+                                        servicesMap,
+                                        clientsMap.get(it.clientId)!!.name
+                                    )
                                 },
                         )
                     }
@@ -95,26 +100,6 @@ constructor(
             }
         }
 
-    private fun toHomeAppointment(
-        appointment: Appointment,
-        servicesMap: Map<String, Service>,
-        clientsMap: Map<String, Client>,
-    ): HomeAppointment {
-        val servicesNames =
-            appointment.servicesIds
-                .mapNotNull { servicesMap[it]?.name }
-                .joinToString(", ")
-        val appointmentProfit =
-            appointment.servicesIds.mapNotNull { servicesMap[it]?.price }.sum()
-        return HomeAppointment(
-            clientName = clientsMap.get(appointment.clientId)!!.name,
-            startTime = appointment.startTime.toString(),
-            endTime = appointment.endTime.toString(),
-            services = servicesNames,
-            profit = appointmentProfit.toString(),
-            id = appointment.id
-        )
-    }
 
     fun triggerDatePicker() {
         viewModelScope.launch {

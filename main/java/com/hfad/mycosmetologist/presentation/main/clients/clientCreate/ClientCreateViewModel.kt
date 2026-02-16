@@ -36,7 +36,7 @@ class ClientCreateViewModel @Inject constructor(
 
     fun onPhoneChanged(newValue: String) {
         _phone.update {
-            newValue.filter { char -> char.isDigit() }
+            newValue.filter { char -> char.isDigit() }.take(11)
         }
     }
 

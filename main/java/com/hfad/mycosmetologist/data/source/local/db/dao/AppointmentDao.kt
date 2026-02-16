@@ -1,4 +1,5 @@
 package com.hfad.mycosmetologist.data.source.local.db.dao
+
 import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
@@ -84,6 +85,20 @@ interface AppointmentDao {
         workerId: String,
         now: Long,
     ): AppointmentDbEntity?
+
+    @Query(
+        """
+        SELECT * FROM appointments
+        WHERE worker_id = :workerId
+        AND client_id = :clientId
+        ORDER BY start_time DESC
+        LIMIT 20
+    """,
+    )
+    suspend fun getByClientId(
+        workerId: String,
+        clientId: String,
+    ): List<AppointmentDbEntity>
 
     @Query(
         """

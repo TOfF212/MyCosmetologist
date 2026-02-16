@@ -27,5 +27,6 @@
     <string name="HomeScreen">Главная</string>
     <string name="ClientIsAlreadyExist">Клиент уже существует</string>
     <string name="AboutClient">О клиенте</string>
+    <string name="about">Описание</string>
 
 </resources>

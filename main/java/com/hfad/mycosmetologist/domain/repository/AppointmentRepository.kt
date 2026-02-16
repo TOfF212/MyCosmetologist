@@ -25,5 +25,10 @@ interface AppointmentRepository {
         before: Instant,
     ): Flow<Result<List<Appointment>>>
 
+    fun getAppointmentsByClient(
+        workerId: String,
+        clientId: String
+    ): Flow<Result<List<Appointment>>>
+
     fun isTimeBusy(appointment: Appointment): Flow<Result<Boolean>>
 }

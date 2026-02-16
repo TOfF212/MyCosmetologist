@@ -8,10 +8,10 @@ fun Appointment.toDbModel(): AppointmentDbEntity =
         id = id,
         workerId = workerId,
         clientId = clientId,
-        status = status,
         description = description,
         startTime = startTime,
         endTime = endTime,
+        cancelled = cancelled
     )
 
 fun AppointmentDbEntity.toDomainModel(): Appointment =
@@ -19,9 +19,9 @@ fun AppointmentDbEntity.toDomainModel(): Appointment =
         id = id,
         workerId = workerId,
         clientId = clientId,
-        status = status,
         description = description,
         startTime = startTime,
         endTime = endTime,
         servicesIds = mutableListOf<String>(),
+        cancelled = cancelled
     )

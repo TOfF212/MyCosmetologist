@@ -62,7 +62,21 @@ class ClientListViewModel @Inject constructor(
                             ClientListUiState.Success(
                                 clientList =
                                     result.data.map {
-                                        Client(it.id, it.name, it.phone)
+                                        Client(
+                                            it.id,
+                                            it.name,
+                                            "${it.phone.get(0)} (${
+                                                it.phone.subSequence(
+                                                    1,
+                                                    4
+                                                )
+                                            }) ${it.phone.subSequence(4, 7)}-${
+                                                it.phone.subSequence(
+                                                    7,
+                                                    9
+                                                )
+                                            }-${it.phone.subSequence(9, 11)}"
+                                        )
                                     }
                             ))
                     }

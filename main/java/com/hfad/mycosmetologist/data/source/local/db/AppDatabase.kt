@@ -3,7 +3,6 @@ package com.hfad.mycosmetologist.data.source.local.db
 import androidx.room.Database
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
-import com.hfad.mycosmetologist.data.source.local.converter.AppointmentStatusConverter
 import com.hfad.mycosmetologist.data.source.local.converter.InstantConverter
 import com.hfad.mycosmetologist.data.source.local.db.dao.AppointmentDao
 import com.hfad.mycosmetologist.data.source.local.db.dao.AppointmentServiceDao
@@ -28,8 +27,7 @@ import com.hfad.mycosmetologist.data.source.local.entity.WorkerDbEntity
     exportSchema = false,
 )
 @TypeConverters(
-    InstantConverter::class,
-    AppointmentStatusConverter::class,
+    InstantConverter::class
 )
 abstract class AppDatabase : RoomDatabase() {
     abstract fun appointmentDao(): AppointmentDao

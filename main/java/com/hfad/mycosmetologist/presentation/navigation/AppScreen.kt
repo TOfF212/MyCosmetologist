@@ -18,6 +18,9 @@ sealed interface AppScreen : NavKey {
     data class AppointmentChange(val id: String) : AppScreen
 
     @Serializable
+    data class AppointmentCreate(val clientId: String) : AppScreen
+
+    @Serializable
     data object ClientsList : AppScreen
 
     @Serializable
