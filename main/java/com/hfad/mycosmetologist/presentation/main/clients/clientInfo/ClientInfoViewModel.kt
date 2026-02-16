@@ -3,9 +3,6 @@ package com.hfad.mycosmetologist.presentation.main.clients.clientInfo
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.android.identity.util.UUID
-import com.hfad.mycosmetologist.domain.entity.Appointment
-import com.hfad.mycosmetologist.domain.useCase.appointment.CreateAppointment
 import com.hfad.mycosmetologist.domain.useCase.appointment.GetAppointmentsByClient
 import com.hfad.mycosmetologist.domain.useCase.client.GetClient
 import com.hfad.mycosmetologist.domain.useCase.service.GetPriceList
@@ -31,8 +28,6 @@ import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import java.time.Clock
-import java.time.Instant
-import kotlin.uuid.Uuid
 
 @HiltViewModel(assistedFactory = ClientInfoViewModel.Factory::class)
 class ClientInfoViewModel @AssistedInject constructor(
@@ -53,7 +48,9 @@ class ClientInfoViewModel @AssistedInject constructor(
             .flatMapLatest { result ->
                 when (result) {
                     is Result.Success -> {
-                        buildUiState(result.data.id)}
+                        buildUiState(result.data.id)
+                    }
+
                     is Result.Error -> {
                         Log.e("ClientInfoViewModel", result.exception.toString())
                         flowOf(ClientInfoUiState.Loading)
@@ -132,21 +129,6 @@ class ClientInfoViewModel @AssistedInject constructor(
                     ClientInfoUiState.Loading
                 }
 
-                (client is Result.Loading) -> {
-                    Log.e("ClientInfoViewModel", client.toString())
-                    ClientInfoUiState.Loading
-                }
-
-                (appsList is Result.Loading) -> {
-                    Log.e("ClientInfoViewModel", appsList.toString())
-                    ClientInfoUiState.Loading
-                }
-
-                (priceList is Result.Loading) -> {
-                    Log.e("ClientInfoViewModel", priceList.toString())
-                    ClientInfoUiState.Loading
-                }
-
                 else -> {
                     ClientInfoUiState.Loading
                 }
@@ -158,6 +140,7 @@ class ClientInfoViewModel @AssistedInject constructor(
             _event.emit(ClientInfoEvent.Navigate(screen))
         }
     }
+
 
     @AssistedFactory
     interface Factory {
