@@ -26,7 +26,6 @@ constructor(
             emit(Result.Loading)
 
             try {
-                appointmentServiceDao.deleteByAppointmentId(appointment.workerId)
 
                 appointmentDao.insert(appointment.toDbModel())
 
@@ -50,7 +49,7 @@ constructor(
             emit(Result.Loading)
 
             try {
-                appointmentServiceDao.deleteByAppointmentId(appointment.workerId)
+                appointmentServiceDao.deleteByAppointmentId(appointment.id)
 
                 appointmentDao.update(appointment.toDbModel())
 
@@ -212,8 +211,8 @@ constructor(
                     )
 
                 val busy =
-                    (previous?.cancelled ?: true || previous.endTime.isAfter(appointment.startTime))
-                        || (next?.cancelled ?: true || next.startTime.isBefore(appointment.endTime))
+                    (previous?.cancelled ?: false && previous.endTime.isAfter(appointment.startTime))
+                        || (next?.cancelled ?: false && next.startTime.isBefore(appointment.endTime))
 
                 emit(Result.Success(busy))
             } catch (e: Exception) {

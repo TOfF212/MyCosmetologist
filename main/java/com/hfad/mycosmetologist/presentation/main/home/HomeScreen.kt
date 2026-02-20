@@ -27,12 +27,12 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.hfad.mycosmetologist.R
 import com.hfad.mycosmetologist.presentation.main.home.components.DateCard
-import com.hfad.mycosmetologist.presentation.main.home.components.HomeDatePicker
 import com.hfad.mycosmetologist.presentation.main.home.entity.HomeEvent
 import com.hfad.mycosmetologist.presentation.main.home.entity.HomeUiState
 import com.hfad.mycosmetologist.presentation.navigation.AppScreen
 import com.hfad.mycosmetologist.presentation.navigation.Navigator
 import com.hfad.mycosmetologist.presentation.util.toMonthNameRes
+import com.hfad.mycosmetologist.presentation.util.uiComponents.AppDatePicker
 import com.hfad.mycosmetologist.presentation.util.uiComponents.AppointmentListElement
 import com.hfad.mycosmetologist.ui.theme.primaryLight
 
@@ -70,7 +70,7 @@ fun HomeScreen(
     }
 
     if (datePickerState.value) {
-        HomeDatePicker(
+        AppDatePicker(
             { viewModel.changeCurrentDate(it) },
             { datePickerState.value = false },
         )

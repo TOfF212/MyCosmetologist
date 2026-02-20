@@ -16,8 +16,9 @@ fun ClientsListTopAppBar(
         ClientsListSearchBar(
             TextFieldState(""),
             clientList,
-            { id -> onClick(id) }
-        )
+            { id -> onClick(id) },
+
+            )
     }
 }
 

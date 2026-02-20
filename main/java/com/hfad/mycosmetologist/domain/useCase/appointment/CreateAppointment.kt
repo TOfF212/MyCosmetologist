@@ -11,34 +11,34 @@ import kotlinx.coroutines.flow.flowOf
 
 @OptIn(kotlinx.coroutines.ExperimentalCoroutinesApi::class)
 class CreateAppointment
-    @Inject
-    constructor(
-        private val repository: AppointmentRepository,
-    ) {
-        operator fun invoke(appointment: Appointment): Flow<Result<Unit>> =
-            repository
-                .isTimeBusy(appointment)
-                .flatMapLatest { result ->
-                    when (result) {
-                        is Result.Loading -> {
-                            flowOf(Result.Loading)
-                        }
+@Inject
+constructor(
+    private val repository: AppointmentRepository,
+) {
+    operator fun invoke(appointment: Appointment): Flow<Result<Unit>> =
+        repository
+            .isTimeBusy(appointment)
+            .flatMapLatest { result ->
+                when (result) {
+                    is Result.Loading -> {
+                        flowOf(Result.Loading)
+                    }
 
-                        is Result.Success -> {
-                            if (result.data) {
-                                flowOf(
-                                    Result.Error(
-                                        InvalidAppointmentTimeException("InvalidTime"),
-                                    ),
-                                )
-                            } else {
-                                repository.updateAppointment(appointment)
-                            }
-                        }
-
-                        is Result.Error -> {
-                            flowOf(Result.Error(result.exception))
+                    is Result.Success -> {
+                        if (result.data) {
+                            flowOf(
+                                Result.Error(
+                                    InvalidAppointmentTimeException("InvalidTime"),
+                                ),
+                            )
+                        } else {
+                            repository.createAppointment(appointment)
                         }
                     }
+
+                    is Result.Error -> {
+                        flowOf(Result.Error(result.exception))
+                    }
                 }
-    }
+            }
+}

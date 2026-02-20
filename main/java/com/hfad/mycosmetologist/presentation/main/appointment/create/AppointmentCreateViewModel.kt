@@ -1,5 +1,6 @@
 package com.hfad.mycosmetologist.presentation.main.appointment.create
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.android.identity.util.UUID
@@ -7,7 +8,6 @@ import com.hfad.mycosmetologist.domain.entity.Appointment
 import com.hfad.mycosmetologist.domain.useCase.appointment.CreateAppointment
 import com.hfad.mycosmetologist.domain.useCase.appointment.GetAppointmentsByDate
 import com.hfad.mycosmetologist.domain.useCase.client.GetClient
-import com.hfad.mycosmetologist.domain.useCase.client.GetClientList
 import com.hfad.mycosmetologist.domain.useCase.service.GetPriceList
 import com.hfad.mycosmetologist.domain.useCase.worker.GetActualWorker
 import com.hfad.mycosmetologist.domain.util.Result
@@ -35,6 +35,8 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.time.Clock
+import java.time.Instant
+import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
 import java.time.ZoneId
@@ -47,8 +49,7 @@ class AppointmentCreateViewModel @AssistedInject constructor(
     private val getPriceList: GetPriceList,
     private val createAppointment: CreateAppointment,
     private val getAppointmentsByDate: GetAppointmentsByDate,
-    private val clock: Clock,
-    private val getClientList: GetClientList
+    private val clock: Clock
 ) : ViewModel() {
 
     private val clientId = appScreen.clientId
@@ -93,6 +94,27 @@ class AppointmentCreateViewModel @AssistedInject constructor(
 
         val servicesMap = priceList.associateBy { it.id }
 
+//        serviceCreate(
+//            Service(
+//                id = UUID.randomUUID().toString(),
+//                workerId = client.workerId,
+//                name = "Чистка",
+//                price = 5000,
+//                durationMinutes = 120,
+//                description = "Чистка лица"
+//            )
+//        ).collect { }
+//        serviceCreate(
+//            Service(
+//                id = UUID.randomUUID().toString(),
+//                workerId = client.workerId,
+//                name = "Консультация",
+//                price = 500,
+//                durationMinutes = 50,
+//                description = "Консультация"
+//            )
+//        ).collect { }
+
         CreateAppointmentUiState(
             workerId = client.workerId,
             selectedDate = form.selectedDate,
@@ -133,20 +155,34 @@ class AppointmentCreateViewModel @AssistedInject constructor(
         when (action) {
 
             is CreateAppointmentAction.OnDateSelected ->
-                formState.update { it.copy(selectedDate = action.date) }
+                formState.update {
+                    it.copy(
+                        selectedDate = LocalDate.ofInstant(
+                            Instant.ofEpochMilli(
+                                action.date ?: return
+                            ), clock.zone
+                        )
+                    )
+                }
 
             is CreateAppointmentAction.OnStartTimeSelected ->
                 formState.update {
-                    val updated = it.copy(startTime = action.time)
+                    val updated = it.copy(startTime = LocalTime.of(action.hour, action.minutes))
                     updated.copy(endTime = calculateEndTime(updated))
                 }
 
             is CreateAppointmentAction.OnEndTimeSelected ->
-                formState.update { it.copy(endTime = action.time) }
+                formState.update { it.copy(endTime = LocalTime.of(action.hour, action.minutes)) }
 
             is CreateAppointmentAction.OnServicesSelected ->
                 formState.update {
-                    val updated = it.copy(selectedServices = action.services)
+                    val updated = it.copy(selectedServices = formState.value.selectedServices.plus(action.service))
+                    updated.copy(endTime = calculateEndTime(updated))
+                }
+
+            is CreateAppointmentAction.OnServicesDelete ->
+                formState.update {
+                    val updated = it.copy(selectedServices = formState.value.selectedServices.minus(action.service))
                     updated.copy(endTime = calculateEndTime(updated))
                 }
 
@@ -228,6 +264,10 @@ class AppointmentCreateViewModel @AssistedInject constructor(
         viewModelScope.launch {
             _event.emit(CreateAppointmentEvent.Error(message))
         }
+        Log.d("APPOINTMENT_DEBUG", "workerId=${state.value.workerId}")
+        Log.d("APPOINTMENT_DEBUG", "clientId=${appScreen.clientId}")
+        Log.d("APPOINTMENT_DEBUG", "services=${state.value.selectedServices.map { it.id }}")
+        Log.e("AppointmentCreateViewModel", message)
     }
 
     fun onDateClick() {

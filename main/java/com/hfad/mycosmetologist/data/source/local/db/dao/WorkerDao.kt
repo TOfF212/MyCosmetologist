@@ -27,8 +27,6 @@ interface WorkerDao {
     )
     suspend fun getById(workerId: String): WorkerDbEntity?
 
-    @Query("SELECT EXISTS(SELECT 1 FROM workers)")
-    suspend fun hasAnyWorker(): Boolean
 
     @Query(
         """
@@ -36,5 +34,6 @@ interface WorkerDao {
         WHERE is_actual = true
     """,
     )
-    suspend fun getActualWorker(): WorkerDbEntity?
+    suspend fun getActualWorker(): List<WorkerDbEntity>
+
 }

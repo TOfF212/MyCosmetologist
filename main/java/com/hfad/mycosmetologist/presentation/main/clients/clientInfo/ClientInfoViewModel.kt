@@ -93,14 +93,14 @@ class ClientInfoViewModel @AssistedInject constructor(
                                 )
                             }-${client.data.phone.subSequence(9, 11)}",
                             about = client.data.about,
-                            currentList = appsList.data.filter { it.endTime <= clock.instant() }.map {
+                            currentList = appsList.data.filter { it.endTime > clock.instant() }.map {
                                 PresentationAppointment.toPresentationAppointment(
                                     it,
                                     servicesMap,
                                     client.data.name
                                 )
                             },
-                            pastList = appsList.data.filter { it.endTime > clock.instant() }.map {
+                            pastList = appsList.data.filter { it.endTime <= clock.instant() }.map {
                                 PresentationAppointment.toPresentationAppointment(
                                     it,
                                     servicesMap,
