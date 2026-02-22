@@ -2,7 +2,7 @@ package com.hfad.mycosmetologist.presentation.util.entity
 
 import com.hfad.mycosmetologist.domain.entity.Appointment
 import com.hfad.mycosmetologist.domain.entity.Service
-import com.hfad.mycosmetologist.presentation.util.toMonthNameRes
+import java.time.Month
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 
@@ -10,7 +10,9 @@ data class PresentationAppointment(
     val clientName: String,
     val startTime: String,
     val endTime: String,
-    val date: String,
+    val day: String,
+    val month: Month,
+    val year: String,
     val services: String,
     val profit: String,
     val id: String,
@@ -40,7 +42,9 @@ data class PresentationAppointment(
                 clientName = clientName,
                 startTime = startZoned.format(timeFormatter),
                 endTime = endZoned.format(timeFormatter),
-                date = "${startZoned.dayOfMonth} ${startZoned.month.toMonthNameRes()} ${startZoned.year}",
+                day = startZoned.dayOfMonth.toString(),
+                month = startZoned.month,
+                year = startZoned.year.toString(),
                 services = servicesNames,
                 profit = appointmentProfit.toString(),
                 id = appointment.id,

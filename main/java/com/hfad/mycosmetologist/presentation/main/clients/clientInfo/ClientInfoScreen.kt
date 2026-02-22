@@ -32,6 +32,7 @@ import com.hfad.mycosmetologist.presentation.main.clients.clientInfo.entity.Clie
 import com.hfad.mycosmetologist.presentation.main.clients.clientInfo.entity.ClientInfoUiState
 import com.hfad.mycosmetologist.presentation.navigation.AppScreen
 import com.hfad.mycosmetologist.presentation.navigation.Navigator
+import com.hfad.mycosmetologist.presentation.util.toMonthNameRes
 import com.hfad.mycosmetologist.presentation.util.uiComponents.AppointmentListElement
 import com.hfad.mycosmetologist.ui.theme.primaryLight
 
@@ -78,12 +79,12 @@ fun ClientInfoScreen(navigator: Navigator, viewModel: ClientInfoViewModel = hilt
                     modifier = Modifier
                         .fillMaxSize()
                         .padding(paddingValues)
-                        .padding(horizontal = 24.dp, vertical = 16.dp),
+                        .padding(horizontal = 7.dp, vertical = 16.dp),
                 ) {
                     Card(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(bottom = 7.dp),
+                            .padding(7.dp),
                         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
                         shape = RoundedCornerShape(14.dp),
                         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
@@ -104,14 +105,14 @@ fun ClientInfoScreen(navigator: Navigator, viewModel: ClientInfoViewModel = hilt
                         }
 
                     }
-                    LazyColumn(Modifier.padding(1.dp)) {
+                    LazyColumn() {
 
                         item {
                             Text(
                                 modifier = Modifier
                                     .alpha(0.9f)
                                     .fillMaxWidth()
-                                    .padding(vertical = 7.dp),
+                                    .padding(7.dp),
                                 text = "Ближайшие Записи:",
                                 fontWeight = FontWeight.ExtraBold,
                                 fontSize = 19.sp,
@@ -124,7 +125,7 @@ fun ClientInfoScreen(navigator: Navigator, viewModel: ClientInfoViewModel = hilt
                                 item,
                                 { viewModel.navigateTo(AppScreen.AppointmentInfo(item.id)) },
                                 text1 = item.services,
-                                text2 = item.date
+                                text2 = "${item.day} ${stringResource(item.month.toMonthNameRes())} ${item.year}"
                             )
                         }
 
@@ -133,7 +134,7 @@ fun ClientInfoScreen(navigator: Navigator, viewModel: ClientInfoViewModel = hilt
                                 modifier = Modifier
                                     .alpha(0.9f)
                                     .fillMaxWidth()
-                                    .padding(vertical = 7.dp),
+                                    .padding(7.dp),
                                 text = stringResource(R.string.lastAppointments),
                                 fontWeight = FontWeight.ExtraBold,
                                 fontSize = 19.sp,
@@ -144,7 +145,7 @@ fun ClientInfoScreen(navigator: Navigator, viewModel: ClientInfoViewModel = hilt
                                 appointmentInfo = item,
                                 onClick = { viewModel.navigateTo(AppScreen.AppointmentInfo(item.id)) },
                                 text1 = item.services,
-                                text2 = item.date
+                                text2 = "${item.day} ${stringResource(item.month.toMonthNameRes())} ${item.year}"
                             )
                         }
                     }

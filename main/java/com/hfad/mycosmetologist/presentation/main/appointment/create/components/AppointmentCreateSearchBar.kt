@@ -7,9 +7,11 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.text.input.TextFieldState
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ListItem
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SearchBar
 import androidx.compose.material3.SearchBarDefaults
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -56,7 +58,15 @@ fun AppointmentCreateSearchBar(
             )
         },
         expanded = expanded,
-        onExpandedChange = { expanded = it }
+        onExpandedChange = { expanded = it },
+        colors = SearchBarDefaults.colors(
+            containerColor = MaterialTheme.colorScheme.surface.copy(alpha = 0.3f),
+            inputFieldColors = TextFieldDefaults.colors(
+                focusedContainerColor = MaterialTheme.colorScheme.surface.copy(
+                    alpha = 0.3f
+                ), unfocusedContainerColor = MaterialTheme.colorScheme.surface.copy(alpha = 0.3f)
+            )
+        )
 
     ) {
         LazyColumn {

@@ -20,10 +20,10 @@ fun AppDatePicker(
 
     DatePickerDialog(
         colors = DatePickerDefaults.colors(
-            selectedDayContainerColor = MaterialTheme.colorScheme.primaryContainer,
+            selectedDayContainerColor = MaterialTheme.colorScheme.onPrimary,
             selectedDayContentColor = MaterialTheme.colorScheme.onPrimary,
             selectedYearContentColor = MaterialTheme.colorScheme.onPrimary,
-            todayDateBorderColor = MaterialTheme.colorScheme.primaryContainer,
+            todayDateBorderColor = MaterialTheme.colorScheme.onPrimary,
             dayInSelectionRangeContainerColor = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.3f)
         ),
         onDismissRequest = {
@@ -34,14 +34,17 @@ fun AppDatePicker(
                 onDateSelected(datePickerState.selectedDateMillis)
                 onDismiss()
             }) {
-                Text("OK")
+                Text(
+
+                    text = "OK", color = MaterialTheme.colorScheme.onPrimary
+                )
             }
         },
         dismissButton = {
             TextButton(onClick = {
                 onDismiss()
             }) {
-                Text("Cancel")
+                Text("Cancel", color = MaterialTheme.colorScheme.onPrimary)
             }
         },
     ) {
@@ -51,7 +54,9 @@ fun AppDatePicker(
                 selectedDayContainerColor = MaterialTheme.colorScheme.primaryContainer,
                 selectedDayContentColor = MaterialTheme.colorScheme.onPrimary,
                 selectedYearContainerColor = MaterialTheme.colorScheme.primaryContainer,
-                selectedYearContentColor = MaterialTheme.colorScheme.onPrimary
+                selectedYearContentColor = MaterialTheme.colorScheme.onPrimary,
+                todayDateBorderColor = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.8f),
+                todayContentColor = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.8f)
             )
         )
     }
