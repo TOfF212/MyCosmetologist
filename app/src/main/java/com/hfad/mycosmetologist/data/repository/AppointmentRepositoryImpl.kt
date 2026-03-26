@@ -198,21 +198,33 @@ constructor(
             try {
                 val startMillis = appointment.startTime.toEpochMilli()
 
-                val previous =
+                var previous =
                     appointmentDao.getPrevious(
                         appointment.workerId,
                         startMillis,
                     )
-
-                val next =
+                while (previous?.cancelled ?: false){
+                    previous = appointmentDao.getNext(
+                        previous.id,
+                        previous.startTime.toEpochMilli()
+                    )
+                }
+                var next =
                     appointmentDao.getNext(
                         appointment.workerId,
                         startMillis,
                     )
 
+                while (next?.cancelled ?: false){
+                    next = appointmentDao.getNext(
+                        next.id,
+                        next.startTime.toEpochMilli()
+                    )
+                }
+
                 val busy =
-                    (previous?.cancelled ?: false && previous.endTime.isAfter(appointment.startTime))
-                        || (next?.cancelled ?: false && next.startTime.isBefore(appointment.endTime))
+                    (previous?.endTime?.isAfter(appointment.startTime) ?: false)
+                        || (next?.startTime?.isBefore(appointment.endTime) ?: false)
 
                 emit(Result.Success(busy))
             } catch (e: Exception) {

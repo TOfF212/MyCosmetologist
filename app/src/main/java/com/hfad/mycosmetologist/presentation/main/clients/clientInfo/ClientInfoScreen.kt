@@ -121,7 +121,7 @@ fun ClientInfoScreen(navigator: Navigator, viewModel: ClientInfoViewModel = hilt
 
                         items(state.client.currentList) { item ->
                             AppointmentListElement(
-                                MaterialTheme.colorScheme.onPrimaryContainer,
+                                MaterialTheme.colorScheme.primaryContainer,
                                 item,
                                 { viewModel.navigateTo(AppScreen.AppointmentInfo(item.id)) },
                                 text1 = item.services,

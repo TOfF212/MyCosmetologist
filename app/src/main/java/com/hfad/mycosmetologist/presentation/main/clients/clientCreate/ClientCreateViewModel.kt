@@ -53,6 +53,12 @@ class ClientCreateViewModel @Inject constructor(
     }
 
     fun onSubmitClick() {
+        if(phone.value.length!=11){
+            viewModelScope.launch {
+                _events.emit(CreateClientEvent.ShowError(Exception("The number length is uncorrected")))
+            }
+            return
+        }
         viewModelScope.launch {
             getActualWorker().collect { actualWorkerResult ->
                 when (actualWorkerResult) {
