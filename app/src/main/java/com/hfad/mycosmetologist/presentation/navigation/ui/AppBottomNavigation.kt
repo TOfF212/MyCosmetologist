@@ -61,13 +61,13 @@ fun AppBottomNavigation(navigator: Navigator) {
                 onClick = { navigator.goTo(AppScreen.ClientsList) },
                 icon = {
                     Icon(
-                        painter = painterResource(id = R.drawable.sharp_add_circle_24),
+                        painter = painterResource(id = R.drawable.outline_group_24),
                         contentDescription = "add",
                     )
                 },
                 label = {
                     Text(
-                        text = "Добавить",
+                        text = "Клиенты",
                         style = MaterialTheme.typography.bodyMedium,
                         fontWeight = FontWeight.Bold,
                     )

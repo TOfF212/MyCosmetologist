@@ -94,27 +94,6 @@ class AppointmentCreateViewModel @AssistedInject constructor(
 
         val servicesMap = priceList.associateBy { it.id }
 
-//        serviceCreate(
-//            Service(
-//                id = UUID.randomUUID().toString(),
-//                workerId = client.workerId,
-//                name = "Чистка",
-//                price = 5000,
-//                durationMinutes = 120,
-//                description = "Чистка лица"
-//            )
-//        ).collect { }
-//        serviceCreate(
-//            Service(
-//                id = UUID.randomUUID().toString(),
-//                workerId = client.workerId,
-//                name = "Консультация",
-//                price = 500,
-//                durationMinutes = 50,
-//                description = "Консультация"
-//            )
-//        ).collect { }
-
         CreateAppointmentUiState(
             workerId = client.workerId,
             selectedDate = form.selectedDate,

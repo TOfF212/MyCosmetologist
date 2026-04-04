@@ -118,16 +118,27 @@ private fun ServiceRow(
     title: String,
     price: String,
 ) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .clip(RoundedCornerShape(12.dp))
-            .background(MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.35f))
-            .padding(horizontal = 12.dp, vertical = 10.dp),
-        horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically,
+    Card(
+        shape = RoundedCornerShape(18.dp),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface.copy(alpha = 0.3f))
     ) {
-        Text(text = title, style = MaterialTheme.typography.bodyLarge)
-        Text(text = price, style = MaterialTheme.typography.bodyLarge, fontWeight = FontWeight.Medium)
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .clip(RoundedCornerShape(12.dp))
+                .background(MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.1f))
+                .padding(horizontal = 12.dp, vertical = 10.dp),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Column() {
+                Text(text = title, style = MaterialTheme.typography.bodyLarge)
+                Text(text = price, style = MaterialTheme.typography.bodyLarge, fontWeight = FontWeight.Medium)
+
+            }
+            Button({}) {Icon( painter = painterResource(id = R.drawable.outline_delete_24),
+                contentDescription = "delete service",)}
+        }
     }
+
 }

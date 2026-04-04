@@ -61,6 +61,9 @@ class AuthViewModel
                         phone = phone.value,
                         about = "",
                         password = password.value,
+                        experience = 5,
+                        email = "abs@emil.com",
+                        specialization = "Косметолог"
                     ),
                 ).collect { result ->
                     when (result) {

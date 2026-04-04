@@ -11,6 +11,9 @@ fun Worker.toDbModel(): WorkerDbEntity =
         about = about,
         password = password,
         isActual = true,
+        specialization = specialization,
+        email = email,
+        experience = experience
     )
 
 fun WorkerDbEntity.toDomainModel(): Worker =
@@ -20,4 +23,7 @@ fun WorkerDbEntity.toDomainModel(): Worker =
         phone = phone,
         about = about,
         password = password,
+        specialization = specialization,
+        email = email,
+        experience = experience
     )
