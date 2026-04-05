@@ -32,6 +32,8 @@ import com.hfad.mycosmetologist.presentation.util.uiComponents.TopAppBar
 @Composable
 fun ProfileTopAppBar(
     workerName: String,
+    specialization: String,
+    experience: String,
     onClickEdit: () -> Unit,
     onClickStats: () -> Unit
 ) {
@@ -66,12 +68,12 @@ fun ProfileTopAppBar(
                         fontWeight = FontWeight.SemiBold,
                     )
                     Text(
-                        text = "Мастер-стилист",
+                        text = specialization,
                         style = MaterialTheme.typography.bodyLarge,
                         color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.7f),
                     )
                     Text(
-                        text = "5 лет опыта",
+                        text = experience,
                         style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.7f),
                     )

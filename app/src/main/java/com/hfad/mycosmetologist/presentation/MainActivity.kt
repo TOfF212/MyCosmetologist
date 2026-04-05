@@ -115,7 +115,7 @@ class MainActivity : ComponentActivity() {
                                     }
 
                                     entry<AppScreen.Profile> {
-                                        ProfileScreen()
+                                        ProfileScreen(navigator = navigator)
                                     }
 
 
