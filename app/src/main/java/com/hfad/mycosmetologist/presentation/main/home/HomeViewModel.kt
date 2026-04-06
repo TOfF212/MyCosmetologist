@@ -6,6 +6,7 @@ import com.hfad.mycosmetologist.domain.useCase.appointment.GetAppointmentsByDate
 import com.hfad.mycosmetologist.domain.useCase.appointment.GetPastAppointments
 import com.hfad.mycosmetologist.domain.useCase.client.GetClientList
 import com.hfad.mycosmetologist.domain.useCase.service.GetPriceList
+import com.hfad.mycosmetologist.domain.useCase.session.ObserveAuthorizedWorkerId
 import com.hfad.mycosmetologist.domain.useCase.worker.GetActualWorker
 import com.hfad.mycosmetologist.domain.util.Result
 import com.hfad.mycosmetologist.presentation.main.home.entity.HomeEvent
@@ -37,8 +38,7 @@ constructor(
     private val getPastAppointments: GetPastAppointments,
     private val getClientList: GetClientList,
     private val getPriceList: GetPriceList,
-    private val getActualWorker: GetActualWorker,
-    private val clock: Clock,
+    private val observeAuthorizedWorkerId: ObserveAuthorizedWorkerId, private val clock: Clock,
 ) : ViewModel() {
     private val _currentDay = MutableStateFlow(LocalDate.now(clock))
     val currentDay: StateFlow<LocalDate> get() = _currentDay
@@ -47,12 +47,10 @@ constructor(
     val event = _event.asSharedFlow()
 
     val uiState: StateFlow<HomeUiState> =
-        getActualWorker()
-            .flatMapLatest { result ->
-                when (result) {
-                    is Result.Success -> buildUiState(result.data.id)
-                    else -> flowOf(HomeUiState.AllLoading)
-                }
+        observeAuthorizedWorkerId()
+            .flatMapLatest { workerId ->
+                buildUiState(workerId)
+
             }.stateIn(
                 viewModelScope,
                 SharingStarted.WhileSubscribed(5_000),

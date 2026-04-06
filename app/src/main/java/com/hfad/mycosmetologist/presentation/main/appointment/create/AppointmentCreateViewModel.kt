@@ -3,6 +3,7 @@ package com.hfad.mycosmetologist.presentation.main.appointment.create
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.hfad.mycosmetologist.domain.useCase.session.ObserveAuthorizedWorkerId
 import com.android.identity.util.UUID
 import com.hfad.mycosmetologist.domain.entity.Appointment
 import com.hfad.mycosmetologist.domain.useCase.appointment.CreateAppointment
@@ -45,8 +46,7 @@ import java.time.ZoneId
 class AppointmentCreateViewModel @AssistedInject constructor(
     @Assisted private val appScreen: AppScreen.AppointmentCreate,
     private val getClient: GetClient,
-    private val getActualWorker: GetActualWorker,
-    private val getPriceList: GetPriceList,
+    private val observeAuthorizedWorkerId: ObserveAuthorizedWorkerId,    private val getPriceList: GetPriceList,
     private val createAppointment: CreateAppointment,
     private val getAppointmentsByDate: GetAppointmentsByDate,
     private val clock: Clock
@@ -60,8 +60,7 @@ class AppointmentCreateViewModel @AssistedInject constructor(
     private val zone = ZoneId.systemDefault()
 
     private val formState = MutableStateFlow(FormState())
-    private val workerIdFlow = getActualWorker()
-        .mapNotNull { (it as? Result.Success)?.data?.id }
+    private val workerIdFlow = observeAuthorizedWorkerId()
 
     private val clientFlow = workerIdFlow.flatMapLatest { getClient(it, clientId) }
 

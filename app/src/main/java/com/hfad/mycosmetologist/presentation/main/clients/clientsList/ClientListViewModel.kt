@@ -3,6 +3,7 @@ package com.hfad.mycosmetologist.presentation.main.clients.clientsList
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.hfad.mycosmetologist.domain.useCase.client.GetClientList
+import com.hfad.mycosmetologist.domain.useCase.session.ObserveAuthorizedWorkerId
 import com.hfad.mycosmetologist.domain.useCase.worker.GetActualWorker
 import com.hfad.mycosmetologist.domain.util.Result
 import com.hfad.mycosmetologist.presentation.main.clients.clientsList.entity.Client
@@ -22,8 +23,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class ClientListViewModel @Inject constructor(
-    private val getActualWorker: GetActualWorker,
-    private val getClientList: GetClientList
+    private val observeAuthorizedWorkerId: ObserveAuthorizedWorkerId, private val getClientList: GetClientList
 ) : ViewModel() {
 
 
@@ -38,15 +38,9 @@ class ClientListViewModel @Inject constructor(
 
 
     val uiState: StateFlow<ClientListUiState> =
-        getActualWorker()
-            .flatMapLatest { result ->
-                when (result) {
-                    is Result.Success -> {
-                        buildUiState(result.data.id)
-                    }
-
-                    else -> flowOf(ClientListUiState.Loading)
-                }
+        observeAuthorizedWorkerId()
+            .flatMapLatest { workerId ->
+                buildUiState(workerId)
             }.stateIn(
                 viewModelScope,
                 SharingStarted.WhileSubscribed(5_000),

@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.hfad.mycosmetologist.domain.useCase.appointment.GetAppointmentById
 import com.hfad.mycosmetologist.domain.useCase.client.GetClient
 import com.hfad.mycosmetologist.domain.useCase.service.GetPriceList
+import com.hfad.mycosmetologist.domain.useCase.session.ObserveAuthorizedWorkerId
 import com.hfad.mycosmetologist.domain.useCase.worker.GetActualWorker
 import com.hfad.mycosmetologist.domain.util.Result
 import com.hfad.mycosmetologist.presentation.main.appointment.info.entity.AppointmentInfoUiState
@@ -30,8 +31,7 @@ class AppointmentInfoViewModel
 @AssistedInject
 constructor(
     @Assisted private val appScreen: AppScreen.AppointmentInfo,
-    private val getActualWorker: GetActualWorker,
-    private val getAppointmentById: GetAppointmentById,
+    private val observeAuthorizedWorkerId: ObserveAuthorizedWorkerId, private val getAppointmentById: GetAppointmentById,
     private val getClient: GetClient,
     private val getPriceList: GetPriceList,
 ) : ViewModel() {
@@ -50,21 +50,14 @@ constructor(
 
     private fun loadAppointmentInfo() {
         viewModelScope.launch {
-            getActualWorker()
-                .flatMapLatest { workerResult ->
-                    when (workerResult) {
-                        is Result.Success -> {
-                            val workerId = workerResult.data.id
-                            combine(
+            observeAuthorizedWorkerId()
+                .flatMapLatest { workerId ->
+                          combine(
                                 getAppointmentById(workerId, appScreen.id),
                                 getPriceList(workerId),
                             ) { appointmentResult, priceListResult ->
                                 Triple(workerId, appointmentResult, priceListResult)
                             }
-                        }
-
-                        else -> flowOf(null)
-                    }
                 }.collect { payload ->
                     if (payload == null) {
                         return@collect

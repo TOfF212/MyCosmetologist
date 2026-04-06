@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.hfad.mycosmetologist.domain.useCase.appointment.GetAppointmentsByClient
 import com.hfad.mycosmetologist.domain.useCase.client.GetClient
 import com.hfad.mycosmetologist.domain.useCase.service.GetPriceList
+import com.hfad.mycosmetologist.domain.useCase.session.ObserveAuthorizedWorkerId
 import com.hfad.mycosmetologist.domain.useCase.worker.GetActualWorker
 import com.hfad.mycosmetologist.domain.util.Result
 import com.hfad.mycosmetologist.presentation.main.clients.clientInfo.entity.ClientInfo
@@ -33,8 +34,7 @@ import java.time.Clock
 class ClientInfoViewModel @AssistedInject constructor(
     @Assisted private val appScreen: AppScreen.ClientInfo,
     private val getClient: GetClient,
-    private val getActualWorker: GetActualWorker,
-    private val getAppointmentsByClient: GetAppointmentsByClient,
+    private val observeAuthorizedWorkerId: ObserveAuthorizedWorkerId, private val getAppointmentsByClient: GetAppointmentsByClient,
     private val clock: Clock,
     private val getPriceList: GetPriceList
 ) : ViewModel() {
@@ -43,24 +43,9 @@ class ClientInfoViewModel @AssistedInject constructor(
     private val _event = MutableSharedFlow<ClientInfoEvent>()
     val event = _event.asSharedFlow()
 
-    val uiState: StateFlow<ClientInfoUiState> =
-        getActualWorker()
-            .flatMapLatest { result ->
-                when (result) {
-                    is Result.Success -> {
-                        buildUiState(result.data.id)
-                    }
-
-                    is Result.Error -> {
-                        Log.e("ClientInfoViewModel", result.exception.toString())
-                        flowOf(ClientInfoUiState.Loading)
-                    }
-
-                    else -> {
-                        Log.e("ClientInfoViewModel", result.toString())
-                        flowOf(ClientInfoUiState.Loading)
-                    }
-                }
+    val uiState: StateFlow<ClientInfoUiState> =        observeAuthorizedWorkerId()
+        .flatMapLatest { workerId ->
+            buildUiState(workerId)
             }.stateIn(
                 viewModelScope,
                 SharingStarted.WhileSubscribed(5_000),
