@@ -1,17 +1,25 @@
 package com.hfad.mycosmetologist.presentation.main.appointment.info
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.text.font.FontWeight
@@ -23,21 +31,62 @@ import com.hfad.mycosmetologist.presentation.main.appointment.info.components.Ap
 import com.hfad.mycosmetologist.presentation.navigation.Navigator
 
 @Composable
-fun AppointmentInfoScreen(navigator: Navigator,
-                          viewModel: AppointmentInfoViewModel) {
-    val services = listOf(
-        "Комбинированная чистка" to "3 000 ₽",
-        "Уходовая маска" to "1 200 ₽",
-    )
+fun AppointmentInfoScreen(
+    navigator: Navigator,
+    viewModel: AppointmentInfoViewModel,
+) {
+    val uiState by viewModel.uiState.collectAsState()
+    var showDeleteDialog by remember { mutableStateOf(false) }
+
+    LaunchedEffect(Unit) {
+        viewModel.navigation.collect { screen ->
+            navigator.goTo(screen)
+        }
+    }
+
+    if (showDeleteDialog) {
+        AlertDialog(
+            onDismissRequest = { showDeleteDialog = false },
+            title = { Text("Отменить запись") },
+            text = { Text("Вы точно хотите удалить запись?") },
+            confirmButton = {
+                TextButton(
+                    onClick = {
+                        viewModel.deleteAppointment()
+                        showDeleteDialog = false
+                    },
+                ) {
+                    Text("Удалить")
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { showDeleteDialog = false }) {
+                    Text("Оставить")
+                }
+            },
+        )
+    }
 
     Scaffold(
         topBar = {
             AppointmentInfoTopAppBar(
                 onEditClick = {},
-                onCancelClick = {},
+                onCancelClick = { showDeleteDialog = true },
             )
         },
     ) { paddingValues ->
+        if (uiState.isLoading) {
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(paddingValues),
+                verticalArrangement = Arrangement.Center,
+            ) {
+                CircularProgressIndicator()
+            }
+            return@Scaffold
+        }
+
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -50,19 +99,20 @@ fun AppointmentInfoScreen(navigator: Navigator,
                 item {
                     AppointmentInfoSectionCard(
                         title = "Клиент",
-                        value = "Екатерина Смирнова · +7 999 123-45-67",
+                        value = "${uiState.clientName} · ${uiState.clientPhone}",
+                        modifier = Modifier.clickable { viewModel.onClientClick() },
                     )
                 }
                 item {
                     AppointmentInfoSectionCard(
                         title = "Дата и время",
-                        value = "12 мая 2026 · 14:00–15:30",
+                        value = "${uiState.date} · ${uiState.time}",
                     )
                 }
                 item {
                     AppointmentInfoSectionCard(
                         title = "Статус",
-                        value = "Подтверждена",
+                        value = uiState.status,
                     )
                 }
                 item {
@@ -76,22 +126,23 @@ fun AppointmentInfoScreen(navigator: Navigator,
                         color = MaterialTheme.colorScheme.onSecondaryContainer,
                     )
                 }
-                items(services) { (title, price) ->
+                items(uiState.services) { (title, price) ->
                     AppointmentInfoServiceItem(title = title, price = price)
                 }
                 item {
                     AppointmentInfoSectionCard(
                         title = "Комментарий",
-                        value = "Запрос: мягкая чистка и успокаивающий уход без кислот.",
+                        value = uiState.comment,
                     )
                 }
                 item {
                     AppointmentInfoSectionCard(
                         title = "Итог",
-                        value = "4 200 ₽",
+                        value = uiState.total,
                     )
                 }
             }
         }
     }
 }
+

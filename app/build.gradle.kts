@@ -78,4 +78,5 @@ dependencies {
     implementation("androidx.navigation3:navigation3-runtime:1.1.0-alpha03")
     implementation("androidx.navigation3:navigation3-ui:1.1.0-alpha03")
     implementation("androidx.hilt:hilt-navigation-compose:1.2.0")
+    implementation("androidx.datastore:datastore-preferences:1.1.7")
 }

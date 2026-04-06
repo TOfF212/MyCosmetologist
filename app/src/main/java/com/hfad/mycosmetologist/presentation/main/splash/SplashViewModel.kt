@@ -2,8 +2,8 @@ package com.hfad.mycosmetologist.presentation.main.splash
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.hfad.mycosmetologist.domain.useCase.worker.IsWorkerAuthorized
-import com.hfad.mycosmetologist.domain.util.Result
+import com.hfad.mycosmetologist.domain.repository.SessionRepository
+import com.hfad.mycosmetologist.domain.session.SessionState
 import com.hfad.mycosmetologist.presentation.navigation.AppScreen
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.SharingStarted
@@ -13,21 +13,21 @@ import javax.inject.Inject
 
 @HiltViewModel
 class SplashViewModel
-    @Inject
-    constructor(
-        private val isWorkerAuthorized: IsWorkerAuthorized,
-    ) : ViewModel() {
-        val startScreen =
-            isWorkerAuthorized()
-                .map { result ->
-                    when (result) {
-                        is Result.Success -> {
-                            if (result.data) AppScreen.Home else AppScreen.Auth
-                        } else -> null
-                    }
-                }.stateIn(
-                    viewModelScope,
-                    SharingStarted.WhileSubscribed(5000),
-                    null,
-                )
-    }
+@Inject
+constructor(
+    private val sessionRepository: SessionRepository,
+) : ViewModel() {
+    val startScreen =
+        sessionRepository
+            .observeSession()
+            .map { session ->
+                when (session) {
+                    is SessionState.Authorized -> AppScreen.Home
+                    SessionState.Unauthorized -> AppScreen.Auth
+                }
+            }.stateIn(
+                viewModelScope,
+                SharingStarted.WhileSubscribed(5000),
+                null,
+            )
+}
