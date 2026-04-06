@@ -23,6 +23,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.hfad.mycosmetologist.R
 import com.hfad.mycosmetologist.domain.entity.Service
+import org.intellij.lang.annotations.JdkConstants
 
 @Composable
 fun ServicesListElement(service: Service, onClick: () -> Unit) {
@@ -37,7 +38,7 @@ fun ServicesListElement(service: Service, onClick: () -> Unit) {
     ) {
         Row(
             modifier =
-                Modifier.padding(7.dp), horizontalArrangement = Arrangement.SpaceBetween
+                Modifier.padding(7.dp).fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Column() {
                 Text(
@@ -63,7 +64,7 @@ fun ServicesListElement(service: Service, onClick: () -> Unit) {
                     )
                     Text(
                         modifier = Modifier.alpha(0.65f),
-                        text = "${service.durationMinutes} руб",
+                        text = "${service.price} руб",
                         fontSize = 14.sp,
                         fontWeight = FontWeight.Bold,
                         maxLines = 1,
@@ -72,19 +73,19 @@ fun ServicesListElement(service: Service, onClick: () -> Unit) {
 
                 }
             }
+
             IconButton(
-                onClick = { },
+                onClick = onClick,
                 colors = IconButtonDefaults.iconButtonColors(
                     containerColor = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.7f),
                     contentColor = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.7f)
                 )
             ) {
                 Icon(
-                    painter = painterResource(id = R.drawable.outline_add_24),
+                    painter = painterResource(id = R.drawable.outline_delete_24),
                     "Delete"
                 )
             }
-
         }
     }
 }

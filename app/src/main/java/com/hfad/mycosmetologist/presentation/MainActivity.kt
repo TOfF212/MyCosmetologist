@@ -16,6 +16,7 @@ import com.hfad.mycosmetologist.presentation.main.appointment.change.Appointment
 import com.hfad.mycosmetologist.presentation.main.appointment.create.AppointmentCreateScreen
 import com.hfad.mycosmetologist.presentation.main.appointment.create.AppointmentCreateViewModel
 import com.hfad.mycosmetologist.presentation.main.appointment.info.AppointmentInfoScreen
+import com.hfad.mycosmetologist.presentation.main.appointment.info.AppointmentInfoViewModel
 import com.hfad.mycosmetologist.presentation.main.auth.AuthScreen
 import com.hfad.mycosmetologist.presentation.main.clients.clientChange.ClientChangeScreen
 import com.hfad.mycosmetologist.presentation.main.clients.clientCreate.ClientCreateScreen
@@ -77,8 +78,13 @@ class MainActivity : ComponentActivity() {
                                         ClientsList(navigator = navigator)
                                     }
 
-                                    entry<AppScreen.AppointmentInfo> {
-                                        AppointmentInfoScreen(it.id)
+                                    entry<AppScreen.AppointmentInfo> { key ->
+                                        val viewModel = hiltViewModel<AppointmentInfoViewModel, AppointmentInfoViewModel.Factory>(
+                                            creationCallback = { factory ->
+                                                factory.create(key)
+                                            }
+                                        )
+                                        AppointmentInfoScreen(navigator, viewModel)
                                     }
 
                                     entry<AppScreen.AppointmentChange> {
@@ -117,6 +123,7 @@ class MainActivity : ComponentActivity() {
                                     entry<AppScreen.Profile> {
                                         ProfileScreen(navigator = navigator)
                                     }
+
 
 
 

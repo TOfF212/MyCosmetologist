@@ -16,9 +16,11 @@ import com.hfad.mycosmetologist.presentation.main.profile.entity.ProfileUiState
 import com.hfad.mycosmetologist.presentation.navigation.AppScreen
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.stateIn
@@ -39,9 +41,9 @@ class ProfileViewModel @Inject constructor(
     val event = _event.asSharedFlow()
 
     private var currentWorkerId: String? = null
-
+    private val refreshTrigger = MutableStateFlow(0)
     val uiState: StateFlow<ProfileUiState> =
-        getActualWorker()
+        combine(getActualWorker(), refreshTrigger) { workerResult, _ -> workerResult }
             .flatMapLatest { workerResult ->
                 when (workerResult) {
                     is Result.Success -> {
@@ -132,7 +134,11 @@ class ProfileViewModel @Inject constructor(
                     durationMinutes = parsedDuration,
                     description = "",
                 ),
-            ).collect {}
+            ).collect {
+                if (it is Result.Success) {
+                    refreshPriceList()
+                }
+            }
             closeDialogs()
         }
     }
@@ -157,15 +163,27 @@ class ProfileViewModel @Inject constructor(
                     durationMinutes = parsedDuration,
                     description = "",
                 ),
-            ).collect {}
+            ).collect {
+                if (it is Result.Success) {
+                    refreshPriceList()
+                }
+            }
             closeDialogs()
         }
     }
 
     private fun deleteService(service: Service) {
         viewModelScope.launch {
-            deleteServiceUseCase(service).collect {}
+            deleteServiceUseCase(service).collect {
+                if (it is Result.Success) {
+                    refreshPriceList()
+                }
+            }
             closeDialogs()
         }
+    }
+
+    private fun refreshPriceList() {
+        refreshTrigger.value += 1
     }
 }

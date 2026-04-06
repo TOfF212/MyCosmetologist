@@ -20,9 +20,11 @@ import androidx.compose.ui.unit.sp
 import com.hfad.mycosmetologist.presentation.main.appointment.info.components.AppointmentInfoSectionCard
 import com.hfad.mycosmetologist.presentation.main.appointment.info.components.AppointmentInfoServiceItem
 import com.hfad.mycosmetologist.presentation.main.appointment.info.components.AppointmentInfoTopAppBar
+import com.hfad.mycosmetologist.presentation.navigation.Navigator
 
 @Composable
-fun AppointmentInfoScreen(id: String) {
+fun AppointmentInfoScreen(navigator: Navigator,
+                          viewModel: AppointmentInfoViewModel) {
     val services = listOf(
         "Комбинированная чистка" to "3 000 ₽",
         "Уходовая маска" to "1 200 ₽",
@@ -31,7 +33,6 @@ fun AppointmentInfoScreen(id: String) {
     Scaffold(
         topBar = {
             AppointmentInfoTopAppBar(
-                appointmentId = id,
                 onEditClick = {},
                 onCancelClick = {},
             )
