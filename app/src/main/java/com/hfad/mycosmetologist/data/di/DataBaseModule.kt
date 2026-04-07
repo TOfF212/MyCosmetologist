@@ -2,6 +2,8 @@ package com.hfad.mycosmetologist.data.di
 
 import android.content.Context
 import androidx.room.Room
+import androidx.room.migration.Migration
+import androidx.sqlite.db.SupportSQLiteDatabase
 import com.hfad.mycosmetologist.data.source.local.db.AppDatabase
 import com.hfad.mycosmetologist.data.source.local.db.dao.AppointmentDao
 import com.hfad.mycosmetologist.data.source.local.db.dao.AppointmentServiceDao
@@ -18,6 +20,13 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 object DataBaseModule {
+    private val migration1To2: Migration =
+        object : Migration(1, 2) {
+            override fun migrate(db: SupportSQLiteDatabase) {
+                db.execSQL("ALTER TABLE services ADD COLUMN is_archived INTEGER NOT NULL DEFAULT 0")
+            }
+        }
+
     @Provides
     @Singleton
     fun provideDatabase(
@@ -28,7 +37,8 @@ object DataBaseModule {
                 context,
                 AppDatabase::class.java,
                 "my_cosmetologist.db",
-            ).build()
+            ).addMigrations(migration1To2)
+            .build()
 
     @Provides
     fun provideAppointmentDao(database: AppDatabase): AppointmentDao = database.appointmentDao()

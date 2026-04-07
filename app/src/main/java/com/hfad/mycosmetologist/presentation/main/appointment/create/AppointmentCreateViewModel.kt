@@ -88,10 +88,11 @@ class AppointmentCreateViewModel @AssistedInject constructor(
         }
 
         val client = clientResult.data
-        val priceList = priceResult.data
+        val allPriceList = priceResult.data
+        val activePriceList = allPriceList.filter { !it.isArchived }
         val appsList = appsResult.data
 
-        val servicesMap = priceList.associateBy { it.id }
+        val servicesMap = allPriceList.associateBy { it.id }
 
         CreateAppointmentUiState(
             workerId = client.workerId,
@@ -124,7 +125,7 @@ class AppointmentCreateViewModel @AssistedInject constructor(
                     )
                 },
 
-            priceList = priceList,
+            priceList = activePriceList,
             isLoading = false
         )
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), CreateAppointmentUiState())

@@ -7,4 +7,5 @@ data class Service(
     val price: Int,
     val durationMinutes: Int,
     val description: String,
+    val isArchived: Boolean = false,
 )

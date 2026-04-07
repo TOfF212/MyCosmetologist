@@ -11,6 +11,7 @@ fun Service.toDbModel(): ServiceDbEntity =
         price = price,
         durationMinutes = durationMinutes,
         description = description,
+        isArchived = isArchived,
     )
 
 fun ServiceDbEntity.toDomainModel(): Service =
@@ -21,4 +22,5 @@ fun ServiceDbEntity.toDomainModel(): Service =
         price = price,
         durationMinutes = durationMinutes,
         description = description,
+        isArchived = isArchived,
     )

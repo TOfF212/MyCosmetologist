@@ -40,11 +40,11 @@ fun EditServiceDialog(
         },
         dismissButton = {
             Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                OutlinedButton(onClick = onDelete) {
-                    Text("Удалить")
-                }
                 OutlinedButton(onClick = onDismiss) {
                     Text("Отмена")
+                }
+                OutlinedButton(onClick = onDelete) {
+                    Text("Удалить")
                 }
             }
         },

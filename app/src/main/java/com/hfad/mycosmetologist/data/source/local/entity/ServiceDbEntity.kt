@@ -25,4 +25,5 @@ data class ServiceDbEntity(
     @ColumnInfo(name = "price") val price: Int,
     @ColumnInfo(name = "duration_minutes") val durationMinutes: Int,
     @ColumnInfo(name = "description") val description: String,
+    @ColumnInfo(name = "is_archived") val isArchived: Boolean = false,
 )

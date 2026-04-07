@@ -61,7 +61,7 @@ class ServiceRepositoryImpl
             flow {
                 emit(Result.Loading)
                 try {
-                    serviceDao.delete(service.toDbModel())
+                    serviceDao.archive(service.id, service.workerId)
                     emit(Result.Success(Unit))
                 } catch (e: Exception) {
                     emit(Result.Error(e))

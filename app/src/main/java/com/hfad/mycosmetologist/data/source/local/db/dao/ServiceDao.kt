@@ -42,6 +42,16 @@ interface ServiceDao {
 
     @Query(
         """
+        UPDATE services
+        SET is_archived = 1
+        WHERE id = :serviceId
+        AND worker_id = :workerId
+    """,
+    )
+    suspend fun archive(serviceId: String, workerId: String)
+
+    @Query(
+        """
         SELECT * FROM services
         WHERE name = :name
         AND worker_id = :workerId

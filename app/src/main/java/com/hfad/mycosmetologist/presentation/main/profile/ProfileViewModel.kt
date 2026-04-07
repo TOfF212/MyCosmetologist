@@ -55,7 +55,7 @@ class ProfileViewModel @Inject constructor(
                         workerResult is Result.Success && priceListResult is Result.Success -> {
                             ProfileUiState.Success(
                                 Profile(
-                                    priceList = priceListResult.data,
+                                    priceList = priceListResult.data.filter { !it.isArchived },
                                     name = workerResult.data.name,
                                     phone = workerResult.data.phone,
                                     about = workerResult.data.about,
