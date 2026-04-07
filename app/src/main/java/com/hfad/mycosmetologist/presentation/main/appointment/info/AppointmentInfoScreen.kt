@@ -28,6 +28,7 @@ import androidx.compose.ui.unit.sp
 import com.hfad.mycosmetologist.presentation.main.appointment.info.components.AppointmentInfoSectionCard
 import com.hfad.mycosmetologist.presentation.main.appointment.info.components.AppointmentInfoServiceItem
 import com.hfad.mycosmetologist.presentation.main.appointment.info.components.AppointmentInfoTopAppBar
+import com.hfad.mycosmetologist.presentation.navigation.AppScreen
 import com.hfad.mycosmetologist.presentation.navigation.Navigator
 
 @Composable
@@ -70,7 +71,7 @@ fun AppointmentInfoScreen(
     Scaffold(
         topBar = {
             AppointmentInfoTopAppBar(
-                onEditClick = {},
+                onEditClick = { viewModel.navigateTo(AppScreen.AppointmentChange(uiState.appointmentId)) },
                 onCancelClick = { showDeleteDialog = true },
             )
         },

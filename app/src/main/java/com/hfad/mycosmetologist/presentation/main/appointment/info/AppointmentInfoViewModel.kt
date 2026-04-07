@@ -104,6 +104,7 @@ constructor(
                             comment = appointment.description,
                             status = if (appointment.cancelled) "Отменена" else "Подтверждена",
                             total = "$totalPrice ₽",
+                            id = appointment.id
                         )
                     }
                 }

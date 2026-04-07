@@ -15,4 +15,5 @@ data class AppointmentInfoUiState(
     val comment: String = "",
     val status: String = "",
     val total: String = "",
+    val id: String =""
 )
