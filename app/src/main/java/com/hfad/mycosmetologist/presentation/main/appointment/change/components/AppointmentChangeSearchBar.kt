@@ -23,7 +23,7 @@ import com.hfad.mycosmetologist.domain.entity.Service
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AppointmentCreateSearchBar(
+fun AppointmentChangeSearchBar(
     textFieldState: TextFieldState,
     priceList: List<Service>,
     onClick: (Service) -> Unit,
@@ -32,12 +32,12 @@ fun AppointmentCreateSearchBar(
 
     val query = textFieldState.text.toString()
 
-    val filteredClients = remember(query, priceList) {
+    val filteredServices = remember(query, priceList) {
         if (query.isBlank()) {
             emptyList()
         } else {
-            priceList.filter { client ->
-                client.name.contains(query, ignoreCase = true)
+            priceList.filter { service ->
+                service.name.contains(query, ignoreCase = true)
             }
         }
     }
@@ -54,7 +54,7 @@ fun AppointmentCreateSearchBar(
                 onSearch = { expanded = false },
                 expanded = expanded,
                 onExpandedChange = { expanded = it },
-                placeholder = { Text("Найти услугу...") }
+                placeholder = { Text("Найти услугу...") },
             )
         },
         expanded = expanded,
@@ -62,15 +62,13 @@ fun AppointmentCreateSearchBar(
         colors = SearchBarDefaults.colors(
             containerColor = MaterialTheme.colorScheme.surface.copy(alpha = 0.3f),
             inputFieldColors = TextFieldDefaults.colors(
-                focusedContainerColor = MaterialTheme.colorScheme.surface.copy(
-                    alpha = 0.3f
-                ), unfocusedContainerColor = MaterialTheme.colorScheme.surface.copy(alpha = 0.3f)
-            )
-        )
-
+                focusedContainerColor = MaterialTheme.colorScheme.surface.copy(alpha = 0.3f),
+                unfocusedContainerColor = MaterialTheme.colorScheme.surface.copy(alpha = 0.3f),
+            ),
+        ),
     ) {
         LazyColumn {
-            items(items = filteredClients) { result ->
+            items(items = filteredServices) { result ->
                 ListItem(
                     headlineContent = { Text(result.name) },
                     modifier = Modifier
@@ -78,11 +76,9 @@ fun AppointmentCreateSearchBar(
                         .clickable {
                             onClick(result)
                             expanded = false
-                        }
+                        },
                 )
             }
-
-
         }
     }
 }

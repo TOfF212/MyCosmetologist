@@ -13,6 +13,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.ui.NavDisplay
 import com.hfad.mycosmetologist.presentation.main.appointment.change.AppointmentChangeScreen
+import com.hfad.mycosmetologist.presentation.main.appointment.change.AppointmentChangeViewModel
 import com.hfad.mycosmetologist.presentation.main.appointment.create.AppointmentCreateScreen
 import com.hfad.mycosmetologist.presentation.main.appointment.create.AppointmentCreateViewModel
 import com.hfad.mycosmetologist.presentation.main.appointment.info.AppointmentInfoScreen
@@ -87,8 +88,13 @@ class MainActivity : ComponentActivity() {
                                         AppointmentInfoScreen(navigator, viewModel)
                                     }
 
-                                    entry<AppScreen.AppointmentChange> {
-                                        AppointmentChangeScreen(it.id)
+                                    entry<AppScreen.AppointmentChange> { key ->
+                                        val viewModel = hiltViewModel<AppointmentChangeViewModel, AppointmentChangeViewModel.Factory>(
+                                            creationCallback = { factory ->
+                                                factory.create(key)
+                                            }
+                                        )
+                                        AppointmentChangeScreen(navigator, viewModel)
                                     }
 
                                     entry<AppScreen.AppointmentCreate> { key ->

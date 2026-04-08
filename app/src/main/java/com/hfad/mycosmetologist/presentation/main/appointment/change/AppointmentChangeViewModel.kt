@@ -5,34 +5,33 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.android.identity.util.UUID
 import com.hfad.mycosmetologist.domain.entity.Appointment
-import com.hfad.mycosmetologist.domain.useCase.appointment.ChangeAppointment
 import com.hfad.mycosmetologist.domain.useCase.appointment.GetAppointmentById
 import com.hfad.mycosmetologist.domain.useCase.appointment.GetAppointmentsByDate
+import com.hfad.mycosmetologist.domain.useCase.appointment.UpdateAppointment
 import com.hfad.mycosmetologist.domain.useCase.client.GetClient
 import com.hfad.mycosmetologist.domain.useCase.service.GetPriceList
 import com.hfad.mycosmetologist.domain.useCase.session.ObserveAuthorizedWorkerId
 import com.hfad.mycosmetologist.domain.util.Result
-import com.hfad.mycosmetologist.presentation.main.appointment.Change.AppointmentChangeViewModel
-import com.hfad.mycosmetologist.presentation.main.appointment.Change.entity.ChangeAppointmentAction
-import com.hfad.mycosmetologist.presentation.main.appointment.Change.entity.ChangeAppointmentEvent
-import com.hfad.mycosmetologist.presentation.main.appointment.Change.entity.ChangeAppointmentUiState
-import com.hfad.mycosmetologist.presentation.main.appointment.Change.entity.FormState
+import com.hfad.mycosmetologist.presentation.main.appointment.change.entity.ChangeAppointmentAction
 import com.hfad.mycosmetologist.presentation.main.appointment.change.entity.ChangeAppointmentEvent
+import com.hfad.mycosmetologist.presentation.main.appointment.change.entity.ChangeAppointmentUiState
+import com.hfad.mycosmetologist.presentation.main.appointment.change.entity.FormState
 import com.hfad.mycosmetologist.presentation.navigation.AppScreen
 import com.hfad.mycosmetologist.presentation.util.entity.PresentationAppointment
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.filterNotNull
+import kotlinx.coroutines.flow.filterIsInstance
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -47,15 +46,19 @@ import java.time.ZoneId
 class AppointmentChangeViewModel @AssistedInject constructor(
     @Assisted private val appScreen: AppScreen.AppointmentChange,
     private val getClient: GetClient,
-    private val observeAuthorizedWorkerId: ObserveAuthorizedWorkerId,    private val getPriceList: GetPriceList,
-    private val ChangeAppointment: ChangeAppointment,
+    private val observeAuthorizedWorkerId: ObserveAuthorizedWorkerId,
+    private val getPriceList: GetPriceList,
+    private val updateAppointment: UpdateAppointment,
     private val getAppointmentsByDate: GetAppointmentsByDate,
     private val clock: Clock,
-    private val getAppointmentById: GetAppointmentById
+    private val getAppointmentById: GetAppointmentById,
 ) : ViewModel() {
 
-
     private val appointmentId = appScreen.id
+
+    private val _event = MutableSharedFlow<ChangeAppointmentEvent>()
+    val event = _event.asSharedFlow()
+
     private val zone = ZoneId.systemDefault()
 
     private val formState = MutableStateFlow(FormState())
@@ -63,7 +66,14 @@ class AppointmentChangeViewModel @AssistedInject constructor(
 
     private val appointmentFlow = workerIdFlow.flatMapLatest { getAppointmentById(it, appointmentId) }
 
-    private val clientFlow = combine(appointmentFlow, workerIdFlow) { appointment, workerId -> workerId to appointment}.flatMapLatest { getClient(it.first, "d") }
+    private val currentAppointmentFlow = appointmentFlow.filterIsInstance<Result.Success<Appointment>>()
+
+    private val clientFlow =
+        combine(currentAppointmentFlow, workerIdFlow) { appointmentResult, workerId ->
+            workerId to appointmentResult.data.clientId
+        }.flatMapLatest { (workerId, clientId) ->
+            getClient(workerId, clientId)
+        }
 
     private val priceListFlow = workerIdFlow.flatMapLatest { getPriceList(it) }
     private val appointmentsFlow =
@@ -78,18 +88,19 @@ class AppointmentChangeViewModel @AssistedInject constructor(
         clientFlow,
         priceListFlow,
         appointmentsFlow,
-        appointmentFlow
+        appointmentFlow,
     ) { form, clientResult, priceResult, appsResult, appointmentResult ->
         val isLoading =
-            clientResult !is com.hfad.mycosmetologist.domain.util.Result.Success ||
-                priceResult !is com.hfad.mycosmetologist.domain.util.Result.Success ||
-                appsResult !is Result.Success || appointmentResult !is Result.Success
-
-
+            clientResult !is Result.Success ||
+                priceResult !is Result.Success ||
+                appsResult !is Result.Success ||
+                appointmentResult !is Result.Success
 
         if (isLoading) {
             return@combine ChangeAppointmentUiState(isLoading = true)
         }
+
+        val appointment = appointmentResult.data
         val client = clientResult.data
         val allPriceList = priceResult.data
         val activePriceList = allPriceList.filter { !it.isArchived }
@@ -98,51 +109,71 @@ class AppointmentChangeViewModel @AssistedInject constructor(
         val servicesMap = allPriceList.associateBy { it.id }
 
         ChangeAppointmentUiState(
+            appointmentId = appointment.id,
+            clientId = appointment.clientId,
             workerId = client.workerId,
-            selectedDate = appointmentResult.data.startTime,
-            startTime = appointmentResult.data.startTime,
-            endTime = appointmentResult.data.endTime,
-            selectedServices = appointmentResult.data.servicesIds,
-            about = appointmentResult.data.description,
-
+            selectedDate = form.selectedDate,
+            startTime = form.startTime,
+            endTime = form.endTime,
+            selectedServices = form.selectedServices,
+            about = form.about,
             clientName = client.name,
-            clientNumber = "${client.phone.get(0)} (${
-                client.phone.subSequence(
-                    1,
-                    4
-                )
-            }) ${client.phone.subSequence(4, 7)}-${
-                client.phone.subSequence(
-                    7,
-                    9
-                )
-            }-${client.phone.subSequence(9, 11)}",
-
+            clientNumber = "${client.phone[0]} (${client.phone.subSequence(1, 4)}) ${client.phone.subSequence(4, 7)}-${client.phone.subSequence(7, 9)}-${client.phone.subSequence(9, 11)}",
             appointmentList = appsList
-                .filter { !it.cancelled }
+                .filter { !it.cancelled && it.id != appointmentId }
                 .map {
                     PresentationAppointment.toPresentationAppointment(
                         it,
                         servicesMap,
-                        client.name
+                        client.name,
                     )
                 },
-
             priceList = activePriceList,
-            isLoading = false
+            isLoading = false,
         )
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), ChangeAppointmentUiState())
+
+    init {
+        viewModelScope.launch {
+            currentAppointmentFlow.collectLatest { result ->
+                val appointment = result.data
+                formState.update {
+                    it.copy(
+                        selectedDate = appointment.startTime.atZone(zone).toLocalDate(),
+                        startTime = appointment.startTime.atZone(zone).toLocalTime(),
+                        endTime = appointment.endTime.atZone(zone).toLocalTime(),
+                        about = appointment.description,
+                    )
+                }
+            }
+        }
+
+        viewModelScope.launch {
+            combine(currentAppointmentFlow, priceListFlow) { appointmentResult, priceResult ->
+                appointmentResult.data to priceResult
+            }.collectLatest { (appointment, priceResult) ->
+                if (priceResult !is Result.Success) return@collectLatest
+
+                formState.update {
+                    it.copy(
+                        selectedServices = priceResult.data.filter { service ->
+                            appointment.servicesIds.contains(service.id)
+                        },
+                    )
+                }
+            }
+        }
+    }
+
     fun onAction(action: ChangeAppointmentAction) {
         when (action) {
-
             is ChangeAppointmentAction.OnDateSelected ->
                 formState.update {
                     it.copy(
                         selectedDate = LocalDate.ofInstant(
-                            Instant.ofEpochMilli(
-                                action.date ?: return
-                            ), clock.zone
-                        )
+                            Instant.ofEpochMilli(action.date ?: return),
+                            clock.zone,
+                        ),
                     )
                 }
 
@@ -157,7 +188,7 @@ class AppointmentChangeViewModel @AssistedInject constructor(
 
             is ChangeAppointmentAction.OnServicesSelected ->
                 formState.update {
-                    val updated = it.copy(selectedServices = formState.value.selectedServices.plus(action.service))
+                    val updated = it.copy(selectedServices = formState.value.selectedServices.plus(action.service).distinctBy { service -> service.id })
                     updated.copy(endTime = calculateEndTime(updated))
                 }
 
@@ -184,18 +215,20 @@ class AppointmentChangeViewModel @AssistedInject constructor(
 
         if (ui.selectedServices.isEmpty()) {
             sendError("The services has not been chosen")
+            return
         }
+
         if (hasOverlap(ui)) {
             sendError("Время занято")
             return
         }
 
         viewModelScope.launch {
-            ChangeAppointment(
+            updateAppointment(
                 Appointment(
-                    id = UUID.randomUUID().toString(),
+                    id = ui.appointmentId.ifBlank { UUID.randomUUID().toString() },
                     workerId = ui.workerId,
-                    clientId = appScreen.clientId,
+                    clientId = ui.clientId,
                     startTime = LocalDateTime.of(ui.selectedDate, ui.startTime)
                         .atZone(zone)
                         .toInstant(),
@@ -204,22 +237,13 @@ class AppointmentChangeViewModel @AssistedInject constructor(
                         .toInstant(),
                     servicesIds = ui.selectedServices.map { it.id },
                     description = ui.about,
-                    cancelled = false
-                )
+                    cancelled = false,
+                ),
             ).collectLatest { result ->
-
                 when (result) {
-
-                    is Result.Loading -> {
-                    }
-
-                    is Result.Success -> {
-                        _event.emit(ChangeAppointmentEvent.Navigate)
-                    }
-
-                    is Result.Error -> {
-                        sendError(result.exception.message ?: "Ошибка сохранения")
-                    }
+                    is Result.Loading -> Unit
+                    is Result.Success -> _event.emit(ChangeAppointmentEvent.Navigate)
+                    is Result.Error -> sendError(result.exception.message ?: "Ошибка сохранения")
                 }
             }
         }
@@ -240,14 +264,10 @@ class AppointmentChangeViewModel @AssistedInject constructor(
         return start.plusMinutes(totalMinutes.toLong())
     }
 
-
     private fun sendError(message: String) {
         viewModelScope.launch {
             _event.emit(ChangeAppointmentEvent.Error(message))
         }
-        Log.d("APPOINTMENT_DEBUG", "workerId=${state.value.workerId}")
-        Log.d("APPOINTMENT_DEBUG", "clientId=${appScreen.clientId}")
-        Log.d("APPOINTMENT_DEBUG", "services=${state.value.selectedServices.map { it.id }}")
         Log.e("AppointmentChangeViewModel", message)
     }
 
@@ -271,6 +291,6 @@ class AppointmentChangeViewModel @AssistedInject constructor(
 
     @AssistedFactory
     interface Factory {
-        fun Change(appScreen: AppScreen.AppointmentChange): AppointmentChangeViewModel
+        fun create(appScreen: AppScreen.AppointmentChange): AppointmentChangeViewModel
     }
 }

@@ -2,7 +2,6 @@ package com.hfad.mycosmetologist.presentation.main.appointment.change
 
 import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -42,11 +41,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.hfad.mycosmetologist.R
-import com.hfad.mycosmetologist.presentation.main.appointment.Change.AppointmentChangeViewModel
-import com.hfad.mycosmetologist.presentation.main.appointment.Change.components.AppointmentChangeSearchBar
-import com.hfad.mycosmetologist.presentation.main.appointment.Change.components.ServicesListElement
-import com.hfad.mycosmetologist.presentation.main.appointment.Change.entity.ChangeAppointmentAction
-import com.hfad.mycosmetologist.presentation.main.appointment.Change.entity.ChangeAppointmentEvent
+import com.hfad.mycosmetologist.presentation.main.appointment.change.components.AppointmentChangeSearchBar
+import com.hfad.mycosmetologist.presentation.main.appointment.change.components.ServicesListElement
+import com.hfad.mycosmetologist.presentation.main.appointment.change.entity.ChangeAppointmentAction
+import com.hfad.mycosmetologist.presentation.main.appointment.change.entity.ChangeAppointmentEvent
 import com.hfad.mycosmetologist.presentation.navigation.Navigator
 import com.hfad.mycosmetologist.presentation.util.toMonthNameRes
 import com.hfad.mycosmetologist.presentation.util.uiComponents.AppDatePicker
@@ -55,12 +53,18 @@ import com.hfad.mycosmetologist.presentation.util.uiComponents.AppointmentListEl
 import com.hfad.mycosmetologist.presentation.util.uiComponents.TopAppBar
 
 @Composable
-fun AppointmentChangeScreen(navigator: Navigator,
-                            viewModel: AppointmentChangeViewModel) {
-    al uiState by viewModel.state.collectAsStateWithLifecycle()
+fun AppointmentChangeScreen(
+    navigator: Navigator,
+    viewModel: AppointmentChangeViewModel,
+) {
+    val uiState by viewModel.state.collectAsStateWithLifecycle()
 
     var aboutField by remember {
         mutableStateOf(TextFieldValue(uiState.about))
+    }
+
+    LaunchedEffect(uiState.about) {
+        aboutField = TextFieldValue(uiState.about)
     }
 
     val searchState = remember { TextFieldState("") }
@@ -69,6 +73,7 @@ fun AppointmentChangeScreen(navigator: Navigator,
     val startTimePickerState = remember { mutableStateOf(false) }
     val endTimePickerState = remember { mutableStateOf(false) }
     val context = LocalContext.current
+
     LaunchedEffect(Unit) {
         viewModel.event.collect { event ->
             when (event) {
@@ -119,7 +124,7 @@ fun AppointmentChangeScreen(navigator: Navigator,
 
     Scaffold(
         topBar = {
-            TopAppBar("Создание записи", {
+            TopAppBar("Изменение записи") {
                 Card(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -127,12 +132,12 @@ fun AppointmentChangeScreen(navigator: Navigator,
                     shape = RoundedCornerShape(14.dp),
                     colors = CardDefaults.cardColors(
                         containerColor = MaterialTheme.colorScheme.surface.copy(alpha = 0.3f),
-                        contentColor = MaterialTheme.colorScheme.onSurface
-                    )
+                        contentColor = MaterialTheme.colorScheme.onSurface,
+                    ),
                 ) {
                     Column(
                         modifier = Modifier.padding(14.dp),
-                        verticalArrangement = Arrangement.SpaceBetween
+                        verticalArrangement = Arrangement.SpaceBetween,
                     ) {
                         Text(
                             modifier = Modifier.alpha(0.65f),
@@ -164,24 +169,21 @@ fun AppointmentChangeScreen(navigator: Navigator,
                     priceList = uiState.priceList,
                     onClick = {
                         viewModel.onAction(ChangeAppointmentAction.OnServicesSelected(it))
-                    }
+                    },
                 )
-            })
-        }
+            }
+        },
     ) { paddingValues ->
-
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(paddingValues)
-                .padding(horizontal = 24.dp, vertical = 16.dp)
+                .padding(horizontal = 24.dp, vertical = 16.dp),
         ) {
-
             LazyColumn(
                 modifier = Modifier.weight(1f),
-                verticalArrangement = Arrangement.spacedBy(16.dp)
+                verticalArrangement = Arrangement.spacedBy(16.dp),
             ) {
-
                 item {
                     Text(
                         modifier = Modifier
@@ -199,14 +201,14 @@ fun AppointmentChangeScreen(navigator: Navigator,
                         onClick = { viewModel.onDateClick() },
                         colors = ButtonDefaults.buttonColors(
                             containerColor = MaterialTheme.colorScheme.surface,
-                            contentColor = MaterialTheme.colorScheme.onSurface
+                            contentColor = MaterialTheme.colorScheme.onSurface,
                         ),
                         elevation = ButtonDefaults.elevatedButtonElevation(defaultElevation = 1.dp),
-                        shape = RoundedCornerShape(14.dp)
+                        shape = RoundedCornerShape(14.dp),
                     ) {
                         Icon(
                             painter = painterResource(id = R.drawable.baseline_calendar_today_24),
-                            contentDescription = "Date"
+                            contentDescription = "Date",
                         )
                         Text(
                             modifier = Modifier
@@ -226,14 +228,14 @@ fun AppointmentChangeScreen(navigator: Navigator,
                         shape = RoundedCornerShape(14.dp),
                         colors = CardDefaults.cardColors(
                             containerColor = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.8f),
-                            contentColor = MaterialTheme.colorScheme.onPrimaryContainer
-                        )
+                            contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                        ),
                     ) {
                         Column(
                             modifier = Modifier
                                 .padding(10.dp)
                                 .fillMaxWidth(),
-                            horizontalAlignment = Alignment.CenterHorizontally
+                            horizontalAlignment = Alignment.CenterHorizontally,
                         ) {
                             Text(
                                 modifier = Modifier
@@ -243,7 +245,7 @@ fun AppointmentChangeScreen(navigator: Navigator,
                                 text = "Записи на ${uiState.selectedDate.dayOfMonth} ${stringResource(uiState.selectedDate.month.toMonthNameRes())}",
                                 fontWeight = FontWeight.ExtraBold,
                                 fontSize = 17.sp,
-                                textAlign = TextAlign.Center
+                                textAlign = TextAlign.Center,
                             )
 
                             if (uiState.appointmentList.isEmpty()) {
@@ -255,12 +257,11 @@ fun AppointmentChangeScreen(navigator: Navigator,
                                     text = "В этот день записей нет",
                                     fontWeight = FontWeight.ExtraBold,
                                     fontSize = 17.sp,
-                                    textAlign = TextAlign.Center
+                                    textAlign = TextAlign.Center,
                                 )
                             } else {
                                 Column {
                                     uiState.appointmentList
-                                        .filter { !it.cancelled }
                                         .forEach {
                                             AppointmentListElement(appointmentInfo = it, onClick = {})
                                         }
@@ -285,7 +286,7 @@ fun AppointmentChangeScreen(navigator: Navigator,
                 items(uiState.selectedServices) { item ->
                     ServicesListElement(
                         item,
-                        { viewModel.onAction(ChangeAppointmentAction.OnServicesDelete(item)) }
+                        { viewModel.onAction(ChangeAppointmentAction.OnServicesDelete(item)) },
                     )
                 }
 
@@ -306,14 +307,14 @@ fun AppointmentChangeScreen(navigator: Navigator,
                         onClick = { viewModel.onStartTimeClick() },
                         colors = ButtonDefaults.buttonColors(
                             containerColor = MaterialTheme.colorScheme.surface,
-                            contentColor = MaterialTheme.colorScheme.onSurface
+                            contentColor = MaterialTheme.colorScheme.onSurface,
                         ),
                         elevation = ButtonDefaults.elevatedButtonElevation(defaultElevation = 1.dp),
-                        shape = RoundedCornerShape(14.dp)
+                        shape = RoundedCornerShape(14.dp),
                     ) {
                         Icon(
                             painter = painterResource(id = R.drawable.baseline_access_time_24),
-                            contentDescription = "Time"
+                            contentDescription = "Time",
                         )
                         Text(
                             modifier = Modifier
@@ -344,14 +345,14 @@ fun AppointmentChangeScreen(navigator: Navigator,
                         onClick = { viewModel.onEndTimeClick() },
                         colors = ButtonDefaults.buttonColors(
                             containerColor = MaterialTheme.colorScheme.surface,
-                            contentColor = MaterialTheme.colorScheme.onSurface
+                            contentColor = MaterialTheme.colorScheme.onSurface,
                         ),
                         elevation = ButtonDefaults.elevatedButtonElevation(defaultElevation = 1.dp),
-                        shape = RoundedCornerShape(14.dp)
+                        shape = RoundedCornerShape(14.dp),
                     ) {
                         Icon(
                             painter = painterResource(id = R.drawable.baseline_access_time_24),
-                            contentDescription = "Time"
+                            contentDescription = "Time",
                         )
                         Text(
                             modifier = Modifier
@@ -383,7 +384,7 @@ fun AppointmentChangeScreen(navigator: Navigator,
                         onValueChange = { newValue ->
                             aboutField = newValue
                             viewModel.onAction(
-                                ChangeAppointmentAction.OnAboutChanged(newValue.text)
+                                ChangeAppointmentAction.OnAboutChanged(newValue.text),
                             )
                         },
                         modifier = Modifier
@@ -408,27 +409,24 @@ fun AppointmentChangeScreen(navigator: Navigator,
                         onClick = { viewModel.onAction(ChangeAppointmentAction.OnSaveClicked) },
                         colors = ButtonDefaults.buttonColors(
                             containerColor = MaterialTheme.colorScheme.secondaryContainer,
-                            contentColor = MaterialTheme.colorScheme.onSecondaryContainer
+                            contentColor = MaterialTheme.colorScheme.onSecondaryContainer,
                         ),
                         elevation = ButtonDefaults.elevatedButtonElevation(defaultElevation = 1.dp),
-                        shape = RoundedCornerShape(14.dp)
+                        shape = RoundedCornerShape(14.dp),
                     ) {
                         Text(
                             modifier = Modifier
                                 .alpha(0.9f)
                                 .fillMaxWidth()
                                 .padding(vertical = 7.dp, horizontal = 7.dp),
-                            text = "Создать Запись",
+                            text = "Сохранить изменения",
                             fontWeight = FontWeight.Bold,
                             fontSize = 19.sp,
-                            textAlign = TextAlign.Center
+                            textAlign = TextAlign.Center,
                         )
                     }
                 }
             }
-
-
         }
     }
-
 }
