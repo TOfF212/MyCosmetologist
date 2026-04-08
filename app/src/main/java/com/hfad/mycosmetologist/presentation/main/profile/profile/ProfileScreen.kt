@@ -1,4 +1,4 @@
-package com.hfad.mycosmetologist.presentation.main.profile
+package com.hfad.mycosmetologist.presentation.main.profile.profile
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -20,14 +20,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.hfad.mycosmetologist.domain.entity.Service
-import com.hfad.mycosmetologist.presentation.main.profile.components.AddServiceDialog
-import com.hfad.mycosmetologist.presentation.main.profile.components.ContactsCard
-import com.hfad.mycosmetologist.presentation.main.profile.components.EditServiceDialog
-import com.hfad.mycosmetologist.presentation.main.profile.components.PriceListCard
-import com.hfad.mycosmetologist.presentation.main.profile.components.ProfileTopAppBar
-import com.hfad.mycosmetologist.presentation.main.profile.entity.ProfileEvent
-import com.hfad.mycosmetologist.presentation.main.profile.entity.ProfileUiEvent
-import com.hfad.mycosmetologist.presentation.main.profile.entity.ProfileUiState
+import com.hfad.mycosmetologist.presentation.main.profile.profile.components.AddServiceDialog
+import com.hfad.mycosmetologist.presentation.main.profile.profile.components.ContactsCard
+import com.hfad.mycosmetologist.presentation.main.profile.profile.components.EditServiceDialog
+import com.hfad.mycosmetologist.presentation.main.profile.profile.components.PriceListCard
+import com.hfad.mycosmetologist.presentation.main.profile.profile.components.ProfileTopAppBar
+import com.hfad.mycosmetologist.presentation.main.profile.profile.entity.ProfileEvent
+import com.hfad.mycosmetologist.presentation.main.profile.profile.entity.ProfileUiEvent
+import com.hfad.mycosmetologist.presentation.main.profile.profile.entity.ProfileUiState
 import com.hfad.mycosmetologist.presentation.navigation.AppScreen
 import com.hfad.mycosmetologist.presentation.navigation.Navigator
 
@@ -91,7 +91,7 @@ fun ProfileScreen(
                         workerName = uiState.data.name,
                         specialization = uiState.data.specialization,
                         experience = uiState.data.experience,
-                        onClickEdit = { viewModel.onEvent(ProfileUiEvent.NavigateTo(AppScreen.Profile)) },
+                        onClickEdit = { viewModel.onEvent(ProfileUiEvent.NavigateTo(AppScreen.ProfileChange)) },
                         onClickStats = { viewModel.onEvent(ProfileUiEvent.NavigateTo(AppScreen.Home)) },
                     )
                 },

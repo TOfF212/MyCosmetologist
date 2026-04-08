@@ -14,6 +14,7 @@ import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
@@ -44,25 +45,24 @@ constructor(
     private val dateFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy")
     private val timeFormatter = DateTimeFormatter.ofPattern("HH:mm")
 
+    private var observeJob: Job? = null
+
     init {
-        loadAppointmentInfo()
+        refreshAppointmentInfo()
     }
 
-    private fun loadAppointmentInfo() {
-        viewModelScope.launch {
+    fun refreshAppointmentInfo() {
+        observeJob?.cancel()
+        observeJob = viewModelScope.launch {
             observeAuthorizedWorkerId()
                 .flatMapLatest { workerId ->
-                          combine(
-                                getAppointmentById(workerId, appScreen.id),
-                                getPriceList(workerId),
-                            ) { appointmentResult, priceListResult ->
-                                Triple(workerId, appointmentResult, priceListResult)
-                            }
-                }.collect { payload ->
-                    if (payload == null) {
-                        return@collect
+                    combine(
+                        getAppointmentById(workerId, appScreen.id),
+                        getPriceList(workerId),
+                    ) { appointmentResult, priceListResult ->
+                        Triple(workerId, appointmentResult, priceListResult)
                     }
-
+                }.collect { payload ->
                     val workerId = payload.first
                     val appointmentResult = payload.second
                     val priceListResult = payload.third
@@ -81,10 +81,9 @@ constructor(
                         }
                     }
 
-                    val totalPrice = servicesMap
-                        .filterKeys { appointment.servicesIds.contains(it) }
-                        .values
-                        .sumOf { it.price }
+                    val totalPrice = appointment.servicesIds.sumOf { id ->
+                        servicesMap[id]?.price ?: 0
+                    }
 
                     getClient(workerId, appointment.clientId).collect { clientResult ->
                         if (clientResult !is Result.Success) {
@@ -104,13 +103,12 @@ constructor(
                             comment = appointment.description,
                             status = if (appointment.cancelled) "Отменена" else "Подтверждена",
                             total = "$totalPrice ₽",
-                            id = appointment.id
+                            id = appointment.id,
                         )
                     }
                 }
         }
     }
-
     fun navigateTo(screen: AppScreen) {
         viewModelScope.launch {
             _navigation.emit(screen)

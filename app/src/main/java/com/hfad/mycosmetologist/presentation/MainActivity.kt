@@ -26,7 +26,8 @@ import com.hfad.mycosmetologist.presentation.main.clients.clientInfo.ClientInfoV
 import com.hfad.mycosmetologist.presentation.main.clients.clientsList.ClientsList
 import com.hfad.mycosmetologist.presentation.main.home.HomeScreen
 import com.hfad.mycosmetologist.presentation.main.priceList.PriceListScreen
-import com.hfad.mycosmetologist.presentation.main.profile.ProfileScreen
+import com.hfad.mycosmetologist.presentation.main.profile.profile.ProfileScreen
+import com.hfad.mycosmetologist.presentation.main.profile.profileChange.ProfileChangeScreen
 import com.hfad.mycosmetologist.presentation.main.splash.SplashScreen
 import com.hfad.mycosmetologist.presentation.main.splash.SplashViewModel
 import com.hfad.mycosmetologist.presentation.navigation.AppScreen
@@ -130,8 +131,9 @@ class MainActivity : ComponentActivity() {
                                         ProfileScreen(navigator = navigator)
                                     }
 
-
-
+                                    entry<AppScreen.ProfileChange> {
+                                        ProfileChangeScreen(navigator = navigator)
+                                    }
 
                                     entry<AppScreen.PriceList> {
                                         PriceListScreen()

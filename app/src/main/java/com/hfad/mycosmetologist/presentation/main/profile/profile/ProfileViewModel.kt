@@ -1,4 +1,4 @@
-package com.hfad.mycosmetologist.presentation.main.profile
+package com.hfad.mycosmetologist.presentation.main.profile.profile
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -10,10 +10,10 @@ import com.hfad.mycosmetologist.domain.useCase.service.GetPriceList
 import com.hfad.mycosmetologist.domain.useCase.service.UpdateService
 import com.hfad.mycosmetologist.domain.useCase.worker.GetWorker
 import com.hfad.mycosmetologist.domain.util.Result
-import com.hfad.mycosmetologist.presentation.main.profile.entity.Profile
-import com.hfad.mycosmetologist.presentation.main.profile.entity.ProfileEvent
-import com.hfad.mycosmetologist.presentation.main.profile.entity.ProfileUiEvent
-import com.hfad.mycosmetologist.presentation.main.profile.entity.ProfileUiState
+import com.hfad.mycosmetologist.presentation.main.profile.profile.entity.Profile
+import com.hfad.mycosmetologist.presentation.main.profile.profile.entity.ProfileEvent
+import com.hfad.mycosmetologist.presentation.main.profile.profile.entity.ProfileUiEvent
+import com.hfad.mycosmetologist.presentation.main.profile.profile.entity.ProfileUiState
 import com.hfad.mycosmetologist.presentation.navigation.AppScreen
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow

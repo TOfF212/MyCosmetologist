@@ -1,4 +1,4 @@
-package com.hfad.mycosmetologist.presentation.main.profile.components
+package com.hfad.mycosmetologist.presentation.main.profile.profile.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement

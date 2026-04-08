@@ -59,13 +59,6 @@ fun AppointmentChangeScreen(
 ) {
     val uiState by viewModel.state.collectAsStateWithLifecycle()
 
-    var aboutField by remember {
-        mutableStateOf(TextFieldValue(uiState.about))
-    }
-
-    LaunchedEffect(uiState.about) {
-        aboutField = TextFieldValue(uiState.about)
-    }
 
     val searchState = remember { TextFieldState("") }
 
@@ -380,12 +373,10 @@ fun AppointmentChangeScreen(
 
                 item {
                     TextField(
-                        value = aboutField,
+                        value = uiState.about,
                         onValueChange = { newValue ->
-                            aboutField = newValue
                             viewModel.onAction(
-                                ChangeAppointmentAction.OnAboutChanged(newValue.text),
-                            )
+                                ChangeAppointmentAction.OnAboutChanged(newValue),                            )
                         },
                         modifier = Modifier
                             .fillMaxWidth()

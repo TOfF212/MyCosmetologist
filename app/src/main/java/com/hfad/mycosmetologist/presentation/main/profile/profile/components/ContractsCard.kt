@@ -1,4 +1,4 @@
-package com.hfad.mycosmetologist.presentation.main.profile.components
+package com.hfad.mycosmetologist.presentation.main.profile.profile.components
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -12,7 +12,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.hfad.mycosmetologist.presentation.main.profile.entity.Profile
+import com.hfad.mycosmetologist.presentation.main.profile.profile.entity.Profile
 
 @Composable
 fun ContactsCard(profile: Profile) {

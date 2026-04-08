@@ -1,4 +1,4 @@
-package com.hfad.mycosmetologist.presentation.main.profile.entity
+package com.hfad.mycosmetologist.presentation.main.profile.profile.entity
 
 import com.hfad.mycosmetologist.domain.entity.Service
 import com.hfad.mycosmetologist.presentation.navigation.AppScreen

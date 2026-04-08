@@ -134,31 +134,26 @@ class AppointmentChangeViewModel @AssistedInject constructor(
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), ChangeAppointmentUiState())
 
     init {
-        viewModelScope.launch {
-            currentAppointmentFlow.collectLatest { result ->
-                val appointment = result.data
-                formState.update {
-                    it.copy(
-                        selectedDate = appointment.startTime.atZone(zone).toLocalDate(),
-                        startTime = appointment.startTime.atZone(zone).toLocalTime(),
-                        endTime = appointment.endTime.atZone(zone).toLocalTime(),
-                        about = appointment.description,
-                    )
-                }
-            }
-        }
+        var formInitialized = false
 
         viewModelScope.launch {
             combine(currentAppointmentFlow, priceListFlow) { appointmentResult, priceResult ->
                 appointmentResult.data to priceResult
             }.collectLatest { (appointment, priceResult) ->
-                if (priceResult !is Result.Success) return@collectLatest
+                if (priceResult !is Result.Success || formInitialized) {
+                    return@collectLatest
+                }
 
+                formInitialized = true
                 formState.update {
                     it.copy(
+                        selectedDate = appointment.startTime.atZone(zone).toLocalDate(),
+                        startTime = appointment.startTime.atZone(zone).toLocalTime(),
+                        endTime = appointment.endTime.atZone(zone).toLocalTime(),
                         selectedServices = priceResult.data.filter { service ->
                             appointment.servicesIds.contains(service.id)
                         },
+                        about = appointment.description,
                     )
                 }
             }
@@ -188,13 +183,23 @@ class AppointmentChangeViewModel @AssistedInject constructor(
 
             is ChangeAppointmentAction.OnServicesSelected ->
                 formState.update {
-                    val updated = it.copy(selectedServices = formState.value.selectedServices.plus(action.service).distinctBy { service -> service.id })
+                    val updated = it.copy(
+                        selectedServices = it.selectedServices.plus(action.service),
+                    )
                     updated.copy(endTime = calculateEndTime(updated))
                 }
 
             is ChangeAppointmentAction.OnServicesDelete ->
                 formState.update {
-                    val updated = it.copy(selectedServices = formState.value.selectedServices.minus(action.service))
+                    val updatedServices = it.selectedServices.toMutableList()
+                    val index = updatedServices.indexOfFirst { service ->
+                        service.id == action.service.id
+                    }
+                    if (index >= 0) {
+                        updatedServices.removeAt(index)
+                    }
+
+                    val updated = it.copy(selectedServices = updatedServices)
                     updated.copy(endTime = calculateEndTime(updated))
                 }
 
