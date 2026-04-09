@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name" translatable="false">My Cosmetologist</string>
+    <string name="app_name" translatable="false">Beules</string>
     <string name="auth_phone">Номер</string>
     <string name="auth_name">Имя</string>
     <string name="auth_password">Пароль</string>

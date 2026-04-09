@@ -3,14 +3,19 @@ package com.hfad.mycosmetologist.ui.theme
 import androidx.compose.ui.graphics.Color
 
 
-val primaryLight = Color(0xFFDFDDFD)
-val onPrimaryLight = Color(0xFF402F4B)
-val primaryContainerLight = Color(0xFFDFDDFD)
-val onPrimaryContainerLight = Color(0xFF402F4B)
-val secondaryLight = Color(0xFF5F857D)
-val onSecondaryLight = Color(0xFFFFFFFF)
-val secondaryContainerLight = Color(0xFFE1EAE6)
-val onSecondaryContainerLight = Color(0xFF0F3D36)
+val primaryLight = Color(0xFFB39DDB)
+val onPrimaryLight = Color(0xFF2A1B3D)
+
+val primaryContainerLight = Color(0xFFD1C4E9)
+val onPrimaryContainerLight = Color(0xFF2A1B3D)
+
+
+// SECONDARY (mint)
+val secondaryLight = Color(0xFF7FD3C5)
+val onSecondaryLight = Color(0xFF00332B)
+
+val secondaryContainerLight = Color(0xFFCFF5E7)
+val onSecondaryContainerLight = Color(0xFF00332B)
 val tertiaryLight = Color(0xFF82524E)
 val onTertiaryLight = Color(0xFFFFFFFF)
 val tertiaryContainerLight = Color(0xFFFFDAD7)
@@ -19,24 +24,32 @@ val errorLight = Color(0xFFBA1A1A)
 val onErrorLight = Color(0xFFFFFFFF)
 val errorContainerLight = Color(0xFFFFDAD6)
 val onErrorContainerLight = Color(0xFF93000A)
-val backgroundLight = Color(0xFFF6F2FA)
+val backgroundLight = Color(0xFFF7F6FB)
+val surfaceLight = Color(0xFFFFFFFF)
+
+val surfaceContainerLight = Color(0xFFF1EFFA)
+val surfaceContainerHighLight = Color(0xFFEAE7F7)
+val surfaceContainerHighestLight = Color(0xFFE3E0F3)
+
+
+// OUTLINE (мягкий mint-серый)
+val outlineLight = Color(0xFFD6EAE5)
+val outlineVariantLight = Color(0xFFE3F1ED)
+
+
+// INVERSE PRIMARY (для dark overlays)
+val inversePrimaryLight = Color(0xFF8E7CC3)
 val onBackgroundLight = Color(0xFF1F1A1F)
-val surfaceLight = Color(0xFFFFF7FB)
 val onSurfaceLight = Color(0xFF1F1A1F)
 val surfaceVariantLight = Color(0xFFEBDFE9)
 val onSurfaceVariantLight = Color(0xFF4C444C)
-val outlineLight = Color(0xFFD6E1DD)
-val outlineVariantLight = Color(0xFFE3ECE8)
+
 val inverseSurfaceLight = Color(0xFF342F34)
 val inverseOnSurfaceLight = Color(0xFFF8EEF5)
-val inversePrimaryLight = Color(0xFFE7B6F1)
 val surfaceDimLight = Color(0xFFDCE5E1)
 val surfaceBrightLight = Color(0xFFF3F6F4)
 val surfaceContainerLowestLight = Color(0xFFFFFFFF)
 val surfaceContainerLowLight = Color(0xFFEEF4F1)
-val surfaceContainerLight = Color(0xFFECEBFE)
-val surfaceContainerHighLight = Color(0xFFF1F0FE)
-val surfaceContainerHighestLight = Color(0xFFDAE4E0)
 
 val scrimLight = Color(0xFF000000)
 
