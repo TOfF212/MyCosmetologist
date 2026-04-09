@@ -20,12 +20,6 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 object DataBaseModule {
-    private val migration1To2: Migration =
-        object : Migration(1, 2) {
-            override fun migrate(db: SupportSQLiteDatabase) {
-                db.execSQL("ALTER TABLE services ADD COLUMN is_archived INTEGER NOT NULL DEFAULT 0")
-            }
-        }
 
     @Provides
     @Singleton
@@ -37,7 +31,7 @@ object DataBaseModule {
                 context,
                 AppDatabase::class.java,
                 "my_cosmetologist.db",
-            ).addMigrations(migration1To2)
+            )
             .build()
 
     @Provides

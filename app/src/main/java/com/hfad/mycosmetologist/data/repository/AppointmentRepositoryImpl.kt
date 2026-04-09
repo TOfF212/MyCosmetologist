@@ -32,8 +32,8 @@ constructor(
                 appointment.servicesIds.forEach { serviceId ->
                     appointmentServiceDao.insert(
                         AppointmentServiceDbEntity(
-                            appointment.id,
-                            serviceId,
+                            appointmentId = appointment.id,
+                            serviceId =  serviceId,
                         ),
                     )
                 }
@@ -56,8 +56,8 @@ constructor(
                 appointment.servicesIds.forEach { serviceId ->
                     appointmentServiceDao.insert(
                         AppointmentServiceDbEntity(
-                            appointment.id,
-                            serviceId,
+                            appointmentId = appointment.id,
+                            serviceId =  serviceId,
                         ),
                     )
                 }

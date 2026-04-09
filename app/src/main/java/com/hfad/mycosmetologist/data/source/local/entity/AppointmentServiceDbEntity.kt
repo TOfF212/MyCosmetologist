@@ -4,10 +4,10 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.Index
+import androidx.room.PrimaryKey
 
 @Entity(
     tableName = "appointment_service",
-    primaryKeys = ["appointment_id", "service_id"],
     indices = [
         Index("appointment_id"),
         Index("service_id"),
@@ -29,6 +29,7 @@ import androidx.room.Index
     ],
 )
 data class AppointmentServiceDbEntity(
+    @PrimaryKey(autoGenerate = true) val id: Int = 0,
     @ColumnInfo(name = "appointment_id") val appointmentId: String,
     @ColumnInfo(name = "service_id") val serviceId: String,
 )

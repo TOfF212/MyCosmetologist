@@ -23,7 +23,7 @@ import com.hfad.mycosmetologist.data.source.local.entity.WorkerDbEntity
         ServiceDbEntity::class,
         WorkerDbEntity::class,
     ],
-    version = 2,
+    version = 1,
     exportSchema = false,
 )
 @TypeConverters(
