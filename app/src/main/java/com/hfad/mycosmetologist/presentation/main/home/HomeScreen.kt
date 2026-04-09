@@ -113,10 +113,12 @@ fun HomeScreen(
                     }
 
                     items(ui.currentAppointmentsList) { item ->
+                        if(!item.cancelled){
                         AppointmentListElement(
-                            if (item.cancelled) MaterialTheme.colorScheme.onBackground.copy(0.3f) else MaterialTheme.colorScheme.secondaryContainer,
+                             MaterialTheme.colorScheme.secondaryContainer,
                             item,
                             { viewModel.navigateTo(AppScreen.AppointmentInfo(item.id)) })
+                        }
                     }
 
                     item {
@@ -132,10 +134,12 @@ fun HomeScreen(
                         )
                     }
                     items(ui.pastAppointmentsList) { item ->
+                        if (!item.cancelled) {
                         AppointmentListElement(
-                            if (item.cancelled) MaterialTheme.colorScheme.onBackground.copy(0.3f) else MaterialTheme.colorScheme.primaryContainer,
+                            MaterialTheme.colorScheme.primaryContainer,
                             appointmentInfo = item,
                             onClick = { viewModel.navigateTo(AppScreen.AppointmentInfo(item.id)) })
+                    }
                     }
                 }
             }

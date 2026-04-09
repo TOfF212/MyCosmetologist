@@ -121,7 +121,7 @@ fun ClientInfoScreen(navigator: Navigator, viewModel: ClientInfoViewModel = hilt
 
                         items(state.client.currentList) { item ->
                             AppointmentListElement(
-                                MaterialTheme.colorScheme.primaryContainer,
+                                if(item.cancelled) MaterialTheme.colorScheme.scrim.copy(alpha = 0.3f) else MaterialTheme.colorScheme.secondaryContainer,
                                 item,
                                 { viewModel.navigateTo(AppScreen.AppointmentInfo(item.id)) },
                                 text1 = item.services,
@@ -142,6 +142,7 @@ fun ClientInfoScreen(navigator: Navigator, viewModel: ClientInfoViewModel = hilt
                         }
                         items(state.client.pastList) { item ->
                             AppointmentListElement(
+                                if(item.cancelled) MaterialTheme.colorScheme.scrim.copy(alpha = 0.3f) else MaterialTheme.colorScheme.primaryContainer,
                                 appointmentInfo = item,
                                 onClick = { viewModel.navigateTo(AppScreen.AppointmentInfo(item.id)) },
                                 text1 = item.services,

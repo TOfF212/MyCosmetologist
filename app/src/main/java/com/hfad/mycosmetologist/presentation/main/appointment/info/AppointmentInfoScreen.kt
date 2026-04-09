@@ -64,8 +64,16 @@ fun AppointmentInfoScreen(
     if (showDeleteDialog) {
         AlertDialog(
             onDismissRequest = { showDeleteDialog = false },
-            title = { Text("Отменить запись") },
-            text = { Text("Вы точно хотите удалить запись?") },
+            title = { Text(if (uiState.cancelled) "Возобновить запись" else "Отменить запись") },
+            text = {
+                Text(
+                    if (uiState.cancelled) {
+                        "Вы точно хотите возобновить запись?"
+                    } else {
+                        "Вы точно хотите отменить запись?"
+                    },
+                )
+            },
             confirmButton = {
                 TextButton(
                     onClick = {
@@ -73,12 +81,11 @@ fun AppointmentInfoScreen(
                         showDeleteDialog = false
                     },
                 ) {
-                    Text("Удалить")
-                }
+                    Text(if (uiState.cancelled) "Возобновить" else "Отменить")                }
             },
             dismissButton = {
                 TextButton(onClick = { showDeleteDialog = false }) {
-                    Text("Оставить")
+                    Text("Назад")
                 }
             },
         )
@@ -89,6 +96,7 @@ fun AppointmentInfoScreen(
             AppointmentInfoTopAppBar(
                 onEditClick = { viewModel.navigateTo(AppScreen.AppointmentChange(uiState.appointmentId)) },
                 onCancelClick = { showDeleteDialog = true },
+                isCancelled = uiState.cancelled
             )
         },
     ) { paddingValues ->

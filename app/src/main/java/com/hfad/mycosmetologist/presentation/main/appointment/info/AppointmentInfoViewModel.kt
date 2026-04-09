@@ -2,7 +2,9 @@ package com.hfad.mycosmetologist.presentation.main.appointment.info
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.hfad.mycosmetologist.domain.entity.Appointment
 import com.hfad.mycosmetologist.domain.useCase.appointment.GetAppointmentById
+import com.hfad.mycosmetologist.domain.useCase.appointment.UpdateAppointment
 import com.hfad.mycosmetologist.domain.useCase.client.GetClient
 import com.hfad.mycosmetologist.domain.useCase.service.GetPriceList
 import com.hfad.mycosmetologist.domain.useCase.session.ObserveAuthorizedWorkerId
@@ -35,6 +37,7 @@ constructor(
     private val observeAuthorizedWorkerId: ObserveAuthorizedWorkerId, private val getAppointmentById: GetAppointmentById,
     private val getClient: GetClient,
     private val getPriceList: GetPriceList,
+    private val updateAppointment: UpdateAppointment,
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(AppointmentInfoUiState())
     val uiState = _uiState.asStateFlow()
@@ -44,7 +47,7 @@ constructor(
 
     private val dateFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy")
     private val timeFormatter = DateTimeFormatter.ofPattern("HH:mm")
-
+    private var currentAppointment: Appointment? = null
     private var observeJob: Job? = null
 
     init {
@@ -75,6 +78,7 @@ constructor(
                     val appointment = appointmentResult.data
                     val servicesMap = priceListResult.data.associateBy { it.id }
                     val zone = ZoneId.systemDefault()
+                    currentAppointment = appointment
                     val services = appointment.servicesIds.mapNotNull { id ->
                         servicesMap[id]?.let { service ->
                             service.name to "${service.price} ₽"
@@ -104,8 +108,10 @@ constructor(
                             status = if (appointment.cancelled) "Отменена" else "Подтверждена",
                             total = "$totalPrice ₽",
                             id = appointment.id,
+                            cancelled = appointment.cancelled,
                         )
                     }
+
                 }
         }
     }
@@ -123,8 +129,18 @@ constructor(
     }
 
     fun deleteAppointment() {
-        // Intentionally empty for now.
-    }
+        val appointment = currentAppointment ?: return
+        viewModelScope.launch {
+            updateAppointment(
+                appointment.copy(
+                    cancelled = !appointment.cancelled,
+                ),
+            ).collect { result ->
+                if (result is Result.Success) {
+                    refreshAppointmentInfo()
+                }
+            }
+        }    }
 
     @AssistedFactory
     interface Factory {

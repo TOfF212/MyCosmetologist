@@ -23,6 +23,7 @@ import com.hfad.mycosmetologist.presentation.util.uiComponents.TopAppBar
 fun AppointmentInfoTopAppBar(
     onEditClick: () -> Unit,
     onCancelClick: () -> Unit,
+    isCancelled: Boolean,
 ) {
     TopAppBar(headlineText = "Запись") {
         Row(
@@ -56,9 +57,8 @@ fun AppointmentInfoTopAppBar(
                 ),
             ) {
                 Row() {
-                    Icon(painter = painterResource(R.drawable.outline_cancel_24), contentDescription = "Cancel")
-                    Text(text = "Отменить", fontWeight = FontWeight.Bold)
-
+                    Icon(painter = if (isCancelled) painterResource(R.drawable.outline_autorenew_24) else  painterResource(R.drawable.outline_cancel_24), contentDescription = "Cancel")
+                    Text(text = if (isCancelled) "Возобновить" else "Отменить", fontWeight = FontWeight.Bold)
                 }
             }
         }
