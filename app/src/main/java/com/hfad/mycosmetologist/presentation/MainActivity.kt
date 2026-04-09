@@ -3,6 +3,7 @@ package com.hfad.mycosmetologist.presentation
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import com.hfad.mycosmetologist.presentation.main.clients.clientChange.ClientChangeViewModel
 import androidx.activity.viewModels
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
@@ -82,6 +83,8 @@ class MainActivity : ComponentActivity() {
 
                                     entry<AppScreen.AppointmentInfo> { key ->
                                         val viewModel = hiltViewModel<AppointmentInfoViewModel, AppointmentInfoViewModel.Factory>(
+
+                                            key = "appointment_info_${key.id}",
                                             creationCallback = { factory ->
                                                 factory.create(key)
                                             }
@@ -91,6 +94,7 @@ class MainActivity : ComponentActivity() {
 
                                     entry<AppScreen.AppointmentChange> { key ->
                                         val viewModel = hiltViewModel<AppointmentChangeViewModel, AppointmentChangeViewModel.Factory>(
+                                            key = "appointment_change_${key.id}",
                                             creationCallback = { factory ->
                                                 factory.create(key)
                                             }
@@ -101,6 +105,7 @@ class MainActivity : ComponentActivity() {
                                     entry<AppScreen.AppointmentCreate> { key ->
                                         val viewModel =
                                             hiltViewModel<AppointmentCreateViewModel, AppointmentCreateViewModel.Factory>(
+                                                key = "appointment_create_${key.clientId}",
                                                 creationCallback = { factory ->
                                                     factory.create(key)
 
@@ -112,6 +117,7 @@ class MainActivity : ComponentActivity() {
                                     entry<AppScreen.ClientInfo> { key ->
                                         val viewModel =
                                             hiltViewModel<ClientInfoViewModel, ClientInfoViewModel.Factory>(
+                                                key = "client_info_${key.id}",
                                                 creationCallback = { factory ->
                                                     factory.create(key)
                                                 }
@@ -119,8 +125,15 @@ class MainActivity : ComponentActivity() {
                                         ClientInfoScreen(navigator, viewModel)
                                     }
 
-                                    entry<AppScreen.ClientChange> {
-                                        ClientChangeScreen(it.id)
+                                    entry<AppScreen.ClientChange> { key ->
+                                        val viewModel =
+                                            hiltViewModel<ClientChangeViewModel, ClientChangeViewModel.Factory>(
+                                                key = "client_change_${key.id}",
+                                                creationCallback = { factory ->
+                                                    factory.create(key)
+                                                }
+                                            )
+                                        ClientChangeScreen(navigator = navigator, viewModel = viewModel)
                                     }
 
                                     entry<AppScreen.ClientCreate> {

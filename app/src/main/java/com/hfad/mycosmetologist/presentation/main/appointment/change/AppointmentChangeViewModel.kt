@@ -150,9 +150,7 @@ class AppointmentChangeViewModel @AssistedInject constructor(
                         selectedDate = appointment.startTime.atZone(zone).toLocalDate(),
                         startTime = appointment.startTime.atZone(zone).toLocalTime(),
                         endTime = appointment.endTime.atZone(zone).toLocalTime(),
-                        selectedServices = priceResult.data.filter { service ->
-                            appointment.servicesIds.contains(service.id)
-                        },
+                        selectedServices =  appointment.servicesIds.mapNotNull{ id -> priceResult.data.find { it.id == id }},
                         about = appointment.description,
                     )
                 }

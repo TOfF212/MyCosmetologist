@@ -9,33 +9,48 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.hfad.mycosmetologist.R
 
 @Composable
-fun ClientChangeForm() {
+fun ClientChangeForm(
+    isLoading: Boolean,
+    name: String,
+    phone: String,
+    about: String,
+    onNameChanged: (String) -> Unit,
+    onPhoneChanged: (String) -> Unit,
+    onAboutChanged: (String) -> Unit,
+    onSubmitClick: () -> Unit,
+) {
     Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
         ClientChangeTextField(
-            value = "Анна Иванова",
-            label = "Имя",
+            value = name,
+            onValueChange = onNameChanged,
+            label = stringResource(R.string.auth_name),
             singleLine = true,
         )
 
         ClientChangeTextField(
-            value = "+7 999 123-45-67",
-            label = "Телефон",
+            value = phone,
+            onValueChange = onPhoneChanged,
+            label = stringResource(R.string.auth_phone),
             singleLine = true,
         )
 
         ClientChangeTextField(
-            value = "Чувствительная кожа, предпочитает вечерние записи.",
-            label = "О клиенте",
+            value = about,
+            onValueChange = onAboutChanged,
+            label = stringResource(R.string.AboutClient),
             modifier = Modifier.height(120.dp),
             singleLine = false,
             maxLines = 4,
@@ -44,7 +59,8 @@ fun ClientChangeForm() {
         Spacer(modifier = Modifier.weight(1f))
 
         Button(
-            onClick = {},
+            onClick = onSubmitClick,
+            enabled = !isLoading,
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(bottom = 15.dp),
@@ -54,7 +70,14 @@ fun ClientChangeForm() {
                 contentColor = MaterialTheme.colorScheme.onSecondaryContainer,
             ),
         ) {
-            Text(text = "Сохранить изменения", fontWeight = FontWeight.Bold)
+            if (isLoading) {
+                CircularProgressIndicator(
+                    strokeWidth = 2.dp,
+                    modifier = Modifier.height(20.dp),
+                )
+            } else {
+                Text(text = "Сохранить изменения", fontWeight = FontWeight.Bold)
+            }
         }
     }
 }
@@ -62,6 +85,7 @@ fun ClientChangeForm() {
 @Composable
 private fun ClientChangeTextField(
     value: String,
+    onValueChange: (String) -> Unit,
     label: String,
     modifier: Modifier = Modifier,
     singleLine: Boolean,
@@ -69,7 +93,7 @@ private fun ClientChangeTextField(
 ) {
     OutlinedTextField(
         value = value,
-        onValueChange = {},
+        onValueChange = onValueChange,
         label = { Text(text = label) },
         modifier = modifier.fillMaxWidth(),
         colors = OutlinedTextFieldDefaults.colors(

@@ -8,7 +8,7 @@ import androidx.compose.ui.unit.sp
 import com.hfad.mycosmetologist.presentation.util.uiComponents.TopAppBar
 
 @Composable
-fun ClientChangeTopAppBar(clientId: String) {
+fun ClientChangeTopAppBar() {
     TopAppBar(headlineText = "Редактирование") {
         Text(
             text = "Клиент",

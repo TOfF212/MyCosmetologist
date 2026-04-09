@@ -64,9 +64,9 @@ constructor(
                     phone = phone.value,
                     about = "",
                     password = password.value,
-                    experience = 5,
-                    email = "abs@emil.com",
-                    specialization = "Косметолог"
+                    experience = 0,
+                    email = "-",
+                    specialization = "-"
                 ),
             ).collect { result ->
                 when (result) {

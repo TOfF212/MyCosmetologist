@@ -34,6 +34,7 @@ class ClientRepositoryImpl
                 emit(Result.Loading)
                 try {
                     clientDao.update(client.toDbModel())
+                    emit(Result.Success(Unit))
                 } catch (e: Exception) {
                     emit(Result.Error(e))
                 }

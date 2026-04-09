@@ -14,6 +14,12 @@ class Navigator {
         Log.d("Navigator", "Navigate go to: $screen")
     }
 
+    fun replaceScreen(screen: AppScreen) {
+        backStack.removeLast()
+        backStack.add(screen)
+        Log.d("Navigator", "Navigate replace screen with: $screen")
+    }
+
     fun setRoot(screen: AppScreen) {
         if (backStack.isEmpty()) {
             backStack.add(screen)
@@ -22,7 +28,7 @@ class Navigator {
     }
 
     fun goBack() {
-        if (backStack.size > 1) {
+        if (backStack.size > 0) {
             backStack.removeLast()
         }
         Log.d("Navigator", "Navigate go back to: ${backStack.get(backStack.lastIndex)}")
