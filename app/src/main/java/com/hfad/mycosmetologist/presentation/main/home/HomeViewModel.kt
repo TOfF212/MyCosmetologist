@@ -58,14 +58,15 @@ constructor(
             )
 
     private fun buildUiState(workerId: String): Flow<HomeUiState> =
-        currentDay.flatMapLatest { date ->
+        currentDay.flatMapLatest { date: LocalDate ->
             val startOfDay = date.atStartOfDay(clock.zone).toInstant()
+            val now = Instant.now(clock)
             combine(
                 getAppointmentsByDate(workerId, startOfDay),
                 getUpcomingAppointments(workerId, startOfDay),
                 getPriceList(workerId),
                 getClientList(workerId),
-                getPastAppointments(workerId, Instant.now(clock)),
+                getPastAppointments(workerId, now),
             ) { current, upcoming, priceList, clientList, past ->
                 when {
                     current is Result.Success &&
@@ -91,8 +92,24 @@ constructor(
                             } else {
                                 nearestWorkDayAppointments
                             }
+                        val displayDay =
+                            if (hasAppointmentsOnSelectedDay) {
+                                date
+                            } else {
+                                nearestWorkDayAppointments
+                                    .firstOrNull()
+                                    ?.startTime
+                                    ?.atZone(clock.zone)
+                                    ?.toLocalDate()
+                            }
+                        val displayAppointments =
+                            if (displayDay == LocalDate.now(clock)) {
+                                appointmentsForDisplayDay.filter { it.endTime > now }
+                            } else {
+                                appointmentsForDisplayDay
+                            }
                         val activeAppointments =
-                            appointmentsForDisplayDay
+                            displayAppointments
                                 .filter { !it.cancelled }
                                 .map {
                                     PresentationAppointment.toPresentationAppointment(
@@ -102,7 +119,7 @@ constructor(
                                     )
                                 }
                         val cancelledAppointments =
-                            appointmentsForDisplayDay
+                            displayAppointments
                                 .filter { it.cancelled }
                                 .map {
                                     PresentationAppointment.toPresentationAppointment(

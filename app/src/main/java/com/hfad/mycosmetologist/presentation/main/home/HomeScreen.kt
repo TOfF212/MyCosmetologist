@@ -142,7 +142,8 @@ fun HomeScreen(
                         AppointmentListElement(
                             MaterialTheme.colorScheme.primaryContainer,
                             appointmentInfo = item,
-                            onClick = { viewModel.navigateTo(AppScreen.AppointmentInfo(item.id)) })
+                            onClick = { viewModel.navigateTo(AppScreen.AppointmentInfo(item.id)) },
+                            showDateInsteadOfTime = true)
                     }
 
                     item {

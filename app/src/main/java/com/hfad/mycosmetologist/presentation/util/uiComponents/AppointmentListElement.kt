@@ -18,12 +18,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.hfad.mycosmetologist.R
 import com.hfad.mycosmetologist.presentation.util.entity.PresentationAppointment
+import com.hfad.mycosmetologist.presentation.util.toMonthNameRes
 
 @Composable
 fun AppointmentListElement(
@@ -32,6 +34,7 @@ fun AppointmentListElement(
     onClick: () -> Unit,
     text1: String = appointmentInfo.clientName,
     text2: String = appointmentInfo.services,
+    showDateInsteadOfTime: Boolean = false,
 ) {
     Card(
         modifier = Modifier
@@ -91,12 +94,24 @@ fun AppointmentListElement(
                     ) {
                         Row {
                             Icon(
-                                painter = painterResource(id = R.drawable.baseline_access_time_24),
+                                painter = painterResource(
+                                    id = if (showDateInsteadOfTime) {
+                                        R.drawable.baseline_calendar_today_24
+                                    } else {
+                                        R.drawable.baseline_access_time_24
+                                    }
+                                ),
                                 contentDescription = "time",
                             )
                             Text(
                                 modifier = Modifier.alpha(0.92f),
-                                text = "${appointmentInfo.startTime}-${appointmentInfo.endTime}",
+                                text = if (showDateInsteadOfTime) {
+                                    "${appointmentInfo.day} ${
+                                        stringResource(appointmentInfo.month.toMonthNameRes())
+                                    }"
+                                } else {
+                                    "${appointmentInfo.startTime}-${appointmentInfo.endTime}"
+                                },
                                 maxLines = 1,
                             )
                         }

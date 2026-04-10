@@ -34,7 +34,7 @@ fun HistoryScreen(
     val state by viewModel.uiState.collectAsState()
 
     Column(modifier = Modifier.fillMaxSize()) {
-        TopAppBar(headlineText = stringResource(R.string.appointmentsHistory)) {
+        TopAppBar(headlineText = "История записей") {
             Button(onClick = { navigator.goTo(AppScreen.Profile) }) {
                 Text(text = "Назад")
             }
