@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.hfad.mycosmetologist.domain.useCase.appointment.GetAppointmentsByDate
 import com.hfad.mycosmetologist.domain.useCase.appointment.GetPastAppointments
+import com.hfad.mycosmetologist.domain.useCase.appointment.GetUpcomingAppointments
 import com.hfad.mycosmetologist.domain.useCase.client.GetClientList
 import com.hfad.mycosmetologist.domain.useCase.service.GetPriceList
 import com.hfad.mycosmetologist.domain.useCase.session.ObserveAuthorizedWorkerId
@@ -35,7 +36,7 @@ class HomeViewModel
 @Inject
 constructor(
     private val getAppointmentsByDate: GetAppointmentsByDate,
-    private val getPastAppointments: GetPastAppointments,
+    private val getUpcomingAppointments: GetUpcomingAppointments,
     private val getClientList: GetClientList,
     private val getPriceList: GetPriceList,
     private val observeAuthorizedWorkerId: ObserveAuthorizedWorkerId, private val clock: Clock,
@@ -62,8 +63,7 @@ constructor(
             val startOfDay = date.atStartOfDay(clock.zone).toInstant()
             combine(
                 getAppointmentsByDate(workerId, startOfDay),
-                getPastAppointments(workerId, Instant.now(clock)),
-                getPriceList(workerId),
+                getUpcomingAppointments(workerId, Instant.now(clock)),                getPriceList(workerId),
                 getClientList(workerId),
             ) { current, past, priceList, clientList ->
                 when {
@@ -75,13 +75,16 @@ constructor(
                         val clientsMap = clientList.data.associateBy { it.id }
                         HomeUiState.Success(
                             currentAppointmentsList =
-                                current.data.map {
-                                    PresentationAppointment.toPresentationAppointment(
-                                        it,
-                                        servicesMap,
-                                        clientsMap.get(it.clientId)!!.name
-                                    )
-                                },
+                                current.data
+                                    .filter { appointment ->
+                                        date != LocalDate.now(clock) || appointment.startTime >= Instant.now(clock)
+                                    }.map {
+                                        PresentationAppointment.toPresentationAppointment(
+                                            it,
+                                            servicesMap,
+                                            clientsMap.get(it.clientId)!!.name
+                                        )
+                                    },
                             pastAppointmentsList =
                                 past.data.map {
                                     PresentationAppointment.toPresentationAppointment(

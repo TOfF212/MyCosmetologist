@@ -93,6 +93,7 @@ fun ProfileScreen(
                         experience = uiState.data.experience,
                         onClickEdit = { viewModel.onEvent(ProfileUiEvent.NavigateTo(AppScreen.ProfileChange)) },
                         onClickStats = { viewModel.onEvent(ProfileUiEvent.NavigateTo(AppScreen.Home)) },
+                        onClickHistory = { viewModel.onEvent(ProfileUiEvent.NavigateTo(AppScreen.History)) },
                     )
                 },
             ) { paddingValues ->

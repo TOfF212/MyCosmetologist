@@ -39,12 +39,25 @@ interface AppointmentDao {
         ORDER BY start_time ASC
     """,
     )
+
     suspend fun getByDate(
         workerId: String,
         start: Long,
         end: Long,
     ): List<AppointmentDbEntity>
-
+    @Query(
+        """
+        SELECT * FROM appointments
+        WHERE worker_id = :workerId
+        AND end_time > :now
+        ORDER BY start_time ASC
+        LIMIT 20
+    """,
+    )
+    suspend fun get20Upcoming(
+        workerId: String,
+        now: Long,
+    ): List<AppointmentDbEntity>
     @Query(
         """
         SELECT * FROM appointments

@@ -27,6 +27,7 @@ import com.hfad.mycosmetologist.presentation.main.clients.clientInfo.ClientInfoV
 import com.hfad.mycosmetologist.presentation.main.clients.clientsList.ClientsList
 import com.hfad.mycosmetologist.presentation.main.home.HomeScreen
 import com.hfad.mycosmetologist.presentation.main.priceList.PriceListScreen
+import com.hfad.mycosmetologist.presentation.main.profile.history.HistoryScreen
 import com.hfad.mycosmetologist.presentation.main.profile.profile.ProfileScreen
 import com.hfad.mycosmetologist.presentation.main.profile.profileChange.ProfileChangeScreen
 import com.hfad.mycosmetologist.presentation.main.splash.SplashScreen
@@ -150,6 +151,9 @@ class MainActivity : ComponentActivity() {
 
                                     entry<AppScreen.PriceList> {
                                         PriceListScreen()
+                                    }
+                                    entry<AppScreen.History> {
+                                        HistoryScreen(navigator = navigator)
                                     }
                                 },
                         )

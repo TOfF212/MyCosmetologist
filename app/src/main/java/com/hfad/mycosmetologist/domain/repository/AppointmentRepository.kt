@@ -7,6 +7,11 @@ import java.time.Instant
 
 interface AppointmentRepository {
     fun createAppointment(appointment: Appointment): Flow<Result<Unit>>
+    fun getUpcomingAppointments(
+        workerId: String,
+        from: Instant,
+    ): Flow<Result<List<Appointment>>>
+
 
     fun updateAppointment(appointment: Appointment): Flow<Result<Unit>>
 

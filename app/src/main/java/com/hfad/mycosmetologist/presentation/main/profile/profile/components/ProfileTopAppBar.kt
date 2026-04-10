@@ -35,7 +35,8 @@ fun ProfileTopAppBar(
     specialization: String,
     experience: String,
     onClickEdit: () -> Unit,
-    onClickStats: () -> Unit
+    onClickStats: () -> Unit,
+    onClickHistory: () -> Unit,
 ) {
     TopAppBar(headlineText = "Профиль") {
         Column(
@@ -141,6 +142,23 @@ fun ProfileTopAppBar(
                         )
                     }
                 }
+            }
+            Button(
+                onClick = onClickHistory,
+                modifier = Modifier
+                    .padding(horizontal = 3.dp)
+                    .fillMaxWidth(),
+                shape = RoundedCornerShape(14.dp),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = MaterialTheme.colorScheme.primaryContainer,
+                    contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                ),
+            ) {
+                Text(
+                    text = "История записей",
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold,
+                )
             }
         }
     }

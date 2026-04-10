@@ -231,4 +231,34 @@ constructor(
                 emit(Result.Error(e))
             }
         }.catch { emit(Result.Error(it)) }
+
+    override fun getUpcomingAppointments(
+        workerId: String,
+        from: Instant,
+    ): Flow<Result<List<Appointment>>> =
+        flow {
+            emit(Result.Loading)
+
+            try {
+                val result =
+                    appointmentDao
+                        .get20Upcoming(
+                            workerId,
+                            from.toEpochMilli(),
+                        ).map { entity ->
+                            val servicesIds =
+                                appointmentServiceDao
+                                    .getByAppointmentId(entity.id)
+                                    .map { it.serviceId }
+
+                            entity
+                                .toDomainModel()
+                                .copy(servicesIds = servicesIds.toMutableList())
+                        }
+
+                emit(Result.Success(result))
+            } catch (e: Exception) {
+                emit(Result.Error(e))
+            }
+        }.catch { emit(Result.Error(it)) }
 }

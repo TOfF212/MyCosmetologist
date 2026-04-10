@@ -39,4 +39,7 @@ sealed interface AppScreen : NavKey {
     data object ProfileChange : AppScreen
     @Serializable
     data object PriceList : AppScreen
+
+    @Serializable
+    data object History : AppScreen
 }
