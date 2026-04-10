@@ -141,6 +141,26 @@ fun HomeScreen(
                             onClick = { viewModel.navigateTo(AppScreen.AppointmentInfo(item.id)) })
                     }
                     }
+                    item {
+                        Text(
+                            modifier = Modifier
+                                .padding(7.dp)
+                                .alpha(0.9f)
+                                .fillMaxWidth(),
+                            text = "Отмененные записи",
+                            fontWeight = FontWeight.ExtraBold,
+                            fontSize = 19.sp,
+                            color = MaterialTheme.colorScheme.onSecondaryContainer
+                        )
+                    }
+                    items(ui.pastAppointmentsList + ui.currentAppointmentsList) { item ->
+                        if (item.cancelled) {
+                            AppointmentListElement(
+                                MaterialTheme.colorScheme.scrim.copy(alpha = 0.3f),
+                                appointmentInfo = item,
+                                onClick = { viewModel.navigateTo(AppScreen.AppointmentInfo(item.id)) })
+                        }
+                    }
                 }
             }
 

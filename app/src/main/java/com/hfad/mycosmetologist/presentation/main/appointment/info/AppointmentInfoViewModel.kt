@@ -137,6 +137,13 @@ constructor(
                 ),
             ).collect { result ->
                 if (result is Result.Success) {
+                    currentAppointment = appointment.copy(cancelled = !appointment.cancelled)
+                    _uiState.update {
+                        it.copy(
+                            cancelled = !appointment.cancelled,
+                            status = if (!appointment.cancelled) "Отменена" else "Подтверждена",
+                        )
+                    }
                     refreshAppointmentInfo()
                 }
             }

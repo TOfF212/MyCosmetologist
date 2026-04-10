@@ -114,7 +114,8 @@ constructor(
     fun getRevenue(): String {
         var res = 0
         if (uiState.value is HomeUiState.Success) {
-            (uiState.value as HomeUiState.Success).currentAppointmentsList.forEach { res += it.profit.toInt() }
+            (uiState.value as HomeUiState.Success).currentAppointmentsList.filter { !it.cancelled }.forEach { res += it.profit.toInt() }
+            (uiState.value as HomeUiState.Success).pastAppointmentsList.filter { !it.cancelled }.forEach { res += it.profit.toInt() }
         }
         return res.toString()
     }
@@ -122,7 +123,7 @@ constructor(
     fun getAppointmentsCountString(): String {
         var res = 0
         if (uiState.value is HomeUiState.Success) {
-            res = (uiState.value as HomeUiState.Success).currentAppointmentsList.size
+            res = (uiState.value as HomeUiState.Success).currentAppointmentsList.filter { !it.cancelled }.size + (uiState.value as HomeUiState.Success).pastAppointmentsList.filter { !it.cancelled }.size
         }
         return res.toString()
     }

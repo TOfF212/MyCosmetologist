@@ -20,6 +20,7 @@ import dagger.assisted.AssistedInject
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
@@ -43,15 +44,20 @@ class ClientInfoViewModel @AssistedInject constructor(
     private val _event = MutableSharedFlow<ClientInfoEvent>()
     val event = _event.asSharedFlow()
 
-    val uiState: StateFlow<ClientInfoUiState> =        observeAuthorizedWorkerId()
-        .flatMapLatest { workerId ->
-            buildUiState(workerId)
+    private val refreshTrigger = MutableStateFlow(0L)
+
+    val uiState: StateFlow<ClientInfoUiState> =
+        refreshTrigger
+            .flatMapLatest {
+                observeAuthorizedWorkerId()
+                    .flatMapLatest { workerId ->
+                        buildUiState(workerId)
+                    }
             }.stateIn(
                 viewModelScope,
                 SharingStarted.WhileSubscribed(5_000),
                 ClientInfoUiState.Loading,
             )
-
     private fun buildUiState(workerId: String): Flow<ClientInfoUiState> =
         combine(
             getClient(workerId, clientId),
@@ -126,7 +132,9 @@ class ClientInfoViewModel @AssistedInject constructor(
         }
     }
 
-
+    fun refreshClientInfo() {
+        refreshTrigger.value = System.currentTimeMillis()
+    }
     @AssistedFactory
     interface Factory {
         fun create(appScreen: AppScreen.ClientInfo): ClientInfoViewModel
