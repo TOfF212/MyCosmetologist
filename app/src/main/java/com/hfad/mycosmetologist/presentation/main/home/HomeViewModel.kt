@@ -8,7 +8,6 @@ import com.hfad.mycosmetologist.domain.useCase.appointment.GetUpcomingAppointmen
 import com.hfad.mycosmetologist.domain.useCase.client.GetClientList
 import com.hfad.mycosmetologist.domain.useCase.service.GetPriceList
 import com.hfad.mycosmetologist.domain.useCase.session.ObserveAuthorizedWorkerId
-import com.hfad.mycosmetologist.domain.useCase.worker.GetActualWorker
 import com.hfad.mycosmetologist.domain.util.Result
 import com.hfad.mycosmetologist.presentation.main.home.entity.HomeEvent
 import com.hfad.mycosmetologist.presentation.main.home.entity.HomeUiState
@@ -23,7 +22,6 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flatMapLatest
-import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import java.time.Clock
@@ -40,6 +38,7 @@ constructor(
     private val getClientList: GetClientList,
     private val getPriceList: GetPriceList,
     private val observeAuthorizedWorkerId: ObserveAuthorizedWorkerId, private val clock: Clock,
+    private val getPastAppointments: GetPastAppointments,
 ) : ViewModel() {
     private val _currentDay = MutableStateFlow(LocalDate.now(clock))
     val currentDay: StateFlow<LocalDate> get() = _currentDay
@@ -63,36 +62,83 @@ constructor(
             val startOfDay = date.atStartOfDay(clock.zone).toInstant()
             combine(
                 getAppointmentsByDate(workerId, startOfDay),
-                getUpcomingAppointments(workerId, Instant.now(clock)),                getPriceList(workerId),
+                getUpcomingAppointments(workerId, startOfDay),
+                getPriceList(workerId),
                 getClientList(workerId),
-            ) { current, past, priceList, clientList ->
+                getPastAppointments(workerId, Instant.now(clock)),
+            ) { current, upcoming, priceList, clientList, past ->
                 when {
                     current is Result.Success &&
-                        past is Result.Success &&
+                        upcoming is Result.Success &&
                         priceList is Result.Success &&
-                        clientList is Result.Success -> {
+                        clientList is Result.Success &&
+                        past is Result.Success -> {
                         val servicesMap = priceList.data.associateBy { it.id }
                         val clientsMap = clientList.data.associateBy { it.id }
-                        HomeUiState.Success(
-                            currentAppointmentsList =
-                                current.data
-                                    .filter { appointment ->
-                                        date != LocalDate.now(clock) || appointment.startTime >= Instant.now(clock)
-                                    }.map {
-                                        PresentationAppointment.toPresentationAppointment(
-                                            it,
-                                            servicesMap,
-                                            clientsMap.get(it.clientId)!!.name
-                                        )
-                                    },
-                            pastAppointmentsList =
-                                past.data.map {
+                        val selectedDayAppointments = current.data
+                        val hasAppointmentsOnSelectedDay = selectedDayAppointments.isNotEmpty()
+                        val nearestWorkDayAppointments =
+                            upcoming.data
+                                .sortedBy { it.startTime }
+                                .groupBy { it.startTime.atZone(clock.zone).toLocalDate() }
+                                .toSortedMap()
+                                .values
+                                .firstOrNull()
+                                .orEmpty()
+                        val appointmentsForDisplayDay =
+                            if (hasAppointmentsOnSelectedDay) {
+                                selectedDayAppointments
+                            } else {
+                                nearestWorkDayAppointments
+                            }
+                        val activeAppointments =
+                            appointmentsForDisplayDay
+                                .filter { !it.cancelled }
+                                .map {
                                     PresentationAppointment.toPresentationAppointment(
                                         it,
                                         servicesMap,
-                                        clientsMap.get(it.clientId)!!.name
+                                        clientsMap.get(it.clientId)!!.name,
                                     )
-                                },
+                                }
+                        val cancelledAppointments =
+                            appointmentsForDisplayDay
+                                .filter { it.cancelled }
+                                .map {
+                                    PresentationAppointment.toPresentationAppointment(
+                                        it,
+                                        servicesMap,
+                                        clientsMap.get(it.clientId)!!.name,
+                                    )
+                                }
+                        val lastNonCancelledAppointments =
+                            past.data
+                                .filter { !it.cancelled }
+                                .take(5)
+                                .map {
+                                    PresentationAppointment.toPresentationAppointment(
+                                        it,
+                                        servicesMap,
+                                        clientsMap.get(it.clientId)!!.name,
+                                    )
+                                }
+                        val fallbackDay =
+                            if (!hasAppointmentsOnSelectedDay && nearestWorkDayAppointments.isNotEmpty()) {
+                                nearestWorkDayAppointments
+                                    .first()
+                                    .startTime
+                                    .atZone(clock.zone)
+                                    .toLocalDate()
+                            } else {
+                                null
+                            }
+
+                        HomeUiState.Success(
+                            currentAppointmentsList = activeAppointments,
+                            pastAppointmentsList = lastNonCancelledAppointments,
+                            cancelledAppointmentsList = cancelledAppointments,
+                            isFallbackDay = !hasAppointmentsOnSelectedDay,
+                            fallbackDay = fallbackDay,
                         )
                     }
 
@@ -117,8 +163,8 @@ constructor(
     fun getRevenue(): String {
         var res = 0
         if (uiState.value is HomeUiState.Success) {
-            (uiState.value as HomeUiState.Success).currentAppointmentsList.filter { !it.cancelled }.forEach { res += it.profit.toInt() }
-            (uiState.value as HomeUiState.Success).pastAppointmentsList.filter { !it.cancelled }.forEach { res += it.profit.toInt() }
+            (uiState.value as HomeUiState.Success).currentAppointmentsList.forEach { res += it.profit.toInt() }
+            (uiState.value as HomeUiState.Success).pastAppointmentsList.forEach { res += it.profit.toInt() }
         }
         return res.toString()
     }
@@ -126,7 +172,7 @@ constructor(
     fun getAppointmentsCountString(): String {
         var res = 0
         if (uiState.value is HomeUiState.Success) {
-            res = (uiState.value as HomeUiState.Success).currentAppointmentsList.filter { !it.cancelled }.size + (uiState.value as HomeUiState.Success).pastAppointmentsList.filter { !it.cancelled }.size
+            res = (uiState.value as HomeUiState.Success).currentAppointmentsList.size + (uiState.value as HomeUiState.Success).pastAppointmentsList.size
         }
         return res.toString()
     }

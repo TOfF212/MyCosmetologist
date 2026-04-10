@@ -92,6 +92,13 @@ fun HomeScreen(
             date = "${currentDay.value.dayOfMonth} ${
                 stringResource(currentDay.value.month.toMonthNameRes())
             }",
+            fallbackText = (state as? HomeUiState.Success)?.takeIf { it.isFallbackDay }?.let { successState ->
+                successState.fallbackDay?.let { fallbackDay ->
+                    "Сегодня записей нет, можно отдыхать.\nБлижайшие записи: ${fallbackDay.dayOfMonth} ${
+                        stringResource(fallbackDay.month.toMonthNameRes())
+                    }"
+                } ?: "Сегодня записей нет, можно отдыхать."
+            },
         )
 
 
@@ -113,12 +120,10 @@ fun HomeScreen(
                     }
 
                     items(ui.currentAppointmentsList) { item ->
-                        if(!item.cancelled){
                         AppointmentListElement(
                              MaterialTheme.colorScheme.secondaryContainer,
                             item,
                             { viewModel.navigateTo(AppScreen.AppointmentInfo(item.id)) })
-                        }
                     }
 
                     item {
@@ -134,13 +139,12 @@ fun HomeScreen(
                         )
                     }
                     items(ui.pastAppointmentsList) { item ->
-                        if (!item.cancelled) {
                         AppointmentListElement(
                             MaterialTheme.colorScheme.primaryContainer,
                             appointmentInfo = item,
                             onClick = { viewModel.navigateTo(AppScreen.AppointmentInfo(item.id)) })
                     }
-                    }
+
                     item {
                         Text(
                             modifier = Modifier
@@ -153,13 +157,12 @@ fun HomeScreen(
                             color = MaterialTheme.colorScheme.onSecondaryContainer
                         )
                     }
-                    items(ui.pastAppointmentsList + ui.currentAppointmentsList) { item ->
-                        if (item.cancelled) {
-                            AppointmentListElement(
-                                MaterialTheme.colorScheme.scrim.copy(alpha = 0.3f),
-                                appointmentInfo = item,
-                                onClick = { viewModel.navigateTo(AppScreen.AppointmentInfo(item.id)) })
-                        }
+
+                    items(ui.cancelledAppointmentsList) { item ->
+                        AppointmentListElement(
+                            MaterialTheme.colorScheme.scrim.copy(alpha = 0.3f),
+                            appointmentInfo = item,
+                            onClick = { viewModel.navigateTo(AppScreen.AppointmentInfo(item.id)) })
                     }
                 }
             }

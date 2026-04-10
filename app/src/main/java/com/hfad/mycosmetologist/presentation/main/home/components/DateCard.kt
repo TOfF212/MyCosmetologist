@@ -33,6 +33,7 @@ fun DateCard(
     clients: String,
     date: String,
     revenue: String,
+    fallbackText: String? = null,
 ) {
     Card(
         modifier =
@@ -74,6 +75,17 @@ fun DateCard(
                     textAlign = TextAlign.Center,
                     fontWeight = FontWeight.Bold,
                 )
+                if (fallbackText != null) {
+                    Text(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(bottom = 8.dp),
+                        text = fallbackText,
+                        color = MaterialTheme.colorScheme.onPrimaryContainer,
+                        textAlign = TextAlign.Center,
+                        fontSize = 14.sp,
+                    )
+                }
                 Row(
                     modifier =
                         Modifier
