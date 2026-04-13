@@ -196,36 +196,12 @@ constructor(
             emit(Result.Loading)
 
             try {
-                val startMillis = appointment.startTime.toEpochMilli()
-
-                var previous =
-                    appointmentDao.getPrevious(
-                        appointment.workerId,
-                        startMillis,
-                    )
-                while (previous?.cancelled ?: false){
-                    previous = appointmentDao.getNext(
-                        previous.id,
-                        previous.startTime.toEpochMilli()
-                    )
-                }
-                var next =
-                    appointmentDao.getNext(
-                        appointment.workerId,
-                        startMillis,
-                    )
-
-                while (next?.cancelled ?: false){
-                    next = appointmentDao.getNext(
-                        next.id,
-                        next.startTime.toEpochMilli()
-                    )
-                }
-
-                val busy =
-                    (previous?.endTime?.isAfter(appointment.startTime) ?: false)
-                        || (next?.startTime?.isBefore(appointment.endTime) ?: false)
-
+                val busy = appointmentDao.hasTimeConflict(
+                    workerId = appointment.workerId,
+                    appointmentId = appointment.id,
+                    startTime = appointment.startTime.toEpochMilli(),
+                    endTime = appointment.endTime.toEpochMilli(),
+                )
                 emit(Result.Success(busy))
             } catch (e: Exception) {
                 emit(Result.Error(e))

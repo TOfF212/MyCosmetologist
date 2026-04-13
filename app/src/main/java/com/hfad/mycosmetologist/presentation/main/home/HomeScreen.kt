@@ -94,16 +94,24 @@ fun HomeScreen(
             }",
             fallbackText = (state as? HomeUiState.Success)?.takeIf { it.isFallbackDay }?.let { successState ->
                 successState.fallbackDay?.let { fallbackDay ->
-                    "Сегодня записей нет, можно отдыхать.\nБлижайшие записи: ${fallbackDay.dayOfMonth} ${
+                    "На выбранный день записей нет.\nБлижайшие записи: ${fallbackDay.dayOfMonth} ${
                         stringResource(fallbackDay.month.toMonthNameRes())
                     }"
-                } ?: "Сегодня записей нет, можно отдыхать."
+                } ?: "На выбранный день записей нет."
             },
         )
 
 
         when (val ui = state) {
             is HomeUiState.Success -> {
+                val currentAppointmentsTitle =
+                    if (ui.isFallbackDay && ui.fallbackDay != null) {
+                        "Ближайшие записи на ${ui.fallbackDay.dayOfMonth} ${
+                            stringResource(ui.fallbackDay.month.toMonthNameRes())
+                        }"
+                    } else {
+                        stringResource(R.string.appointmentsToday)
+                    }
                 LazyColumn {
 
                     item {
@@ -112,7 +120,7 @@ fun HomeScreen(
                                 .padding(7.dp)
                                 .alpha(0.9f)
                                 .fillMaxWidth(),
-                            text = stringResource(R.string.appointmentsToday),
+                            text = currentAppointmentsTitle,
                             fontWeight = FontWeight.ExtraBold,
                             fontSize = 19.sp,
                             color = MaterialTheme.colorScheme.onSecondaryContainer
@@ -121,7 +129,7 @@ fun HomeScreen(
 
                     items(ui.currentAppointmentsList) { item ->
                         AppointmentListElement(
-                             MaterialTheme.colorScheme.secondaryContainer,
+                            MaterialTheme.colorScheme.secondaryContainer,
                             item,
                             { viewModel.navigateTo(AppScreen.AppointmentInfo(item.id)) })
                     }

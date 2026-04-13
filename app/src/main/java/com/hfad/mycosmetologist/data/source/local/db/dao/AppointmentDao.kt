@@ -126,4 +126,22 @@ interface AppointmentDao {
         workerId: String,
         now: Long,
     ): AppointmentDbEntity?
+    @Query(
+        """
+        SELECT EXISTS(
+            SELECT 1 FROM appointments
+            WHERE worker_id = :workerId
+            AND id != :appointmentId
+            AND cancelled = 0
+            AND start_time < :endTime
+            AND end_time > :startTime
+        )
+    """,
+    )
+    suspend fun hasTimeConflict(
+        workerId: String,
+        appointmentId: String,
+        startTime: Long,
+        endTime: Long,
+    ): Boolean
 }
