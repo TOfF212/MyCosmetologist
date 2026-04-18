@@ -9,5 +9,4 @@ data class WorkerRemoteEntity (
     val experience: Int = 0,
     val email: String = "",
     val updatedAt: Long = 0L,
-    val isSynced: Boolean = false
 )

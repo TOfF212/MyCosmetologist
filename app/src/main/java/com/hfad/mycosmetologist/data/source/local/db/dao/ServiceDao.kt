@@ -7,6 +7,8 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
 import com.hfad.mycosmetologist.data.source.local.entity.ServiceDbEntity
+import com.hfad.mycosmetologist.data.source.local.entity.WorkerDbEntity
+import com.hfad.mycosmetologist.domain.entity.Service
 
 @Dao
 interface ServiceDao {
@@ -61,4 +63,7 @@ interface ServiceDao {
         name: String,
         workerId: String,
     ): ServiceDbEntity?
+
+    @Query("SELECT * FROM services WHERE is_synced = 0")
+    suspend fun getUnsynced(): List<ServiceDbEntity>
 }

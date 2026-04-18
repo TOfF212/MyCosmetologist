@@ -144,4 +144,6 @@ interface AppointmentDao {
         startTime: Long,
         endTime: Long,
     ): Boolean
+    @Query("SELECT * FROM appointments WHERE is_synced = 0")
+    suspend fun getUnsynced(): List<AppointmentDbEntity>
 }

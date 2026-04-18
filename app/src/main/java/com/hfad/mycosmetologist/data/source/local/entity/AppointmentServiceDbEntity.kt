@@ -32,4 +32,6 @@ data class AppointmentServiceDbEntity(
     @PrimaryKey(autoGenerate = true) val id: Int = 0,
     @ColumnInfo(name = "appointment_id") val appointmentId: String,
     @ColumnInfo(name = "service_id") val serviceId: String,
+    @ColumnInfo(name = "updated_at") val updatedAt: Long = 0L,
+    @ColumnInfo(name = "is_synced") val isSynced: Boolean = false,
 )

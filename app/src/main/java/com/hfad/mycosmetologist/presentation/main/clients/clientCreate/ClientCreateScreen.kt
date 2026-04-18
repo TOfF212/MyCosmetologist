@@ -3,6 +3,7 @@ package com.hfad.mycosmetologist.presentation.main.clients.clientCreate
 import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -11,6 +12,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Checkbox
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
@@ -20,6 +22,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
@@ -37,7 +40,7 @@ fun ClientCreateScreen(
     navigator: Navigator,
     viewModel: ClientCreateViewModel = hiltViewModel()
 ) {
-
+    val hasNoPhone by viewModel.hasNoPhone.collectAsState()
     val context = LocalContext.current
     val phone by viewModel.phone.collectAsState()
     val name by viewModel.name.collectAsState()
@@ -112,11 +115,20 @@ fun ClientCreateScreen(
                         cursorColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.8f),
                         focusedLabelColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.8f)
                     ),
+                    enabled = !hasNoPhone,
                     singleLine = true,
                     shape = RoundedCornerShape(12.dp),
 
                     )
-
+                Row(
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Checkbox(
+                        checked = hasNoPhone,
+                        onCheckedChange = viewModel::onHasNoPhoneChanged
+                    )
+                    Text(text = stringResource(R.string.no_phone))
+                }
                 OutlinedTextField(
                     value = about,
                     onValueChange = viewModel::onAboutChanged,

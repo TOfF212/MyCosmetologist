@@ -28,5 +28,5 @@
     <string name="ClientIsAlreadyExist">Клиент уже существует</string>
     <string name="AboutClient">О клиенте</string>
     <string name="about">Описание</string>
-
+    <string name="no_phone">Нет телефона</string>
 </resources>

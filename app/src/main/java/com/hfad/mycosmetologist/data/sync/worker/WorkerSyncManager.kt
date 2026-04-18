@@ -1,7 +1,5 @@
-package com.hfad.mycosmetologist.data.sync.workers
+package com.hfad.mycosmetologist.data.sync.worker
 
-import com.hfad.mycosmetologist.data.mapper.toDbModel
-import com.hfad.mycosmetologist.data.mapper.toDomainModel
 import com.hfad.mycosmetologist.data.mapper.toRemoteEntity
 import com.hfad.mycosmetologist.data.source.local.db.dao.WorkerDao
 import com.hfad.mycosmetologist.data.source.remote.worker.WorkerFirestoreDataSource
@@ -13,7 +11,7 @@ class WorkerSyncManager @Inject constructor(
     private val remote: WorkerFirestoreDataSource,
 ) : Syncable {
 
-    suspend fun sync() {
+    override suspend fun sync() {
         pushLocalChanges()
     }
 

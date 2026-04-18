@@ -24,4 +24,6 @@ data class ClientDbEntity(
     @ColumnInfo(name = "name") val name: String,
     @ColumnInfo(name = "phone")val phone: String,
     @ColumnInfo(name = "about") val about: String,
+    @ColumnInfo(name = "updated_at") val updatedAt: Long = 0L,
+    @ColumnInfo(name = "is_synced") val isSynced: Boolean = false,
 )

@@ -36,5 +36,7 @@ data class AppointmentDbEntity(
     @ColumnInfo(name = "description") val description: String,
     @ColumnInfo(name = "start_time") val startTime: Instant,
     @ColumnInfo(name = "end_time") val endTime: Instant,
-    @ColumnInfo(name = "cancelled") val cancelled: Boolean
+    @ColumnInfo(name = "cancelled") val cancelled: Boolean,
+    @ColumnInfo(name = "updated_at") val updatedAt: Long = 0L,
+    @ColumnInfo(name = "is_synced") val isSynced: Boolean = false,
 )

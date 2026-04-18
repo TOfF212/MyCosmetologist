@@ -26,6 +26,9 @@ class ClientCreateViewModel @Inject constructor(
     private val _phone = MutableStateFlow("")
     val phone: StateFlow<String> = _phone
 
+    private val _hasNoPhone = MutableStateFlow(false)
+    val hasNoPhone: StateFlow<Boolean> = _hasNoPhone
+
     private val _name = MutableStateFlow("")
     val name: StateFlow<String> = _name
 
@@ -36,8 +39,16 @@ class ClientCreateViewModel @Inject constructor(
     val events = _events.asSharedFlow()
 
     fun onPhoneChanged(newValue: String) {
+        if (hasNoPhone.value) return
         _phone.update {
             newValue.filter { char -> char.isDigit() }.take(11)
+        }
+    }
+
+    fun onHasNoPhoneChanged(newValue: Boolean) {
+        _hasNoPhone.update { newValue }
+        if (newValue) {
+            _phone.update { "" }
         }
     }
 
@@ -54,7 +65,7 @@ class ClientCreateViewModel @Inject constructor(
     }
 
     fun onSubmitClick() {
-        if (phone.value.length != 11) {
+        if (!hasNoPhone.value && phone.value.length != 11) {
             viewModelScope.launch {
                 _events.emit(CreateClientEvent.ShowError(Exception("The number length is uncorrected")))
             }
@@ -70,7 +81,7 @@ class ClientCreateViewModel @Inject constructor(
                 Client(
                     id = UUID.randomUUID().toString(),
                     name = name.value,
-                    phone = phone.value,
+                    phone = if (hasNoPhone.value) "80000000000" else phone.value,
                     about = about.value,
                     workerId = workerId,
                 ),

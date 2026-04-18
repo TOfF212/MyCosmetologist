@@ -1,4 +1,5 @@
 package com.hfad.mycosmetologist.data.sync.core
 
-interface Syncable {
+fun interface Syncable {
+    suspend fun sync()
 }

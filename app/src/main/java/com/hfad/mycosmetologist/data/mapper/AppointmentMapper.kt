@@ -1,6 +1,7 @@
 package com.hfad.mycosmetologist.data.mapper
 
 import com.hfad.mycosmetologist.data.source.local.entity.AppointmentDbEntity
+import com.hfad.mycosmetologist.data.source.remote.appointment.AppointmentRemoteEntity
 import com.hfad.mycosmetologist.domain.entity.Appointment
 
 fun Appointment.toDbModel(): AppointmentDbEntity =
@@ -24,4 +25,16 @@ fun AppointmentDbEntity.toDomainModel(): Appointment =
         endTime = endTime,
         servicesIds = mutableListOf<String>(),
         cancelled = cancelled
+    )
+fun AppointmentDbEntity.toRemoteEntity(servicesIds: List<String>): AppointmentRemoteEntity =
+    AppointmentRemoteEntity(
+        id = id,
+        workerId = workerId,
+        clientId = clientId,
+        servicesIds = servicesIds,
+        description = description,
+        startTime = startTime.toEpochMilli(),
+        endTime = endTime.toEpochMilli(),
+        cancelled = cancelled,
+        updatedAt = updatedAt,
     )

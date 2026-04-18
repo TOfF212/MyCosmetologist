@@ -34,4 +34,12 @@ interface AppointmentServiceDao {
     """,
     )
     suspend fun getByAppointmentId(appointmentId: String): List<AppointmentServiceDbEntity>
+
+    @Query(
+        """
+        SELECT * FROM appointment_service
+        WHERE is_synced = 0
+    """,
+    )
+    suspend fun getUnsynced(): List<AppointmentServiceDbEntity>
 }

@@ -1,4 +1,4 @@
-package com.hfad.mycosmetologist.data.source.remote.core
+package com.hfad.mycosmetologist.data.sync.core
 
 import javax.inject.Inject
 import javax.inject.Singleton

@@ -30,6 +30,9 @@ interface ClientDao {
         workerId: String,
     ): ClientDbEntity?
 
+    @Query("SELECT * FROM clients WHERE is_synced = 0")
+    suspend fun getUnsynced(): List<ClientDbEntity>
+
     @Query(
         """
         SELECT * FROM clients
