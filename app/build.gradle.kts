@@ -50,6 +50,7 @@ dependencies {
     implementation("com.squareup.okhttp3:logging-interceptor:4.11.0")
     implementation("androidx.room:room-ktx:2.8.4")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
+    implementation ("com.google.firebase:firebase-firestore-ktx")
     implementation(libs.volley)
     implementation(libs.coil.compose)
     implementation(libs.androidx.core.ktx)

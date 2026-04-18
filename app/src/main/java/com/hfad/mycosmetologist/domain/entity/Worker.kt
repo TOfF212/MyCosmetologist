@@ -7,7 +7,6 @@ data class Worker(
     val name: String,
     val phone: String,
     val about: String,
-    val password: String,
     val specialization: String,
     val experience: Int,
     val email: String,

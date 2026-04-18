@@ -30,8 +30,6 @@ constructor(
     private val _name = MutableStateFlow("")
     val name: StateFlow<String> = _name
 
-    private val _password = MutableStateFlow("")
-    val password: StateFlow<String> = _password
 
     private val _events = MutableSharedFlow<AuthEvent>()
     val events = _events.asSharedFlow()
@@ -48,12 +46,6 @@ constructor(
         }
     }
 
-    fun onPasswordChanged(newValue: String) {
-        _password.update {
-            newValue
-        }
-    }
-
     fun onSubmitClick() {
         viewModelScope.launch {
             val workerId = UUID.randomUUID().toString()
@@ -63,7 +55,6 @@ constructor(
                     name = name.value,
                     phone = phone.value,
                     about = "",
-                    password = password.value,
                     experience = 0,
                     email = "-",
                     specialization = "-"

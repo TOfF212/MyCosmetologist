@@ -19,6 +19,10 @@ interface WorkerDao {
     @Delete
     suspend fun delete(worker: WorkerDbEntity)
 
+
+    @Query("SELECT * FROM workers WHERE email = :email LIMIT 1")
+    suspend fun getByEmail(email: String): WorkerDbEntity?
+
     @Query(
         """
         SELECT * FROM workers
@@ -27,6 +31,8 @@ interface WorkerDao {
     )
     suspend fun getById(workerId: String): WorkerDbEntity?
 
+    @Query("SELECT * FROM workers WHERE is_synced = 0")
+    suspend fun getUnsynced(): List<WorkerDbEntity>
 
     @Query(
         """

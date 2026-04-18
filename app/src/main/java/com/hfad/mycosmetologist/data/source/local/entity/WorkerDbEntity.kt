@@ -12,9 +12,10 @@ data class WorkerDbEntity(
     @ColumnInfo(name = "name") val name: String,
     @ColumnInfo(name = "phone") val phone: String,
     @ColumnInfo(name = "about") val about: String,
-    @ColumnInfo(name = "password") val password: String,
     @ColumnInfo(name = "is_actual") val isActual: Boolean,
     @ColumnInfo(name = "specialization") val specialization: String,
     @ColumnInfo(name = "experience") val experience: Int,
     @ColumnInfo(name = "email") val email: String,
+    @ColumnInfo(name = "updated_at") val updatedAt: Long = 0L,
+    @ColumnInfo(name = "is_synced") val isSynced: Boolean = false,
     )

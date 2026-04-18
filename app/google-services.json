@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "562406923012",
+    "project_id": "mycosmetologist-5efdc",
+    "storage_bucket": "mycosmetologist-5efdc.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:562406923012:android:b2dfbf43dba36399f34e51",
+        "android_client_info": {
+          "package_name": "com.hfad.mycosmetologist"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDjGPq_5jmGYrgA_zIEusOirnZWCpWCx5Y"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

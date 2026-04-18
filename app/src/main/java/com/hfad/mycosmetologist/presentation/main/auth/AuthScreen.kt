@@ -30,7 +30,6 @@ fun AuthScreen(
     val context = LocalContext.current
     val phone by viewModel.phone.collectAsState()
     val name by viewModel.name.collectAsState()
-    val password by viewModel.password.collectAsState()
     val errorMsg = stringResource(R.string.auth_error)
 
     LaunchedEffect(Unit) {
@@ -67,11 +66,7 @@ fun AuthScreen(
                 label = { Text(stringResource(R.string.auth_phone)) },
                 onValueChange = viewModel::onPhoneChanged,
             )
-            OutlinedTextField(
-                value = password,
-                label = { Text(stringResource(R.string.auth_password)) },
-                onValueChange = viewModel::onPasswordChanged,
-            )
+
             Button(onClick = viewModel::onSubmitClick, modifier = Modifier.padding(top = 10.dp)) {
                 Text(stringResource(R.string.auth_register))
             }
