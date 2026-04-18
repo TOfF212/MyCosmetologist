@@ -50,5 +50,4 @@ fun WorkerRemoteEntity.toDbModel(): WorkerDbEntity =
         email = email,
         experience = experience,
         updatedAt = updatedAt,
-        isSynced = isSynced
     )

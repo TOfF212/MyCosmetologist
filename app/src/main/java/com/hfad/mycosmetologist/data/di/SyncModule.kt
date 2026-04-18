@@ -1,6 +1,8 @@
 package com.hfad.mycosmetologist.data.di
 
 import com.hfad.mycosmetologist.data.repository.ServiceRepositoryImpl
+import com.hfad.mycosmetologist.data.sync.appointments.AppointmentSyncManager
+import com.hfad.mycosmetologist.data.sync.appointmentservices.AppointmentServiceSyncManager
 import com.hfad.mycosmetologist.data.sync.service.ServiceSyncManager
 import com.hfad.mycosmetologist.data.sync.client.ClientSyncManager
 import com.hfad.mycosmetologist.data.sync.core.Syncable
@@ -38,4 +40,11 @@ abstract class SyncModule {
     abstract fun bindAppointmentSyncManager(
         impl: AppointmentSyncManager,
     ): Syncable
+
+    @Binds
+    @IntoSet
+    abstract fun bindAppointmentServiceSyncManager(
+        impl: AppointmentServiceSyncManager,
+    ): Syncable
+
 }
