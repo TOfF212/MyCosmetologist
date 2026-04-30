@@ -1,9 +1,11 @@
 package com.hfad.mycosmetologist.data.di
 
 import android.content.Context
+import android.content.SharedPreferences
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.preferencesDataStore
+import com.hfad.mycosmetologist.data.source.local.auth.AuthLocalStorage
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -21,4 +23,12 @@ object SessionModule {
     fun provideSessionDataStore(
         @ApplicationContext context: Context,
     ): DataStore<Preferences> = context.sessionDataStore
+
+    @Provides
+    @Singleton
+    fun provideAuthLocalStorage(
+        dataStore: DataStore<Preferences>
+    ): AuthLocalStorage {
+        return AuthLocalStorage(dataStore as SharedPreferences)
+    }
 }

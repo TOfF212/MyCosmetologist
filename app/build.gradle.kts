@@ -51,6 +51,8 @@ dependencies {
     implementation("androidx.room:room-ktx:2.8.4")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
     implementation ("com.google.firebase:firebase-firestore-ktx")
+    implementation("com.google.firebase:firebase-auth")
+    implementation("com.google.android.gms:play-services-auth:21.5.1")
     implementation(libs.volley)
     implementation(libs.coil.compose)
     implementation(libs.androidx.core.ktx)

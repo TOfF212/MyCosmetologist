@@ -123,4 +123,7 @@ object DataBaseModule {
 
     @Provides
     fun provideWorkerDao(database: AppDatabase): WorkerDao = database.workerDao()
+
 }
+
+
